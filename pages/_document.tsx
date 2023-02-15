@@ -15,6 +15,10 @@ class MyDocument extends Document {
             content="LSTs8QeH8NN_53baxbUawo7HnGOOnKY0vcYj8GHZLDA"
           />
           <link rel="icon" href="/favicon.ico" />
+          <meta
+            name="viewport"
+            content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+          ></meta>
         </Head>
         <body className="overflow-x-hidden w-screen min-h-screen">
           <Main />
