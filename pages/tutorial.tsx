@@ -5,18 +5,41 @@ const scene = new THREE.Scene();
 import React, { useContext, useEffect, useState } from "react";
 import Scene from "../components/Scene";
 import Resizable from "../components/tutorialHelpers/Resizable";
-import Prerequisites, {
-  pageFunction,
-} from "../components/tutorialSteps/Prerequisites";
+import Prerequisites from "../components/tutorialSteps/Prerequisites";
 import AppContext from "../contexts/AppContextProvider";
-
+import Box, { boxSceneFunction } from "../components/tutorialSteps/Box";
+import Renderer, {
+  rendererSceneFunction,
+} from "../components/tutorialSteps/Renderer";
+import Loader, {
+  loaderSceneFunction,
+} from "../components/tutorialSteps/Loader";
+type StepList = Array<{
+  id: string;
+  element: any;
+  pageFunction?: any;
+}>;
 const Tutorial = () => {
   const [stepIndex, setStepIndex] = useState<number>(-1);
-  const stepList = [
+  const stepList: StepList = [
     {
-      id: "Prerequisites",
+      id: "prerequisites",
       element: <Prerequisites></Prerequisites>,
-      threeScript: pageFunction,
+    },
+    {
+      id: "box",
+      element: <Box></Box>,
+      pageFunction: boxSceneFunction,
+    },
+    {
+      id: "loader",
+      element: <Loader></Loader>,
+      pageFunction: loaderSceneFunction,
+    },
+    {
+      id: "renderer",
+      element: <Renderer></Renderer>,
+      pageFunction: rendererSceneFunction,
     },
   ];
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -39,7 +62,9 @@ const Tutorial = () => {
           {stepList[stepIndex] && stepList[stepIndex].element}
           {!stepList[stepIndex] && "Step does not exist"}
         </Resizable>
-        <Scene threeScript={pageFunction}></Scene>
+        {stepList[stepIndex] && stepList[stepIndex].pageFunction && (
+          <Scene threeScript={stepList[stepIndex].pageFunction}></Scene>
+        )}
       </div>
     </>
   );

@@ -11,12 +11,12 @@ type InputProps = {
 const Scene: React.FC<InputProps> = ({ threeScript }) => {
   const { uiSettings, userScript } = useContext(AppContext);
   useEffect(() => {
-    threeScript();
-  }, []);
+    threeScript(userScript);
+  }, [userScript]);
 
   return (
     <div
-      className="bg-black max-h-full overflow-hidden"
+      className=" max-h-full overflow-hidden"
       style={{
         height:
           uiSettings && uiSettings.canvasSize
@@ -31,6 +31,7 @@ const Scene: React.FC<InputProps> = ({ threeScript }) => {
             uiSettings && uiSettings.canvasSize
               ? uiSettings.canvasSize + "px"
               : "100%",
+          width: "100%",
         }}
         className="object-contain mx-auto max-w-full max-h-full"
       ></canvas>

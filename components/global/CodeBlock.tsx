@@ -5,14 +5,27 @@ import AppContext from "../../contexts/AppContextProvider";
 type Props = {
   pageFunction?: any;
   showBefore?: any;
+  hintBefore?: string;
+  hintAfter?: string;
   showAfter?: any;
+  inputHeight?: number;
   children?: any;
 };
-const CodeBlock: React.FC<Props> = ({ showBefore, showAfter }) => {
+const CodeBlock: React.FC<Props> = ({
+  showBefore,
+  showAfter,
+  hintBefore,
+  hintAfter,
+  inputHeight,
+}) => {
   const { setUserScript } = useContext(AppContext);
 
   let timeout: NodeJS.Timeout | null = null;
   const handleChange = (event: any) => {
+    console.log(event.key);
+
+    event.target.style.width = +event.target.value.length + 0.5 + "ch";
+
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => {
       setUserScript(event.target.value);
@@ -22,13 +35,22 @@ const CodeBlock: React.FC<Props> = ({ showBefore, showAfter }) => {
     <div>
       <pre className="flex flex-col">
         {showBefore}
-        <input
-          type="text"
-          name="codeblock"
-          id="codeblock"
-          className="bg-blue-200"
-          onChange={(event) => handleChange(event)}
-        />
+        <div className="flex flex-row">
+          {hintBefore}
+          <textarea
+            name="codeblock"
+            id="codeblock"
+            rows={inputHeight || 1}
+            style={{
+              width: `${inputHeight ? 50 : 5}ch`,
+              minWidth: `${inputHeight ? 50 : 5}ch`,
+            }}
+            className="bg-blue-200 resize-none p-0.5 overflow-hidden"
+            onChange={(event) => handleChange(event)}
+          />
+          {hintAfter}
+        </div>
+
         {showAfter}
       </pre>
     </div>

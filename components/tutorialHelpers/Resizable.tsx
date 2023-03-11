@@ -46,7 +46,7 @@ const Resizable: React.FC<InputProps> = ({ children }) => {
     <div id="Resizable" className="flex flex-col h-1/2">
       <div
         onClick={() => {
-          Router.query.step = "Prerequisites";
+          Router.query.step = "prerequisites";
           Router.push(Router);
         }}
       >
