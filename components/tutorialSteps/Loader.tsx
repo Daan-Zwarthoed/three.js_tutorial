@@ -25,6 +25,8 @@ animate();`;
 
 export const loaderSceneFunction = (userScript: string) => {
   const canvas = document.getElementById("canvas");
+  let mixer: THREE.AnimationMixer | null = null;
+  let clock = new THREE.Clock();
   if (!canvas) return;
 
   const scene = new THREE.Scene();
@@ -35,26 +37,37 @@ export const loaderSceneFunction = (userScript: string) => {
     0.1,
     2000000
   );
-  camera.position.z = 3;
+  camera.position.z = 10;
 
   const renderer = new THREE.WebGLRenderer({ canvas });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-  //   renderer.outputEncoding = THREE.sRGBEncoding;
 
-  const light1 = new THREE.DirectionalLight(0xb1e1ff, 2);
+  const light1 = new THREE.DirectionalLight(0xffff99, 2);
+  light1.position.x = 5;
+  light1.position.z = 5;
+
   scene.add(light1);
-
-  const light2 = new THREE.HemisphereLight(0xb1e1ff, 0xb97a20, 1);
+  const light2 = new THREE.HemisphereLight(0xffff99, 0xb97a20, 0.5);
   scene.add(light2);
 
   new OrbitControls(camera, renderer.domElement);
   loader.load(
     // resource URL
-    "scenes/DamagedHelmetAVIF.glb",
+    // "https://raw.githubusercontent.com/Websitebystudents/pim-pom/main/model/pim_pom_clubhuis_8.gltf"
+    // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/AnimatedCube/glTF/AnimatedCube.gltf",
+    // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf",
+    // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Sponza/glTF/Sponza.gltf",
+    "scenes/mercedes.glb",
     // called when the resource is loaded
     async function (gltf) {
       console.log("loaded");
       scene.add(gltf.scene);
+
+      mixer = new THREE.AnimationMixer(gltf.scene);
+      gltf.animations.forEach((clip) => {
+        if (mixer) mixer.clipAction(clip).play();
+      });
+      console.log(gltf.scene);
 
       gltf.animations; // Array<THREE.AnimationClip>
       gltf.cameras; // Array<THREE.Camera>
@@ -62,19 +75,25 @@ export const loaderSceneFunction = (userScript: string) => {
     },
     // called while loading is progressing
     function (xhr) {
-      console.log(xhr);
-
-      console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+      if (xhr.total) console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
     },
     // called when loading has errors
     function (error) {
-      console.log("An error happened");
+      console.log(error);
     }
   );
 
+  addEventListener("resize", (event) => {
+    if (canvas)
+      renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+    camera.aspect = canvas.clientWidth / canvas.clientHeight;
+    camera.updateProjectionMatrix();
+  });
   function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
+    const delta = clock.getDelta();
+    if (mixer) mixer.update(delta);
   }
   if (userScript === null) animate();
 };

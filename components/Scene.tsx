@@ -16,7 +16,7 @@ const Scene: React.FC<InputProps> = ({ threeScript }) => {
 
   return (
     <div
-      className=" max-h-full overflow-hidden"
+      className="relative max-h-full overflow-hidden bg-blue-500"
       style={{
         height:
           uiSettings && uiSettings.canvasSize
@@ -24,6 +24,9 @@ const Scene: React.FC<InputProps> = ({ threeScript }) => {
             : "50%",
       }}
     >
+      <div className="absolute h-full w-full text-center text-[200px]">
+        YOU A BITCH
+      </div>
       <canvas
         id="canvas"
         style={{
@@ -33,7 +36,7 @@ const Scene: React.FC<InputProps> = ({ threeScript }) => {
               : "100%",
           width: "100%",
         }}
-        className="object-contain mx-auto max-w-full max-h-full"
+        className="relative z-10 object-contain mx-auto max-w-full max-h-full"
       ></canvas>
     </div>
   );

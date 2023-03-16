@@ -14,6 +14,16 @@ import Renderer, {
 import Loader, {
   loaderSceneFunction,
 } from "../components/tutorialSteps/Loader";
+import Spin, { spinSceneFunction } from "../components/tutorialSteps/Spin";
+import Raycaster, {
+  raycasterSceneFunction,
+} from "../components/tutorialSteps/Raycaster";
+import CameraAnimation, {
+  cameraAnimationSceneFunction,
+} from "../components/tutorialSteps/CameraAnimation";
+import InfoBubble, {
+  infoBubbleSceneFunction,
+} from "../components/tutorialSteps/InfoBubble";
 type StepList = Array<{
   id: string;
   element: any;
@@ -35,6 +45,27 @@ const Tutorial = () => {
       id: "loader",
       element: <Loader></Loader>,
       pageFunction: loaderSceneFunction,
+    },
+    {
+      id: "spin",
+      element: <Spin></Spin>,
+      pageFunction: spinSceneFunction,
+    },
+
+    {
+      id: "raycaster",
+      element: <Raycaster></Raycaster>,
+      pageFunction: raycasterSceneFunction,
+    },
+    {
+      id: "cameraAnimation",
+      element: <CameraAnimation></CameraAnimation>,
+      pageFunction: cameraAnimationSceneFunction,
+    },
+    {
+      id: "infoBubble",
+      element: <InfoBubble></InfoBubble>,
+      pageFunction: infoBubbleSceneFunction,
     },
     {
       id: "renderer",
