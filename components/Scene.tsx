@@ -2,6 +2,7 @@ import Head from "next/head";
 import React, { useContext, useEffect } from "react";
 import * as THREE from "three";
 import AppContext from "../contexts/AppContextProvider";
+import Image from "next/image";
 type InputProps = {
   threeScript: Function;
   cameraType?: THREE.PerspectiveCamera;
@@ -12,7 +13,7 @@ const Scene: React.FC<InputProps> = ({ threeScript }) => {
   const { uiSettings, userScript } = useContext(AppContext);
   useEffect(() => {
     threeScript(userScript);
-  }, [userScript]);
+  });
 
   return (
     <div
@@ -24,8 +25,14 @@ const Scene: React.FC<InputProps> = ({ threeScript }) => {
             : "50%",
       }}
     >
-      <div className="absolute h-full w-full text-center text-[200px]">
-        YOU A BITCH
+      <div
+        style={{ opacity: 0, display: "none" }}
+        className="absolute z-20 text-center right-0 bg-white/70 pr-5"
+      >
+        <div id="backButton" className="relative h-20 w-20 ml-auto my-5">
+          <Image src="/images/backButton.png" fill alt="back button"></Image>
+        </div>
+        <div>hallo ik ben daan</div>
       </div>
       <canvas
         id="canvas"

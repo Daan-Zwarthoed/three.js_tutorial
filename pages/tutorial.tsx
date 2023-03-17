@@ -24,55 +24,64 @@ import CameraAnimation, {
 import InfoBubble, {
   infoBubbleSceneFunction,
 } from "../components/tutorialSteps/InfoBubble";
+import CameraAnimationOld, {
+  cameraAnimationOldSceneFunction,
+} from "../components/tutorialSteps/CameraAnimationOld";
 type StepList = Array<{
   id: string;
   element: any;
   pageFunction?: any;
 }>;
+const stepList: StepList = [
+  {
+    id: "prerequisites",
+    element: <Prerequisites></Prerequisites>,
+  },
+  {
+    id: "box",
+    element: <Box></Box>,
+    pageFunction: boxSceneFunction,
+  },
+  {
+    id: "loader",
+    element: <Loader></Loader>,
+    pageFunction: loaderSceneFunction,
+  },
+  {
+    id: "spin",
+    element: <Spin></Spin>,
+    pageFunction: spinSceneFunction,
+  },
+
+  {
+    id: "raycaster",
+    element: <Raycaster></Raycaster>,
+    pageFunction: raycasterSceneFunction,
+  },
+  {
+    id: "cameraAnimation",
+    element: <CameraAnimation></CameraAnimation>,
+    pageFunction: cameraAnimationSceneFunction,
+  },
+  {
+    id: "cameraAnimationOld",
+    element: <CameraAnimationOld></CameraAnimationOld>,
+    pageFunction: cameraAnimationOldSceneFunction,
+  },
+  {
+    id: "infoBubble",
+    element: <InfoBubble></InfoBubble>,
+    pageFunction: infoBubbleSceneFunction,
+  },
+  {
+    id: "renderer",
+    element: <Renderer></Renderer>,
+    pageFunction: rendererSceneFunction,
+  },
+];
 const Tutorial = () => {
   const [stepIndex, setStepIndex] = useState<number>(-1);
-  const stepList: StepList = [
-    {
-      id: "prerequisites",
-      element: <Prerequisites></Prerequisites>,
-    },
-    {
-      id: "box",
-      element: <Box></Box>,
-      pageFunction: boxSceneFunction,
-    },
-    {
-      id: "loader",
-      element: <Loader></Loader>,
-      pageFunction: loaderSceneFunction,
-    },
-    {
-      id: "spin",
-      element: <Spin></Spin>,
-      pageFunction: spinSceneFunction,
-    },
 
-    {
-      id: "raycaster",
-      element: <Raycaster></Raycaster>,
-      pageFunction: raycasterSceneFunction,
-    },
-    {
-      id: "cameraAnimation",
-      element: <CameraAnimation></CameraAnimation>,
-      pageFunction: cameraAnimationSceneFunction,
-    },
-    {
-      id: "infoBubble",
-      element: <InfoBubble></InfoBubble>,
-      pageFunction: infoBubbleSceneFunction,
-    },
-    {
-      id: "renderer",
-      element: <Renderer></Renderer>,
-      pageFunction: rendererSceneFunction,
-    },
-  ];
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const routerStepIndex = stepList.findIndex(

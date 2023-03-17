@@ -1,14 +1,7 @@
-import Head from "next/head";
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import * as THREE from "three";
-import { Object3D } from "three";
 import userFunction from "../../helpers/userFunction";
 import CodeBlock from "../global/CodeBlock";
-type InputProps = {
-  renderer?: any;
-  cameraType?: THREE.PerspectiveCamera;
-  animation?: any;
-};
 
 const showBefore = `const canvas = document.getElementById("canvas");
 const renderer = new THREE.WebGLRenderer({ canvas });`;
@@ -37,7 +30,18 @@ export const rendererSceneFunction = (userScript: string) => {
   if (!canvas) return;
 
   const renderer = new THREE.WebGLRenderer({ canvas });
-  // renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+
+  window.addEventListener("resize", function () {
+    renderer.setSize(
+      canvas.parentElement!.clientWidth,
+      canvas.clientHeight,
+      true
+    );
+    camera.aspect = canvas.clientWidth / canvas.clientHeight;
+    camera.updateProjectionMatrix();
+  });
+
   userFunction(userScript, hintBefore, hintAfter, ["renderer"], [renderer]);
 
   const geometry = new THREE.BoxGeometry(10, 10, 10);
@@ -53,7 +57,7 @@ export const rendererSceneFunction = (userScript: string) => {
   if (userScript === null) animate();
 };
 
-const Renderer: React.FC<InputProps> = () => {
+const Renderer: React.FC = () => {
   return (
     <div className="flex flex-col">
       <h2>What do you need before starting this three.js adventure?</h2>

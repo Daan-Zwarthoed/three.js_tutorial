@@ -1,15 +1,8 @@
-import Head from "next/head";
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import CodeBlock from "../global/CodeBlock";
-const loader = new GLTFLoader();
-type InputProps = {
-  renderer?: any;
-  cameraType?: THREE.PerspectiveCamera;
-  animation?: any;
-};
 
 const showBefore = `const canvas = document.getElementById("canvas");
 const renderer = new THREE.WebGLRenderer({ canvas });
@@ -25,6 +18,7 @@ animate();`;
 
 export const loaderSceneFunction = (userScript: string) => {
   const canvas = document.getElementById("canvas");
+  const loader = new GLTFLoader();
   let mixer: THREE.AnimationMixer | null = null;
   let clock = new THREE.Clock();
   if (!canvas) return;
@@ -51,6 +45,17 @@ export const loaderSceneFunction = (userScript: string) => {
   scene.add(light2);
 
   new OrbitControls(camera, renderer.domElement);
+
+  window.addEventListener("resize", function () {
+    renderer.setSize(
+      canvas.parentElement!.clientWidth,
+      canvas.clientHeight,
+      true
+    );
+    camera.aspect = canvas.clientWidth / canvas.clientHeight;
+    camera.updateProjectionMatrix();
+  });
+
   loader.load(
     // resource URL
     // "https://raw.githubusercontent.com/Websitebystudents/pim-pom/main/model/pim_pom_clubhuis_8.gltf"
@@ -98,7 +103,7 @@ export const loaderSceneFunction = (userScript: string) => {
   if (userScript === null) animate();
 };
 
-const Loader: React.FC<InputProps> = () => {
+const Loader: React.FC = () => {
   return (
     <div className="flex flex-col">
       <h2>What do you need before starting this three.js adventure?</h2>

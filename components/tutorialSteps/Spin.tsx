@@ -1,15 +1,8 @@
-import Head from "next/head";
 import React, { useContext, useEffect } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import CodeBlock from "../global/CodeBlock";
-const loader = new GLTFLoader();
-type InputProps = {
-  renderer?: any;
-  cameraType?: THREE.PerspectiveCamera;
-  animation?: any;
-};
 
 const showBefore = `const canvas = document.getElementById("canvas");
 const renderer = new THREE.WebGLRenderer({ canvas });
@@ -25,6 +18,7 @@ animate();`;
 
 export const spinSceneFunction = (userScript: string) => {
   const canvas = document.getElementById("canvas");
+  const loader = new GLTFLoader();
   let mixer: THREE.AnimationMixer | null = null;
   let clock = new THREE.Clock();
   if (!canvas) return;
@@ -50,6 +44,16 @@ export const spinSceneFunction = (userScript: string) => {
   scene.add(light1);
   const light2 = new THREE.HemisphereLight(0xffff99, 0xb97a20, 0.5);
   scene.add(light2);
+
+  window.addEventListener("resize", function () {
+    renderer.setSize(
+      canvas.parentElement!.clientWidth,
+      canvas.clientHeight,
+      true
+    );
+    camera.aspect = canvas.clientWidth / canvas.clientHeight;
+    camera.updateProjectionMatrix();
+  });
 
   new OrbitControls(camera, renderer.domElement);
   loader.load(
@@ -100,7 +104,7 @@ export const spinSceneFunction = (userScript: string) => {
   if (userScript === null) animate();
 };
 
-const Spin: React.FC<InputProps> = () => {
+const Spin: React.FC = () => {
   return (
     <div className="flex flex-col">
       <h2>What do you need before starting this three.js adventure?</h2>

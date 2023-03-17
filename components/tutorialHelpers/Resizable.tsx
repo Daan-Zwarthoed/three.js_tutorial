@@ -43,7 +43,7 @@ const Resizable: React.FC<InputProps> = ({ children }) => {
   };
 
   return (
-    <div id="Resizable" className="flex flex-col h-1/2">
+    <div id="Resizable" className="relative flex flex-col h-1/2">
       <div
         onClick={() => {
           Router.query.step = "prerequisites";
@@ -52,9 +52,9 @@ const Resizable: React.FC<InputProps> = ({ children }) => {
       >
         go to Prerequisites
       </div>
-      <div className="flex w-full h-full p-5">{children}</div>
+      <div className="flex w-full h-full p-5 overflow-y-auto">{children}</div>
       <div
-        className="flex w-full h-[20px] cursor-row-resize bg-blue-500"
+        className="absolute bottom-0 flex w-full h-[20px] cursor-row-resize bg-blue-500"
         draggable="true"
         onDragStart={(event) => initial(event)}
         onDrag={(event) => resize(event)}

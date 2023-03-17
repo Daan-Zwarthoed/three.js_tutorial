@@ -1,17 +1,7 @@
-import Head from "next/head";
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { FirstPersonControls } from "three/examples/jsm/controls/FirstPersonControls";
 
 import CodeBlock from "../global/CodeBlock";
-const loader = new GLTFLoader();
-type InputProps = {
-  renderer?: any;
-  cameraType?: THREE.PerspectiveCamera;
-  animation?: any;
-};
 
 const showBefore = `const canvas = document.getElementById("canvas");
 const renderer = new THREE.WebGLRenderer({ canvas });
@@ -58,6 +48,16 @@ export const raycasterSceneFunction = (userScript: string) => {
   scene.add(cube);
   scene.add(cube2);
 
+  window.addEventListener("resize", function () {
+    renderer.setSize(
+      canvas.parentElement!.clientWidth,
+      canvas.clientHeight,
+      true
+    );
+    camera.aspect = canvas.clientWidth / canvas.clientHeight;
+    camera.updateProjectionMatrix();
+  });
+
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
 
@@ -67,7 +67,9 @@ export const raycasterSceneFunction = (userScript: string) => {
     pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
     pointer.y = -((event.clientY - restHeight) / canvas.clientHeight) * 2 + 1;
   }
+
   canvas.addEventListener("mousemove", onPointerMove);
+
   let INTERSECTED: THREE.Object3D<THREE.Event> | null = null;
   let INTERSECTEDCOLOR: null = null;
 
@@ -95,7 +97,7 @@ export const raycasterSceneFunction = (userScript: string) => {
   }
   if (userScript === null) animate();
 };
-const Raycaster: React.FC<InputProps> = () => {
+const Raycaster: React.FC = () => {
   return (
     <div className="flex flex-col">
       <h2>What do you need before starting this three.js adventure?</h2>

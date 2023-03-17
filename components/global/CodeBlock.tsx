@@ -3,7 +3,7 @@ import React, { useContext, useEffect } from "react";
 import * as THREE from "three";
 import AppContext from "../../contexts/AppContextProvider";
 type Props = {
-  pageFunction?: any;
+  pageFunction?: Function;
   showBefore?: any;
   hintBefore?: string;
   hintAfter?: string;
@@ -22,8 +22,6 @@ const CodeBlock: React.FC<Props> = ({
 
   let timeout: NodeJS.Timeout | null = null;
   const handleChange = (event: any) => {
-    console.log(event.key);
-
     event.target.style.width = +event.target.value.length + 0.5 + "ch";
 
     if (timeout) clearTimeout(timeout);

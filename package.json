@@ -10,14 +10,15 @@
   },
   "dependencies": {
     "babel-plugin-macros": "^3.1.0",
-    "next": "12.1.0",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "three": "^0.150.1"
+    "gsap": "^3.11.4",
+    "next": "13.0.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "three": "^0.149.0"
   },
   "devDependencies": {
     "@types/node": "17.0.21",
-    "@types/react": "17.0.41",
+    "@types/react": "18.0.1",
     "@types/three": "^0.149.0",
     "autoprefixer": "^10.4.4",
     "eslint": "8.11.0",

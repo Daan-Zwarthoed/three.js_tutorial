@@ -1,6 +1,6 @@
-import Head from 'next/head'
-import React from 'react'
-const Home = () =>{
+import Head from "next/head";
+import React from "react";
+const Home = () => {
   return (
     <>
       <Head>
@@ -10,7 +10,7 @@ const Home = () =>{
       </Head>
       hey
     </>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
