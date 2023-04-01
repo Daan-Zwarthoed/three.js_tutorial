@@ -4,12 +4,13 @@ import userFunction from "../../helpers/userFunction";
 import CodeBlock from "../global/CodeBlock";
 
 const showBefore = `const canvas = document.getElementById("canvas");
-const renderer = new THREE.WebGLRenderer({ canvas });`;
+const renderer = new THREE.WebGLRenderer({ canvas });
+`;
 
-const hintBefore = "renderer.setSize(";
-const hintAfter = ");";
+const inputValue = "renderer.setSize();";
 
-const showAfter = `function animate() {
+const showAfter = `
+function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
   cube.rotation.x += 0.01;
@@ -17,17 +18,17 @@ const showAfter = `function animate() {
 }`;
 
 export const rendererSceneFunction = (userScript: string) => {
+  const canvas = document.getElementById("canvas");
+
+  if (!canvas) return;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
     75,
-    window.innerWidth / window.innerHeight,
+    canvas.clientWidth / canvas.clientHeight,
     0.1,
     2000
   );
   camera.position.z = 30;
-  const canvas = document.getElementById("canvas");
-
-  if (!canvas) return;
 
   const renderer = new THREE.WebGLRenderer({ canvas });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
@@ -42,12 +43,13 @@ export const rendererSceneFunction = (userScript: string) => {
     camera.updateProjectionMatrix();
   });
 
-  userFunction(userScript, hintBefore, hintAfter, ["renderer"], [renderer]);
+  userFunction(userScript, ["renderer"], [renderer]);
 
   const geometry = new THREE.BoxGeometry(10, 10, 10);
   const material = new THREE.MeshBasicMaterial({ color: "#d63e4d" });
   const cube = new THREE.Mesh(geometry, material);
   scene.add(cube);
+
   function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
@@ -59,13 +61,12 @@ export const rendererSceneFunction = (userScript: string) => {
 
 const Renderer: React.FC = () => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full">
       <h2>What do you need before starting this three.js adventure?</h2>
       <CodeBlock
         showBefore={showBefore}
         showAfter={showAfter}
-        hintBefore={hintBefore}
-        hintAfter={hintAfter}
+        inputValue={inputValue}
       ></CodeBlock>
     </div>
   );

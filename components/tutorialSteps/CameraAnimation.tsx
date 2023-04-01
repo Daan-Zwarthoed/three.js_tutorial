@@ -29,7 +29,7 @@ export const cameraAnimationSceneFunction = (userScript: string) => {
     0.1,
     2000000
   );
-  camera.position.z = 20;
+  camera.position.z = 30;
 
   const renderer = new THREE.WebGLRenderer({ canvas });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
@@ -77,8 +77,9 @@ export const cameraAnimationSceneFunction = (userScript: string) => {
 
   function onPointerMove(event: { clientX: number; clientY: number }) {
     if (!canvas) return;
+    const restWidth = window.innerWidth - canvas.clientWidth;
     const restHeight = window.innerHeight - canvas.clientHeight;
-    pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+    pointer.x = ((event.clientX - restWidth) / canvas.clientWidth) * 2 - 1;
     pointer.y = -((event.clientY - restHeight) / canvas.clientHeight) * 2 + 1;
   }
   canvas.addEventListener("mousemove", onPointerMove);
@@ -108,7 +109,7 @@ export const cameraAnimationSceneFunction = (userScript: string) => {
 };
 const CameraAnimation: React.FC = () => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full">
       <h2>What do you need before starting this three.js adventure?</h2>
       <CodeBlock
         showBefore={showBefore}

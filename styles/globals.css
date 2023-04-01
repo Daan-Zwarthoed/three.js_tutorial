@@ -64,3 +64,14 @@ blockquote {
   border-left: solid 2px #e5e7eb;
   padding-left: 20px;
 }
+
+.editArea {
+  position: absolute;
+  background: rgba(100, 200, 100, 0.5);
+  z-index: 20;
+}
+
+.ace_gutter-layer {
+  /* original width is 48px */
+  width: 48px !important;
+}

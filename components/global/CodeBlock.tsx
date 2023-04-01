@@ -2,11 +2,14 @@ import Head from "next/head";
 import React, { useContext, useEffect } from "react";
 import * as THREE from "three";
 import AppContext from "../../contexts/AppContextProvider";
+import dynamic from "next/dynamic";
+
+// import ace from "ace-builds";
+const CodeEditor = dynamic(() => import("./CodeEditor"), { ssr: false });
 type Props = {
   pageFunction?: Function;
   showBefore?: any;
-  hintBefore?: string;
-  hintAfter?: string;
+  inputValue?: string;
   showAfter?: any;
   inputHeight?: number;
   children?: any;
@@ -14,45 +17,37 @@ type Props = {
 const CodeBlock: React.FC<Props> = ({
   showBefore,
   showAfter,
-  hintBefore,
-  hintAfter,
+  inputValue,
   inputHeight,
 }) => {
   const { setUserScript } = useContext(AppContext);
+  const beforeHeight = showBefore.split(/\r\n|\r|\n/).length;
+  if (!inputHeight && !inputValue)
+    return <>Input value or height needs to be defined</>;
 
-  let timeout: NodeJS.Timeout | null = null;
-  const handleChange = (event: any) => {
-    event.target.style.width = +event.target.value.length + 0.5 + "ch";
+  inputHeight = inputHeight || inputValue!.split(/\r\n|\r|\n/).length;
 
-    if (timeout) clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      setUserScript(event.target.value);
-    }, 500);
-  };
   return (
-    <div>
-      <pre className="flex flex-col">
-        {showBefore}
-        <div className="flex flex-row">
-          {hintBefore}
-          <textarea
-            name="codeblock"
-            id="codeblock"
-            rows={inputHeight || 1}
-            style={{
-              width: `${inputHeight ? 50 : 5}ch`,
-              minWidth: `${inputHeight ? 50 : 5}ch`,
-            }}
-            className="bg-blue-200 resize-none p-0.5 overflow-hidden"
-            onChange={(event) => handleChange(event)}
-          />
-          {hintAfter}
-        </div>
-
-        {showAfter}
-      </pre>
+    <div className="relative h-full w-full">
+      <CodeEditor
+        inputHeight={beforeHeight + inputHeight}
+        beforeHeight={beforeHeight}
+      >
+        {showBefore +
+          (inputValue
+            ? inputValue
+            : [...Array(inputHeight + 1)].map(() => "\n").join("")) +
+          showAfter}
+      </CodeEditor>
+      {/* <ConsoleLog /> */}
     </div>
   );
 };
 
 export default CodeBlock;
+
+// style={{
+//   width: `${inputHeight ? 50 : 5}ch`,
+//   minWidth: `${inputHeight ? 50 : 5}ch`,
+// }}
+// {(hintBefore || "") + "EDITAREA" + (hintAfter || "")}

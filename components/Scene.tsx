@@ -1,5 +1,5 @@
 import Head from "next/head";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import * as THREE from "three";
 import AppContext from "../contexts/AppContextProvider";
 import Image from "next/image";
@@ -8,20 +8,19 @@ type InputProps = {
   cameraType?: THREE.PerspectiveCamera;
   animation?: any;
 };
-
 const Scene: React.FC<InputProps> = ({ threeScript }) => {
   const { uiSettings, userScript } = useContext(AppContext);
   useEffect(() => {
     threeScript(userScript);
-  });
+  }, [userScript]);
 
   return (
     <div
       className="relative max-h-full overflow-hidden bg-blue-500"
       style={{
-        height:
-          uiSettings && uiSettings.canvasSize
-            ? uiSettings.canvasSize + "px"
+        width:
+          uiSettings && uiSettings.canvasWidth
+            ? uiSettings.canvasWidth + "px"
             : "50%",
       }}
     >
@@ -37,11 +36,11 @@ const Scene: React.FC<InputProps> = ({ threeScript }) => {
       <canvas
         id="canvas"
         style={{
-          height:
-            uiSettings && uiSettings.canvasSize
-              ? uiSettings.canvasSize + "px"
+          width:
+            uiSettings && uiSettings.canvasWidth
+              ? uiSettings.canvasWidth + "px"
               : "100%",
-          width: "100%",
+          height: "100%",
         }}
         className="relative z-10 object-contain mx-auto max-w-full max-h-full"
       ></canvas>

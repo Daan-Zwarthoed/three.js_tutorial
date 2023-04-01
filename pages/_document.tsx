@@ -7,6 +7,10 @@ class MyDocument extends Document {
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/dark.min.css"
+          ></link>
+          <link
             href="https://fonts.googleapis.com/css2?family=Bangers&family=Quicksand&display=swap"
             rel="stylesheet"
           />

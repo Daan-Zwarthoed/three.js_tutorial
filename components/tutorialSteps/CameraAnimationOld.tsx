@@ -77,8 +77,9 @@ export const cameraAnimationOldSceneFunction = (userScript: string) => {
 
   function onPointerMove(event: { clientX: number; clientY: number }) {
     if (!canvas) return;
+    const restWidth = window.innerWidth - canvas.clientWidth;
     const restHeight = window.innerHeight - canvas.clientHeight;
-    pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+    pointer.x = ((event.clientX - restWidth) / canvas.clientWidth) * 2 - 1;
     pointer.y = -((event.clientY - restHeight) / canvas.clientHeight) * 2 + 1;
   }
   canvas.addEventListener("mousemove", onPointerMove);
@@ -128,7 +129,7 @@ export const cameraAnimationOldSceneFunction = (userScript: string) => {
 };
 const CameraAnimationOld: React.FC = () => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full">
       <h2>What do you need before starting this three.js adventure?</h2>
       <CodeBlock
         showBefore={showBefore}

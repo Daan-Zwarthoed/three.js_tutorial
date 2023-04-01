@@ -55,7 +55,6 @@ export const spinSceneFunction = (userScript: string) => {
     camera.updateProjectionMatrix();
   });
 
-  new OrbitControls(camera, renderer.domElement);
   loader.load(
     // resource URL
     // "https://raw.githubusercontent.com/Websitebystudents/pim-pom/main/model/pim_pom_clubhuis_8.gltf"
@@ -97,7 +96,7 @@ export const spinSceneFunction = (userScript: string) => {
     theta += 0.2;
 
     camera.position.x = radius * Math.sin(THREE.MathUtils.degToRad(theta));
-    // camera.position.y = radius * Math.sin(THREE.MathUtils.degToRad(theta));
+    camera.position.y = radius * Math.sin(THREE.MathUtils.degToRad(theta));
     camera.position.z = radius * Math.cos(THREE.MathUtils.degToRad(theta));
     camera.lookAt(scene.position);
   }
@@ -106,7 +105,7 @@ export const spinSceneFunction = (userScript: string) => {
 
 const Spin: React.FC = () => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full">
       <h2>What do you need before starting this three.js adventure?</h2>
       <CodeBlock
         showBefore={showBefore}

@@ -6,9 +6,12 @@ import CodeBlock from "../global/CodeBlock";
 
 const showBefore = `const canvas = document.getElementById("canvas");
 const renderer = new THREE.WebGLRenderer({ canvas });
-renderer.setSize(window.innerWidth, window.innerHeight);`;
+renderer.setSize(window.innerWidth, window.innerHeight);
+`;
 
-const showAfter = `function animate() {
+const showAfter = `
+
+function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
   cube.rotation.x += 0.01;
@@ -72,7 +75,6 @@ export const loaderSceneFunction = (userScript: string) => {
       gltf.animations.forEach((clip) => {
         if (mixer) mixer.clipAction(clip).play();
       });
-      console.log(gltf.scene);
 
       gltf.animations; // Array<THREE.AnimationClip>
       gltf.cameras; // Array<THREE.Camera>
@@ -105,7 +107,7 @@ export const loaderSceneFunction = (userScript: string) => {
 
 const Loader: React.FC = () => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full">
       <h2>What do you need before starting this three.js adventure?</h2>
       <CodeBlock
         showBefore={showBefore}

@@ -13,37 +13,56 @@ const Resizable: React.FC<InputProps> = ({ children }) => {
 
   let initialPos: number | null = null;
   let initialSize: number | null = null;
+  let mouseDown = false;
 
   const initial = (event: any) => {
     const resizable = document.getElementById("Resizable");
     if (!resizable) return;
-    initialPos = event.clientY;
-    initialSize = resizable.clientHeight;
+    mouseDown = true;
+    initialPos = event.clientX;
+    initialSize = resizable.clientWidth;
   };
 
   const resize = (event: any) => {
     const resizable = document.getElementById("Resizable");
     const canvas = document.getElementById("canvas");
 
-    if (!resizable || !canvas || !initialSize || !initialPos || !event.clientY)
+    if (
+      !mouseDown ||
+      !resizable ||
+      !canvas ||
+      !initialSize ||
+      !initialPos ||
+      !event.clientY
+    )
       return;
-    resizable.style.height = `${initialSize + (event.clientY - initialPos)}px`;
-    canvas.style.height = `${window.innerHeight - resizable.offsetHeight}px`;
-    canvas.parentElement!.style.height = `${
-      window.innerHeight - resizable.offsetHeight
+
+    const resizableNewSize = initialSize + (event.clientX - initialPos);
+    resizable.style.width = `${resizableNewSize}px`;
+    canvas.style.width = `${window.innerWidth - resizableNewSize}px`;
+    canvas.parentElement!.style.width = `${
+      window.innerWidth - resizableNewSize
     }px`;
+
+    window.dispatchEvent(new Event("resize"));
   };
 
   const calucluateCanvasSize = (event: any) => {
     const resizable = document.getElementById("Resizable");
     if (!resizable) return;
-    initialPos = event.clientY;
-    initialSize = resizable.offsetHeight;
-    setUiSettings({ canvasSize: window.innerHeight - resizable.offsetHeight });
+    mouseDown = false;
+    initialPos = event.clientX;
+    initialSize = resizable.offsetWidth;
+    setUiSettings({ canvasWidth: window.innerWidth - resizable.offsetWidth });
   };
+  useEffect(() => {
+    window.onmousemove = (event) => mouseDown && resize(event);
+    window.onmouseup = (event) => mouseDown && calucluateCanvasSize(event);
+    window.onmouseleave = (event) => mouseDown && calucluateCanvasSize(event);
+  });
 
   return (
-    <div id="Resizable" className="relative flex flex-col h-1/2">
+    <div id="Resizable" className="relative flex flex-col h-full w-full">
       <div
         onClick={() => {
           Router.query.step = "prerequisites";
@@ -52,13 +71,10 @@ const Resizable: React.FC<InputProps> = ({ children }) => {
       >
         go to Prerequisites
       </div>
-      <div className="flex w-full h-full p-5 overflow-y-auto">{children}</div>
+      <div className="flex w-full h-full overflow-y-auto">{children}</div>
       <div
-        className="absolute bottom-0 flex w-full h-[20px] cursor-row-resize bg-blue-500"
-        draggable="true"
-        onDragStart={(event) => initial(event)}
-        onDrag={(event) => resize(event)}
-        onDragEnd={(event) => calucluateCanvasSize(event)}
+        className="absolute right-0 z-20 flex h-full w-[20px] cursor-col-resize bg-blue-500"
+        onMouseDown={(event) => initial(event)}
       ></div>
     </div>
   );

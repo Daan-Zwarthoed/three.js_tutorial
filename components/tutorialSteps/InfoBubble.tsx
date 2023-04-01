@@ -207,7 +207,7 @@ export const infoBubbleSceneFunction = (userScript: string) => {
 
 const InfoBubble: React.FC = () => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full">
       <h2>What do you need before starting this three.js adventure?</h2>
       <CodeBlock
         showBefore={showBefore}
