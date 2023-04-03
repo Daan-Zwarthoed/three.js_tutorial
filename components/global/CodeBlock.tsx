@@ -7,11 +7,11 @@ import dynamic from "next/dynamic";
 // import ace from "ace-builds";
 const CodeEditor = dynamic(() => import("./CodeEditor"), { ssr: false });
 type Props = {
-  pageFunction?: Function;
   showBefore?: any;
   inputValue?: string;
   showAfter?: any;
   inputHeight?: number;
+  noInput?: boolean;
   children?: any;
 };
 const CodeBlock: React.FC<Props> = ({
@@ -19,12 +19,14 @@ const CodeBlock: React.FC<Props> = ({
   showAfter,
   inputValue,
   inputHeight,
+  noInput,
 }) => {
   const { setUserScript } = useContext(AppContext);
   const beforeHeight = showBefore.split(/\r\n|\r|\n/).length;
   if (!inputHeight && !inputValue)
-    return <>Input value or height needs to be defined</>;
-
+    return (
+      <>Input value or height needs to be defined or noInput needs to be true</>
+    );
   inputHeight = inputHeight || inputValue!.split(/\r\n|\r|\n/).length;
 
   return (
@@ -35,7 +37,7 @@ const CodeBlock: React.FC<Props> = ({
       >
         {showBefore +
           (inputValue
-            ? inputValue
+            ? "\n" + inputValue + "\n"
             : [...Array(inputHeight + 1)].map(() => "\n").join("")) +
           showAfter}
       </CodeEditor>
@@ -45,9 +47,3 @@ const CodeBlock: React.FC<Props> = ({
 };
 
 export default CodeBlock;
-
-// style={{
-//   width: `${inputHeight ? 50 : 5}ch`,
-//   minWidth: `${inputHeight ? 50 : 5}ch`,
-// }}
-// {(hintBefore || "") + "EDITAREA" + (hintAfter || "")}

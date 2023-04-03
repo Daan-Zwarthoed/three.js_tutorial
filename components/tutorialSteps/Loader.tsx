@@ -3,19 +3,66 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import CodeBlock from "../global/CodeBlock";
+import userFunction from "../../helpers/userFunction";
 
 const showBefore = `const canvas = document.getElementById("canvas");
-const renderer = new THREE.WebGLRenderer({ canvas });
-renderer.setSize(window.innerWidth, window.innerHeight);
-`;
+const loader = new GLTFLoader();
+let mixer: THREE.AnimationMixer | null = null;
+let clock = new THREE.Clock();
+if (!canvas) return;
 
-const showAfter = `
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(
+  75,
+  canvas.clientWidth / canvas.clientHeight,
+  0.1,
+  2000
+);
+camera.position.z = 10;
+
+const renderer = new THREE.WebGLRenderer({ canvas });
+renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+renderer.setClearColor(0x01e3d59, 1);
+
+const light1 = new THREE.DirectionalLight(0xffff99, 2);
+light1.position.x = 5;
+light1.position.z = 5;
+
+scene.add(light1);
+const light2 = new THREE.HemisphereLight(0xffff99, 0xb97a20, 0.5);
+scene.add(light2);
+
+new OrbitControls(camera, renderer.domElement);
+
+loader.load(`;
+
+const showAfter = ` // called when the resource is loaded
+  async function (gltf) {
+    console.log("loaded");
+    scene.add(gltf.scene);
+
+    mixer = new THREE.AnimationMixer(gltf.scene);
+
+    gltf.animations.forEach((clip) => {
+      if (mixer) mixer.clipAction(clip).play();
+    });
+  },
+  // called while loading is progressing
+  function (xhr) {
+    if (xhr.total) console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  // called when loading has errors
+  function (error) {
+    console.log(error);
+  }
+);
 
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
+  const delta = clock.getDelta();
+  if (mixer) mixer.update(delta);
 }
 animate();`;
 
@@ -38,6 +85,7 @@ export const loaderSceneFunction = (userScript: string) => {
 
   const renderer = new THREE.WebGLRenderer({ canvas });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+  renderer.setClearColor(0x01e3d59, 1);
 
   const light1 = new THREE.DirectionalLight(0xffff99, 2);
   light1.position.x = 5;
@@ -52,67 +100,63 @@ export const loaderSceneFunction = (userScript: string) => {
   window.addEventListener("resize", function () {
     renderer.setSize(
       canvas.parentElement!.clientWidth,
-      canvas.clientHeight,
+      canvas.parentElement!.clientHeight,
       true
     );
     camera.aspect = canvas.clientWidth / canvas.clientHeight;
     camera.updateProjectionMatrix();
   });
 
-  loader.load(
-    // resource URL
-    // "https://raw.githubusercontent.com/Websitebystudents/pim-pom/main/model/pim_pom_clubhuis_8.gltf"
-    // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/AnimatedCube/glTF/AnimatedCube.gltf",
-    // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf",
-    // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Sponza/glTF/Sponza.gltf",
-    "scenes/mercedes.glb",
-    // called when the resource is loaded
-    async function (gltf) {
-      console.log("loaded");
-      scene.add(gltf.scene);
+  if (userScript)
+    loader.load(
+      // resource URL
+      // "https://raw.githubusercontent.com/Websitebystudents/pim-pom/main/model/pim_pom_clubhuis_8.gltf"
+      // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/AnimatedCube/glTF/AnimatedCube.gltf",
+      // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf",
+      // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Sponza/glTF/Sponza.gltf",
+      userScript.replace(/[""]/g, ""),
+      // called when the resource is loaded
+      async function (gltf) {
+        console.log("loaded");
+        scene.add(gltf.scene);
 
-      mixer = new THREE.AnimationMixer(gltf.scene);
-      gltf.animations.forEach((clip) => {
-        if (mixer) mixer.clipAction(clip).play();
-      });
+        mixer = new THREE.AnimationMixer(gltf.scene);
+        gltf.animations.forEach((clip) => {
+          if (mixer) mixer.clipAction(clip).play();
+        });
 
-      gltf.animations; // Array<THREE.AnimationClip>
-      gltf.cameras; // Array<THREE.Camera>
-      gltf.asset; // Object
-    },
-    // called while loading is progressing
-    function (xhr) {
-      if (xhr.total) console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-    },
-    // called when loading has errors
-    function (error) {
-      console.log(error);
-    }
-  );
+        gltf.animations; // Array<THREE.AnimationClip>
+        gltf.cameras; // Array<THREE.Camera>
+        gltf.asset; // Object
+      },
+      // called while loading is progressing
+      function (xhr) {
+        if (xhr.total) console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+      },
+      // called when loading has errors
+      function (error) {
+        console.log(error);
+      }
+    );
 
-  addEventListener("resize", (event) => {
-    if (canvas)
-      renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
-    camera.aspect = canvas.clientWidth / canvas.clientHeight;
-    camera.updateProjectionMatrix();
-  });
   function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
     const delta = clock.getDelta();
     if (mixer) mixer.update(delta);
   }
-  if (userScript === null) animate();
+  animate();
 };
 
 const Loader: React.FC = () => {
   return (
     <div className="flex flex-col w-full">
-      <h2>What do you need before starting this three.js adventure?</h2>
+      <p>Fill in this in the green box:</p>
+      <pre className="select-all">{`"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/AnimatedCube/glTF/AnimatedCube.gltf"`}</pre>
       <CodeBlock
         showBefore={showBefore}
         showAfter={showAfter}
-        inputHeight={5}
+        inputHeight={1}
       ></CodeBlock>
     </div>
   );

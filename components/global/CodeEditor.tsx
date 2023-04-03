@@ -11,8 +11,8 @@ import "ace-builds/src-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/theme-github";
 type Props = {
   children: string;
-  beforeHeight: number;
-  inputHeight: number;
+  beforeHeight?: number;
+  inputHeight?: number;
 };
 
 const CodeBlock: React.FC<Props> = ({
@@ -24,9 +24,11 @@ const CodeBlock: React.FC<Props> = ({
   let timeout: NodeJS.Timeout | null = null;
 
   const handleLoad = (ace: ace.Ace.Editor) => {
+    if (!inputHeight || !beforeHeight) return;
     const lengthOnLoad = ace.session.doc.getAllLines().length;
+
     ace.session.addMarker(
-      new Range(beforeHeight!, 0, inputHeight! - 1, 5),
+      new Range(beforeHeight!, 0, inputHeight! - 1, 1),
       "editArea",
       "fullLine"
     );
@@ -74,7 +76,6 @@ const CodeBlock: React.FC<Props> = ({
           event.args === "\n")
       )
         (event as any).preventDefault();
-      console.log(event.args);
 
       // } else if (typeof event.args === "string" && event.args === "\n") {
       //   const linesReverse = ace.session
@@ -113,6 +114,7 @@ const CodeBlock: React.FC<Props> = ({
         defaultValue={children}
         editorProps={{ $blockScrolling: true }}
         setOptions={{
+          enableBasicAutocompletion: true,
           enableLiveAutocompletion: true,
           showPrintMargin: false,
         }}

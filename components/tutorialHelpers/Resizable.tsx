@@ -4,6 +4,7 @@ import * as THREE from "three";
 import Router from "next/router";
 
 import AppContext from "../../contexts/AppContextProvider";
+import Navigation from "./Navigation";
 type InputProps = {
   children?: any;
 };
@@ -62,15 +63,11 @@ const Resizable: React.FC<InputProps> = ({ children }) => {
   });
 
   return (
-    <div id="Resizable" className="relative flex flex-col h-full w-full">
-      <div
-        onClick={() => {
-          Router.query.step = "prerequisites";
-          Router.push(Router);
-        }}
-      >
-        go to Prerequisites
-      </div>
+    <div
+      id="Resizable"
+      className="relative flex flex-col h-full w-full pr-[20px]"
+    >
+      <Navigation></Navigation>
       <div className="flex w-full h-full overflow-y-auto">{children}</div>
       <div
         className="absolute right-0 z-20 flex h-full w-[20px] cursor-col-resize bg-blue-500"

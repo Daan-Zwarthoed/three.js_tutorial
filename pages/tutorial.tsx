@@ -31,10 +31,15 @@ type StepList = Array<{
   element: any;
   pageFunction?: any;
 }>;
-const stepList: StepList = [
+export const stepList: StepList = [
   {
     id: "prerequisites",
     element: <Prerequisites></Prerequisites>,
+  },
+  {
+    id: "renderer",
+    element: <Renderer></Renderer>,
+    pageFunction: rendererSceneFunction,
   },
   {
     id: "box",
@@ -51,7 +56,6 @@ const stepList: StepList = [
     element: <Spin></Spin>,
     pageFunction: spinSceneFunction,
   },
-
   {
     id: "raycaster",
     element: <Raycaster></Raycaster>,
@@ -71,11 +75,6 @@ const stepList: StepList = [
     id: "infoBubble",
     element: <InfoBubble></InfoBubble>,
     pageFunction: infoBubbleSceneFunction,
-  },
-  {
-    id: "renderer",
-    element: <Renderer></Renderer>,
-    pageFunction: rendererSceneFunction,
   },
 ];
 const Tutorial = () => {

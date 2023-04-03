@@ -21,8 +21,10 @@ const showAfter = `
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
+  if (cube) {
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
+  }
 }
 animate();`;
 let id: number;
@@ -45,17 +47,13 @@ export const boxSceneFunction = (userScript: string) => {
   window.addEventListener("resize", function () {
     renderer.setSize(
       canvas.parentElement!.clientWidth,
-      canvas.clientHeight,
+      canvas.parentElement!.clientHeight,
       true
     );
     camera.aspect = canvas.clientWidth / canvas.clientHeight;
     camera.updateProjectionMatrix();
   });
-  // const geometry = new THREE.BoxGeometry(10, 10, 10);
-  // const material = new THREE.MeshBasicMaterial({ color: "#d63e4d" });
-  // const cube = new THREE.Mesh(geometry, material);
-  // cube.position.z = -30;
-  // scene.add(cube);
+
   const cube = userFunction(
     userScript,
     ["THREE", "scene"],
@@ -80,7 +78,15 @@ export const boxSceneFunction = (userScript: string) => {
 const Box: React.FC = () => {
   return (
     <div className="flex flex-col w-full">
-      <h2>What do you need before starting this three.js adventure?</h2>
+      <h2>Add your own box to the scene</h2>
+      <p>Fill in this in the green box:</p>
+      <pre className="select-all">
+        {`const geometry = new THREE.BoxGeometry(10, 10, 10);
+const material = new THREE.MeshBasicMaterial({ color: "#d63e4d" });
+const cube = new THREE.Mesh(geometry, material);
+cube.position.z = -30;
+scene.add(cube);`}
+      </pre>
       <CodeBlock
         showBefore={showBefore}
         showAfter={showAfter}

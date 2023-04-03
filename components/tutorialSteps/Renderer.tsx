@@ -7,9 +7,14 @@ const showBefore = `const canvas = document.getElementById("canvas");
 const renderer = new THREE.WebGLRenderer({ canvas });
 `;
 
-const inputValue = "renderer.setSize();";
+const inputValue = `renderer.setSize();`;
 
 const showAfter = `
+const geometry = new THREE.BoxGeometry(10, 10, 10);
+const material = new THREE.MeshBasicMaterial({ color: "#d63e4d" });
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
@@ -62,7 +67,8 @@ export const rendererSceneFunction = (userScript: string) => {
 const Renderer: React.FC = () => {
   return (
     <div className="flex flex-col w-full">
-      <h2>What do you need before starting this three.js adventure?</h2>
+      <p>Fill in this in the green box:</p>
+      <pre className="select-all">{`renderer.setSize(canvas.clientWidth, canvas.clientHeight);`}</pre>
       <CodeBlock
         showBefore={showBefore}
         showAfter={showAfter}
