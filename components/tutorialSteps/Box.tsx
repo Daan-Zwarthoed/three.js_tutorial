@@ -58,9 +58,9 @@ export const boxSceneFunction = (userScript: string) => {
   // scene.add(cube);
   const cube = userFunction(
     userScript,
-    "cube",
     ["THREE", "scene"],
-    [THREE, scene]
+    [THREE, scene],
+    "cube"
   );
 
   if (id) cancelAnimationFrame(id);

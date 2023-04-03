@@ -9,9 +9,9 @@ const returnVarFunction = (returnVar?: string) => {
 
 const userFunction = (
   userScript: string,
-  returnVar?: string,
   paramNames?: string[],
-  params?: any[]
+  params?: any[],
+  returnVar?: string
 ) => {
   const script = userScript + returnVarFunction(returnVar);
   try {
