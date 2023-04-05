@@ -157,7 +157,8 @@ const pointer = new THREE.Vector2();
 function onPointerMove(event: { clientX: number; clientY: number }) {
   if (!canvas) return;
   const restHeight = window.innerHeight - canvas.clientHeight;
-  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+  const restWidth = window.innerWidth - canvas.clientWidth;
+  pointer.x = ((event.clientX - restWidth) / canvas.clientWidth) * 2 - 1;
   pointer.y = -((event.clientY - restHeight) / canvas.clientHeight) * 2 + 1;
 
   if (controls.enabled) {
@@ -344,7 +345,8 @@ export const infoBubbleSceneFunction = (userScript: string) => {
   function onPointerMove(event: { clientX: number; clientY: number }) {
     if (!canvas) return;
     const restHeight = window.innerHeight - canvas.clientHeight;
-    pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+    const restWidth = window.innerWidth - canvas.clientWidth;
+    pointer.x = ((event.clientX - restWidth) / canvas.clientWidth) * 2 - 1;
     pointer.y = -((event.clientY - restHeight) / canvas.clientHeight) * 2 + 1;
 
     if (controls.enabled) {
