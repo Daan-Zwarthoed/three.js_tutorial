@@ -154,7 +154,7 @@ const Loader: React.FC = () => {
       <p>Fill in any of these in the green box:</p>
       <pre className="select-all">{`"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/AnimatedCube/glTF/AnimatedCube.gltf"`}</pre>
       <pre className="select-all">{`"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf"`}</pre>
-      <pre className="select-all">{`""https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/ABeautifulGame/glTF/ABeautifulGame.gltf""`}</pre>
+      <pre className="select-all">{`"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/ABeautifulGame/glTF/ABeautifulGame.gltf"`}</pre>
       <CodeBlock
         showBefore={showBefore}
         showAfter={showAfter}
