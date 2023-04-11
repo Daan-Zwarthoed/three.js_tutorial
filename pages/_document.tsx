@@ -14,6 +14,10 @@ class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Bangers&family=Quicksand&display=swap"
             rel="stylesheet"
           />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&display=swap"
+            rel="stylesheet"
+          ></link>
           <meta
             name="google-site-verification"
             content="LSTs8QeH8NN_53baxbUawo7HnGOOnKY0vcYj8GHZLDA"
@@ -24,7 +28,7 @@ class MyDocument extends Document {
             content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
           ></meta>
         </Head>
-        <body className="overflow-x-hidden w-screen min-h-screen">
+        <body className="overflow-x-hidden w-screen min-h-screen bg-[#021622]">
           <Main />
           <NextScript />
         </body>

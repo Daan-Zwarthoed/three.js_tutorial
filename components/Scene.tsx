@@ -12,7 +12,7 @@ const Scene: React.FC<InputProps> = ({ threeScript }) => {
   const { uiSettings, userScript } = useContext(AppContext);
   useEffect(() => {
     threeScript(userScript);
-  }, [userScript]);
+  });
 
   return (
     <div

@@ -26,6 +26,7 @@ import InfoBubble, {
 import CameraAnimationOld, {
   cameraAnimationOldSceneFunction,
 } from "../components/tutorialSteps/CameraAnimationOld";
+import Light, { lightSceneFunction } from "../components/tutorialSteps/Light";
 type StepList = Array<{
   id: string;
   element: any;
@@ -47,14 +48,14 @@ export const stepList: StepList = [
     pageFunction: boxSceneFunction,
   },
   {
+    id: "light",
+    element: <Light></Light>,
+    pageFunction: lightSceneFunction,
+  },
+  {
     id: "loader",
     element: <Loader></Loader>,
     pageFunction: loaderSceneFunction,
-  },
-  {
-    id: "spin",
-    element: <Spin></Spin>,
-    pageFunction: spinSceneFunction,
   },
   {
     id: "raycaster",
@@ -98,7 +99,16 @@ const Tutorial = () => {
       <div className="h-screen max-h-screen flex flex-row">
         <Resizable>
           {stepList[stepIndex] && stepList[stepIndex].element}
-          {!stepList[stepIndex] && "Step does not exist"}
+          {!stepList[stepIndex] && (
+            <div
+              onClick={() => {
+                Router.query.step = "box";
+                Router.push(Router);
+              }}
+            >
+              Go to box
+            </div>
+          )}
         </Resizable>
         {stepList[stepIndex] && stepList[stepIndex].pageFunction && (
           <Scene threeScript={stepList[stepIndex].pageFunction}></Scene>

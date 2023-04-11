@@ -4,21 +4,22 @@ import * as THREE from "three";
 import AppContext from "../../contexts/AppContextProvider";
 import dynamic from "next/dynamic";
 
+// import ace from "ace-builds";
 const CodeEditor = dynamic(() => import("./CodeEditor"), { ssr: false });
 type Props = {
   children?: any;
 };
-const CodeBlockNoInput: React.FC<Props> = ({ children }) => {
+const CodeBlockInline: React.FC<Props> = ({ children }) => {
   return (
     <div
-      className="relative"
+      className="relative my-2"
       style={{
-        height: children && children.split(/\r\n|\r|\n/).length * 25 + "px",
+        height: children && children.split(/\r\n|\r|\n/).length * 20 + "px",
       }}
     >
-      <CodeEditor>{children}</CodeEditor>
+      <CodeEditor inline>{children}</CodeEditor>
     </div>
   );
 };
 
-export default CodeBlockNoInput;
+export default CodeBlockInline;

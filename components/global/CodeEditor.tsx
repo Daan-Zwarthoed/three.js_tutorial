@@ -13,92 +13,77 @@ type Props = {
   children: string;
   beforeHeight?: number;
   inputHeight?: number;
+  inline?: boolean;
 };
 
 const CodeBlock: React.FC<Props> = ({
   children,
   beforeHeight,
   inputHeight,
+  inline,
 }) => {
   const { setUserScript } = useContext(AppContext);
   let timeout: NodeJS.Timeout | null = null;
+  const [editor, setEditor] = useState<ace.Ace.Editor | null>(null);
 
-  const handleLoad = (ace: ace.Ace.Editor) => {
-    if (!inputHeight || !beforeHeight) return;
-    const lengthOnLoad = ace.session.doc.getAllLines().length;
+  let savedLength = 0;
+  const handleChange = () => {
+    if (!editor || !inputHeight || !beforeHeight) return;
 
-    ace.session.addMarker(
+    // const length = editor.session.doc.getAllLines().length;
+    // // Add row back if person deletes row
+    // if (length < savedLength)
+    //   editor.session.insert(
+    //     {
+    //       row: editor.getCursorPosition().row + 1,
+    //       column: 0,
+    //     },
+    //     "\n"
+    //   );
+
+    // // Remove row if person adds one
+    // if (length > savedLength)
+    //   editor.session.removeFullLines(inputHeight, inputHeight);
+    // // Move cursor back
+    // if (beforeHeight && editor.getCursorPosition().row < beforeHeight) {
+    //   editor.moveCursorTo(beforeHeight, 0);
+    //   editor.selection.setAnchor(beforeHeight, 0);
+    // }
+
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      setUserScript(
+        editor &&
+          editor.session.getLines(beforeHeight, inputHeight - 1).join("\n")
+      );
+    }, 500);
+  };
+
+  const setup = () => {
+    if (!editor || !inputHeight || !beforeHeight) return;
+    savedLength = editor.session.doc.getAllLines().length;
+    const prevMarkers = editor.session.getMarkers();
+    if (prevMarkers) {
+      const prevMarkersArr = Object.keys(prevMarkers);
+      prevMarkersArr.forEach((item) => {
+        editor.session.removeMarker(+item);
+      });
+    }
+
+    editor.session.addMarker(
       new Range(beforeHeight!, 0, inputHeight! - 1, 1),
       "editArea",
       "fullLine"
     );
-
-    ace.session.on("change", function () {
-      const length = ace.session.doc.getAllLines().length;
-      // Add row back if person deletes row
-      if (length < lengthOnLoad)
-        ace.session.insert(
-          {
-            row: ace.getCursorPosition().row + 1,
-            column: 0,
-          },
-          "\n"
-        );
-
-      // Remove row if person adds one
-      if (length > lengthOnLoad)
-        ace.session.removeFullLines(inputHeight, inputHeight);
-      // Move cursor back
-      if (beforeHeight && ace.getCursorPosition().row < beforeHeight) {
-        ace.moveCursorTo(beforeHeight, 0);
-        ace.selection.setAnchor(beforeHeight, 0);
-      }
-
-      if (timeout) clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        setUserScript(
-          ace.session.getLines(beforeHeight, inputHeight - 1).join("\n")
-        );
-      }, 500);
-    });
-
     // Make it so you can only edit inside of the edit area
-    ace.commands.on("exec", function (event) {
-      const anchor = (ace.session.selection as any).anchor;
-      const cursor = (ace.session.selection as any).cursor;
-      if (
-        anchor.row < beforeHeight ||
-        cursor.row < beforeHeight ||
-        anchor.row > inputHeight - 1 ||
-        cursor.row > inputHeight - 1 ||
-        (cursor.row === inputHeight - 1 &&
-          typeof event.args === "string" &&
-          event.args === "\n")
-      )
-        (event as any).preventDefault();
+    // editor.commands.on("exec", (event: any) => handleExec(event));
+    // if (editor.session.getValue() !== children) editor.setValue(children, 1);
+  };
+  useEffect(() => setup());
 
-      // } else if (typeof event.args === "string" && event.args === "\n") {
-      //   const linesReverse = ace.session
-      //     .getLines(beforeHeight, inputHeight - 1)
-      //     .reverse();
-      //   console.log(linesReverse);
-
-      //   linesReverse.some((line, index) => {
-      //     if (!line) {
-      //       console.log(index);
-
-      //       console.log(inputHeight - index);
-
-      //       ace.session.removeFullLines(
-      //         inputHeight - index - 1,
-      //         inputHeight - index - 1
-      //       );
-
-      //       return true;
-      //     }
-      //   });
-      // }
-    });
+  const handleLoad = (loadEditor: ace.Ace.Editor) => {
+    if (!inputHeight || !beforeHeight) return;
+    setEditor(loadEditor);
   };
 
   return (
@@ -111,13 +96,19 @@ const CodeBlock: React.FC<Props> = ({
         width={"100%"}
         height={"100%"}
         style={{ position: "absolute", top: "0" }}
-        defaultValue={children}
+        value={children}
         editorProps={{ $blockScrolling: true }}
         setOptions={{
           enableBasicAutocompletion: true,
           enableLiveAutocompletion: true,
           showPrintMargin: false,
+          highlightActiveLine: !inline,
+          highlightSelectedWord: !inline,
+          showGutter: !inline,
+          showLineNumbers: !inline,
+          autoScrollEditorIntoView: true,
         }}
+        onChange={(value, event) => handleChange()}
         onLoad={(ace) => handleLoad(ace)}
       />
     </div>
@@ -125,3 +116,49 @@ const CodeBlock: React.FC<Props> = ({
 };
 
 export default CodeBlock;
+
+// } else if (typeof event.args === "string" && event.args === "\n") {
+//   const linesReverse = ace.session
+//     .getLines(beforeHeight, inputHeight - 1)
+//     .reverse();
+//   console.log(linesReverse);
+
+//   linesReverse.some((line, index) => {
+//     if (!line) {
+//       console.log(index);
+
+//       console.log(inputHeight - index);
+
+//       ace.session.removeFullLines(
+//         inputHeight - index - 1,
+//         inputHeight - index - 1
+//       );
+
+//       return true;
+//     }
+//   });
+// }
+
+// const handleExec = (event: {
+//   editor?: ace.Ace.Editor;
+//   command?: ace.Ace.Command;
+//   args: any;
+//   preventDefault: Function;
+// }) => {
+//   console.log(inputHeight);
+//   if (!editor || !inputHeight || !beforeHeight) return;
+
+//   const anchor = (editor.session.selection as any).anchor;
+//   const cursor = (editor.session.selection as any).cursor;
+
+//   if (
+//     anchor.row < beforeHeight ||
+//     cursor.row < beforeHeight ||
+//     anchor.row > inputHeight - 1 ||
+//     cursor.row > inputHeight - 1 ||
+//     (cursor.row === inputHeight - 1 &&
+//       typeof event.args === "string" &&
+//       event.args === "\n")
+//   )
+//     return event.preventDefault();
+// };

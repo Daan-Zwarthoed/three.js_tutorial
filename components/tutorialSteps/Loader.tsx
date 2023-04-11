@@ -87,14 +87,12 @@ export const loaderSceneFunction = (userScript: string) => {
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
   renderer.setClearColor(0x01e3d59, 1);
 
-  const light1 = new THREE.DirectionalLight(0xffff99, 2);
-  light1.position.x = 5;
-  light1.position.z = 5;
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+  scene.add(ambientLight);
 
-  scene.add(light1);
-  const light2 = new THREE.HemisphereLight(0xffff99, 0xb97a20, 0.5);
-  scene.add(light2);
-
+  const directionalLight = new THREE.DirectionalLight(0xffff99, 1);
+  directionalLight.position.set(30, 17, 26);
+  scene.add(directionalLight);
   new OrbitControls(camera, renderer.domElement);
 
   window.addEventListener("resize", function () {

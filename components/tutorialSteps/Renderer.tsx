@@ -2,6 +2,10 @@ import React from "react";
 import * as THREE from "three";
 import userFunction from "../../helpers/userFunction";
 import CodeBlock from "../global/CodeBlock";
+import CodeBlockNoInput from "../global/CodeBlockNoInput";
+import CodeBlockInline from "../global/CodeBlockInline";
+import Image from "next/image";
+import Router from "next/router";
 
 const showBefore = `const canvas = document.getElementById("canvas");
 const renderer = new THREE.WebGLRenderer({ canvas });
@@ -37,6 +41,7 @@ export const rendererSceneFunction = (userScript: string) => {
 
   const renderer = new THREE.WebGLRenderer({ canvas });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+  renderer.setClearColor(0x01e3d59, 1);
 
   window.addEventListener("resize", function () {
     renderer.setSize(
@@ -50,30 +55,94 @@ export const rendererSceneFunction = (userScript: string) => {
 
   userFunction(userScript, ["renderer"], [renderer]);
 
-  const geometry = new THREE.BoxGeometry(10, 10, 10);
-  const material = new THREE.MeshBasicMaterial({ color: "#d63e4d" });
-  const cube = new THREE.Mesh(geometry, material);
-  scene.add(cube);
-
   function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
   }
   if (userScript === null) animate();
 };
 
 const Renderer: React.FC = () => {
   return (
-    <div className="flex flex-col w-full">
-      <p>Fill in this in the green box:</p>
-      <pre className="select-all">{`renderer.setSize(canvas.clientWidth, canvas.clientHeight);`}</pre>
-      <CodeBlock
+    <div className="flex flex-col w-full p-5">
+      <h4>Basic setup</h4>
+      <p>First thing is creating a scene and adding a few things to it.</p>
+      <p>
+        We starting by adding a canvas to our html with the ID of canvas. After
+        this we can work on our javascript:
+      </p>
+      <CodeBlockInline>
+        {`const canvas = document.getElementById("canvas"); 
+const scene = new THREE.Scene(); 
+const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 2000 );
+
+const renderer = new THREE.WebGLRenderer({canvas});
+renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+renderer.setClearColor(0x01e3d59, 1);`}
+      </CodeBlockInline>
+      <p>
+        Let's take a moment to explain what's going on here. We have now set up
+        the scene, our camera and the renderer.
+      </p>
+      <h4>Camera's</h4>
+      <p>
+        There are different types of cameras in Three.js for most cases you will
+        use the Perspective camera.{" "}
+      </p>
+      <p>Its first value is the FOV or field of view in degrees.</p>
+      <p>
+        The second value is the aspect ratio. 99,9% precent of the time you will
+        use the size of the canvas otherwise the image will look squished or
+        stretched.
+      </p>
+      <p>
+        The other two values are the near and far plane. Anything outside of
+        those planes will not be rendered.
+      </p>
+      <div className="relative my-2 w-[300px] h-[200px]">
+        <Image
+          src="/images/perspectiveCameraExplenation.png"
+          fill
+          alt="back button"
+        ></Image>
+      </div>
+      <h4>Renderer</h4>
+      <p>
+        Next up is the renderer. When setting the renderer size you will also
+        almost always want to set it to the width and height of your canvas. We
+        also set the background color to blue.
+      </p>
+      <h4>Animation loop</h4>
+      <p>
+        Now for actually rendering our scene we use an animation or render loop
+      </p>
+      <CodeBlockInline>
+        {`function animate() {
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+}
+animate();`}
+      </CodeBlockInline>
+      <p>
+        This code causes an animation loop that draws the scene everytime the
+        screen is refreshed. (typically 60 times per second)
+      </p>
+      <p>
+        Okay cool but now im just rendering a blue screen. Lets change that!
+      </p>
+      <div
+        onClick={() => {
+          Router.query.step = "box";
+          Router.push(Router);
+        }}
+      >
+        Go to box
+      </div>
+      {/* <CodeBlock
         showBefore={showBefore}
         showAfter={showAfter}
         inputValue={inputValue}
-      ></CodeBlock>
+      ></CodeBlock> */}
     </div>
   );
 };

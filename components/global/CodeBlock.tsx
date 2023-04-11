@@ -27,6 +27,7 @@ const CodeBlock: React.FC<Props> = ({
     return (
       <>Input value or height needs to be defined or noInput needs to be true</>
     );
+
   inputHeight = inputHeight || inputValue!.split(/\r\n|\r|\n/).length;
 
   return (
