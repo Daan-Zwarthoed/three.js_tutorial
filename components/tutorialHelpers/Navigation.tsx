@@ -10,6 +10,7 @@ type InputProps = {
 };
 
 const Navigation: React.FC<InputProps> = ({ children }) => {
+  const { userScript, setUserScript } = useContext(AppContext);
   const [stepIndex, setStepIndex] = useState<number>(-1);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -26,31 +27,27 @@ const Navigation: React.FC<InputProps> = ({ children }) => {
   const nextStepId =
     (stepList[stepIndex + 1] && stepList[stepIndex + 1].id) || null;
 
+  const changeStep = (next: boolean) => {
+    Router.push({
+      pathname: "/tutorial",
+      query: { ...Router.query, step: next ? nextStepId : previousStepId },
+    });
+  };
+
   return (
-    <div id="Navigation" className="flex flex-row justify-between px-2">
+    <div
+      id="Navigation"
+      className="absolute bottom-0 w-full z-40 p-2 bg-primary flex flex-row justify-between px-2"
+    >
       {stepIndex !== -1 && (
         <>
           {previousStepId && (
-            <div
-              onClick={() => {
-                Router.query.step = previousStepId;
-                Router.push(Router);
-              }}
-            >
-              Go to {previousStepId}
-            </div>
+            <div onClick={() => changeStep(false)}>Go to {previousStepId}</div>
           )}
           {!previousStepId && <div></div>}
           <div>{stepList[stepIndex].id}</div>
           {nextStepId && (
-            <div
-              onClick={() => {
-                Router.query.step = nextStepId;
-                Router.push(Router);
-              }}
-            >
-              Go to {nextStepId}
-            </div>
+            <div onClick={() => changeStep(true)}>Go to {nextStepId}</div>
           )}
           {!nextStepId && <div></div>}
         </>

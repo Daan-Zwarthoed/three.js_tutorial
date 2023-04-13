@@ -1,9 +1,12 @@
 import React from "react";
 import * as THREE from "three";
 
-import CodeBlockNoInput from "../global/CodeBlockNoInput";
+import CodeBlockNoInput from "../code/CodeBlockNoInput";
+import CodeText from "../tutorialHelpers/CodeText";
 
-const code = `const canvas = document.getElementById("canvas");
+const code = `import * as THREE from "three";
+
+const canvas = document.getElementById("canvas");
 
 const scene = new THREE.Scene();
 
@@ -151,14 +154,16 @@ export const raycasterSceneFunction = (userScript: string) => {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
   }
-  if (userScript === null) animate();
+  animate();
 };
 const Raycaster: React.FC = () => {
   return (
-    <div className="flex flex-col w-full">
-      <h2>Code block for raycasters</h2>
+    <>
+      <CodeText>
+        <h2>Code block for raycasters</h2>
+      </CodeText>
       <CodeBlockNoInput>{code}</CodeBlockNoInput>
-    </div>
+    </>
   );
 };
 

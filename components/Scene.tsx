@@ -3,27 +3,21 @@ import React, { useContext, useEffect, useState } from "react";
 import * as THREE from "three";
 import AppContext from "../contexts/AppContextProvider";
 import Image from "next/image";
+import ResizableCanvas from "./global/Resizable";
+import Resizable from "./global/Resizable";
+import Router from "next/router";
 type InputProps = {
   threeScript: Function;
-  cameraType?: THREE.PerspectiveCamera;
-  animation?: any;
 };
 const Scene: React.FC<InputProps> = ({ threeScript }) => {
-  const { uiSettings, userScript } = useContext(AppContext);
+  const { userScript } = useContext(AppContext);
+
   useEffect(() => {
     threeScript(userScript);
-  });
+  }, [userScript]);
 
   return (
-    <div
-      className="relative max-h-full overflow-hidden bg-blue-500"
-      style={{
-        width:
-          uiSettings && uiSettings.canvasWidth
-            ? uiSettings.canvasWidth + "px"
-            : "50%",
-      }}
-    >
+    <Resizable resizeTarget="Canvas">
       <div
         style={{ opacity: 0, display: "none" }}
         className="absolute z-20 text-center right-0 bg-white/70 pr-5"
@@ -35,16 +29,9 @@ const Scene: React.FC<InputProps> = ({ threeScript }) => {
       </div>
       <canvas
         id="canvas"
-        style={{
-          width:
-            uiSettings && uiSettings.canvasWidth
-              ? uiSettings.canvasWidth + "px"
-              : "100%",
-          height: "100%",
-        }}
-        className="relative z-10 object-contain mx-auto max-w-full max-h-full"
+        className="relative z-10 object-contain mx-auto w-full h-full"
       ></canvas>
-    </div>
+    </Resizable>
   );
 };
 

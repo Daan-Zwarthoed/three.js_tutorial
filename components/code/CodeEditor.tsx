@@ -87,31 +87,30 @@ const CodeBlock: React.FC<Props> = ({
   };
 
   return (
-    <div>
-      <AceEditor
-        mode="javascript"
-        theme="gruvbox"
-        name="UNIQUE_ID_OF_DIV"
-        fontSize={15}
-        width={"100%"}
-        height={"100%"}
-        style={{ position: "absolute", top: "0" }}
-        value={children}
-        editorProps={{ $blockScrolling: true }}
-        setOptions={{
-          enableBasicAutocompletion: true,
-          enableLiveAutocompletion: true,
-          showPrintMargin: false,
-          highlightActiveLine: !inline,
-          highlightSelectedWord: !inline,
-          showGutter: !inline,
-          showLineNumbers: !inline,
-          autoScrollEditorIntoView: true,
-        }}
-        onChange={(value, event) => handleChange()}
-        onLoad={(ace) => handleLoad(ace)}
-      />
-    </div>
+    <AceEditor
+      mode="javascript"
+      theme="gruvbox"
+      name="UNIQUE_ID_OF_DIV"
+      fontSize={15}
+      width={"100%"}
+      height={"100%"}
+      style={{ position: "absolute", top: "0" }}
+      value={children}
+      editorProps={{ $blockScrolling: true }}
+      setOptions={{
+        useWorker: false,
+        enableBasicAutocompletion: true,
+        enableLiveAutocompletion: true,
+        showPrintMargin: false,
+        highlightActiveLine: !inline,
+        highlightSelectedWord: !inline,
+        showGutter: !inline,
+        showLineNumbers: !inline,
+        autoScrollEditorIntoView: true,
+      }}
+      onChange={(value, event) => handleChange()}
+      onLoad={(ace) => handleLoad(ace)}
+    />
   );
 };
 

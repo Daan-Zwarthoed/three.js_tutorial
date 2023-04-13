@@ -1,8 +1,9 @@
 import React from "react";
 import * as THREE from "three";
 
-import CodeBlock from "../global/CodeBlock";
-import CodeBlockNoInput from "../global/CodeBlockNoInput";
+import CodeBlock from "../code/CodeBlock";
+import CodeBlockNoInput from "../code/CodeBlockNoInput";
+import CodeText from "../tutorialHelpers/CodeText";
 
 const code = `const canvas = document.getElementById("canvas");
 const raycaster = new THREE.Raycaster();
@@ -229,10 +230,12 @@ export const cameraAnimationOldSceneFunction = (userScript: string) => {
 };
 const CameraAnimationOld: React.FC = () => {
   return (
-    <div className="flex flex-col w-full">
-      <h2>Code block for bad camera animation</h2>
+    <>
+      <CodeText>
+        <h2>Code block for bad camera animation</h2>
+      </CodeText>
       <CodeBlockNoInput>{code}</CodeBlockNoInput>
-    </div>
+    </>
   );
 };
 

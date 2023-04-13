@@ -2,25 +2,28 @@ import React, { useContext, useEffect, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import CodeBlock from "../global/CodeBlock";
+import CodeBlock from "../code/CodeBlock";
 import userFunction from "../../helpers/userFunction";
-import CodeBlockInline from "../global/CodeBlockInline";
+import CodeBlockInline from "../code/CodeBlockInline";
 import Image from "next/image";
 import AppContext from "../../contexts/AppContextProvider";
+import CodeText from "../tutorialHelpers/CodeText";
 const LightModeTypes = [
-  "ambient",
-  "spot",
-  "Spot helper",
-  "point",
-  "Point helper",
-  "directional",
+  "Ambient",
+  "Directional",
   "Directional helper",
-  "hemisphere",
+  "Spot",
+  "Spot helper",
+  "Point",
+  "Point helper",
+  "Hemisphere",
   "Hemisphere helper",
 ] as const;
 type Lightmode = typeof LightModeTypes[number];
 
-const showBefore = `const canvas = document.getElementById("canvas");
+const showBefore = `import * as THREE from "three";
+
+const canvas = document.getElementById("canvas");
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(
@@ -35,12 +38,20 @@ const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 renderer.setClearColor(0x01e3d59, 1);
 
-const geometry = new THREE.BoxGeometry(10, 10, 10);
-const material = new THREE.MeshPhysicalMaterial({
+const material = new THREE.MeshPhongMaterial({
   color: "#d63e4d",
 });
-const cube = new THREE.Mesh(geometry, material);
+const cubeGeometry = new THREE.BoxGeometry(10, 10, 10);
+const cube = new THREE.Mesh(cubeGeometry, material);
+cube.castShadow = true; 
+cube.receiveShadow = true;
 scene.add(cube);
+
+const floorGeometry = new THREE.BoxGeometry(100, 1, 100);
+const floor = new THREE.Mesh(floorGeometry, material);
+floor.position.y = -8;
+floor.receiveShadow = true;
+scene.add(floor);
 
 new OrbitControls(camera, renderer.domElement);
 `;
@@ -52,19 +63,29 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();`;
+
+let savedCameraPosition: THREE.Vector3;
+let id: number;
 export const lightSceneFunction = (userScript: string) => {
   const canvas = document.getElementById("canvas");
   if (!canvas) return;
 
   const scene = new THREE.Scene();
-
   const camera = new THREE.PerspectiveCamera(
     75,
     canvas.clientWidth / canvas.clientHeight,
     0.1,
     2000000
   );
-  camera.position.z = 50;
+  if (savedCameraPosition) {
+    camera.position.set(
+      savedCameraPosition.x,
+      savedCameraPosition.y,
+      savedCameraPosition.z
+    );
+  } else {
+    camera.position.set(-75, 40, 75);
+  }
 
   const renderer = new THREE.WebGLRenderer({ canvas });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
@@ -82,33 +103,38 @@ export const lightSceneFunction = (userScript: string) => {
     camera.updateProjectionMatrix();
   });
 
-  const geometry = new THREE.BoxGeometry(10, 10, 10);
-  const material = new THREE.MeshPhysicalMaterial({
+  const cubeGeometry = new THREE.BoxGeometry(10, 10, 10);
+  const material = new THREE.MeshPhongMaterial({
     color: "#d63e4d",
   });
-  const cube = new THREE.Mesh(geometry, material);
-  cube.castShadow = true; //default is false
+  const cube = new THREE.Mesh(cubeGeometry, material);
+  cube.castShadow = true;
   cube.receiveShadow = true;
   scene.add(cube);
 
-  const geometry2 = new THREE.BoxGeometry(100, 1, 100);
-  const material2 = new THREE.MeshPhongMaterial({
-    color: "#d63e4d",
-  });
-  const cube2 = new THREE.Mesh(geometry2, material2);
-  cube2.position.y = -8;
-  cube2.receiveShadow = true;
-  scene.add(cube2);
+  const floorGeometry = new THREE.BoxGeometry(100, 1, 100);
+  const floor = new THREE.Mesh(floorGeometry, material);
+  floor.position.y = -8;
+  floor.receiveShadow = true;
+  scene.add(floor);
 
   userFunction(userScript, ["THREE", "scene"], [THREE, scene]);
 
   new OrbitControls(camera, renderer.domElement);
 
+  canvas.addEventListener("mouseup", () => {
+    savedCameraPosition = camera.position;
+  });
+
+  if (id) cancelAnimationFrame(id);
+  console.log("lights");
   function animate() {
-    requestAnimationFrame(animate);
+    id = requestAnimationFrame(animate);
     renderer.render(scene, camera);
   }
   animate();
+
+  return id;
 };
 
 const ambientScript = `const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -151,6 +177,7 @@ scene.add( spotLightHelper );
 const pointScript = `
 const pointLight = new THREE.PointLight( 0xff0000, 1, 100 );
 pointLight.position.set( 15, 15, 15 );
+pointLight.castShadow = true
 scene.add( pointLight );
 `;
 const pointHelperScript = `
@@ -161,79 +188,93 @@ scene.add( pointLightHelper );
 
 const Light: React.FC = () => {
   const { userScript, setUserScript } = useContext(AppContext);
-  const [lightMode, setLightMode] = useState<Lightmode[]>(["ambient", "spot"]);
+  const [lightMode, setLightMode] = useState<Lightmode[]>(["Ambient", "Spot"]);
   useEffect(() => {
     let lightScript = "";
-    if (lightMode.includes("ambient")) lightScript += ambientScript;
-    if (lightMode.includes("hemisphere")) lightScript += hemisphereScript;
-    if (lightMode.includes("Hemisphere helper"))
-      lightScript += hemisphereHelperScript;
-    if (lightMode.includes("directional"))
+    if (lightMode.includes("Ambient")) lightScript += ambientScript;
+    if (lightMode.includes("Directional"))
       lightScript += "\n" + directionalScript;
     if (lightMode.includes("Directional helper"))
       lightScript += "\n" + directionalHelperScript;
-    if (lightMode.includes("spot")) lightScript += "\n" + spotScript;
+    if (lightMode.includes("Spot")) lightScript += "\n" + spotScript;
     if (lightMode.includes("Spot helper"))
       lightScript += "\n" + spotHelperScript;
-    if (lightMode.includes("point")) lightScript += "\n" + pointScript;
+    if (lightMode.includes("Point")) lightScript += "\n" + pointScript;
     if (lightMode.includes("Point helper"))
       lightScript += "\n" + pointHelperScript;
+    if (lightMode.includes("Hemisphere")) lightScript += hemisphereScript;
+    if (lightMode.includes("Hemisphere helper"))
+      lightScript += hemisphereHelperScript;
 
     setUserScript(lightScript);
   }, [lightMode]);
 
   return (
-    <div className="flex flex-row">
-      <div className="flex flex-col w-full p-5">
+    <>
+      <CodeText>
         <p>
           Three js offers multiple types of lights. Adding an ambient light and
           a directionail light will be enough for most projects.
         </p>
-        <CodeBlockInline>
-          {`const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-scene.add(ambientLight);`}
-        </CodeBlockInline>
         <p>
-          Ambient lights are the simpelest of the 2. This will add an even light
-          to everything in the scene.
+          Ambient lights are the simpelest of the bunch. This will add an even
+          light to everything in the scene.
         </p>
-        <CodeBlockInline>
-          {`const dirLight = new THREE.DirectionalLight(0xffff99, 1);
-dirLight.position.set(30, 17, 26);
-scene.add(dirLight);`}
-        </CodeBlockInline>
         <p>
           To actually create shadows in your scene you will need a directional
           light. A directional light works just like the sun in the way that it
-          comes from the position that you choose but doesnt flair outwards in a
-          cone.
+          doesnt flair outwards in a cone.
         </p>
-        <div className="relative my-2 w-full h-[300px]">
-          <Image src="/images/sixLights.jpg" fill alt="back button"></Image>
-        </div>
-        <div className="w-full flex flex-row flex-wrap">
+        <p>
+          Spotlight like the name suggests works like a spotlight or flaslight
+          in the way that it flairs out like a cone from the point you choose
+        </p>
+        <p>Point light is the same but goes in all directions</p>
+        <p>
+          A hemisphere light goes from top to bottom from one color to another
+        </p>
+        <p>
+          You can try out the different lights and there helpers witht the
+          button below:
+        </p>
+        <div className="grid grid-cols-2 gap-2 w-full flex flex-row flex-wrap my-5">
           {LightModeTypes.map((type) => (
             <div
-              className={`w-1/4 text-center py-4 m-4 border-solid border-2  ${
-                lightMode.includes(type) ? "border-accent" : "border-primary"
+              key={type}
+              className={`w-full text-center py-4 border-solid border-2 first:col-span-2  ${
+                lightMode.includes(type) ? "border-accent" : "border-secondary"
               }`}
-              onClick={() =>
-                lightMode.includes(type)
-                  ? setLightMode(lightMode.filter((value) => value !== type))
-                  : setLightMode([...lightMode, type])
-              }
+              onClick={() => {
+                if (lightMode.includes(type)) {
+                  setLightMode(
+                    lightMode.filter(
+                      (value) => value !== type && value !== type + " helper"
+                    )
+                  );
+                } else {
+                  const modes = [...lightMode, type];
+                  if (type.split(" ")[1] === "helper")
+                    modes.push(type.split(" ")[0] as Lightmode);
+                  setLightMode(modes);
+                }
+              }}
             >
               {type}
             </div>
           ))}
         </div>
-      </div>
+        <p>
+          Also note that we did change the material to MeshPhongMaterial. This
+          is because MeshBasicMaterial does not interact with lights or shadows.
+        </p>
+      </CodeText>
+
       <CodeBlock
         showBefore={showBefore}
         showAfter={showAfter}
-        inputValue={userScript}
+        inputValue={(userScript && userScript.trim()) || " "}
       ></CodeBlock>
-    </div>
+    </>
   );
 };
 

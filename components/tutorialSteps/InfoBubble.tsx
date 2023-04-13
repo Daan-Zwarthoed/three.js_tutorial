@@ -2,9 +2,10 @@ import React from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import CodeBlock from "../global/CodeBlock";
+import CodeBlock from "../code/CodeBlock";
 import gsap from "gsap";
-import CodeBlockNoInput from "../global/CodeBlockNoInput";
+import CodeBlockNoInput from "../code/CodeBlockNoInput";
+import CodeText from "../tutorialHelpers/CodeText";
 
 const code = `const loader = new GLTFLoader();
 
@@ -384,10 +385,12 @@ export const infoBubbleSceneFunction = (userScript: string) => {
 
 const InfoBubble: React.FC = () => {
   return (
-    <div className="flex flex-col w-full">
-      <h2>Code block for info bubble</h2>
+    <>
+      <CodeText>
+        <h2>Code block for info bubble</h2>
+      </CodeText>
       <CodeBlockNoInput>{code}</CodeBlockNoInput>
-    </div>
+    </>
   );
 };
 

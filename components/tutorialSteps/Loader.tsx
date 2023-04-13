@@ -2,10 +2,16 @@ import React from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import CodeBlock from "../global/CodeBlock";
+import CodeBlock from "../code/CodeBlock";
 import userFunction from "../../helpers/userFunction";
+import CodeBlockInline from "../code/CodeBlockInline";
+import CodeText from "../tutorialHelpers/CodeText";
 
-const showBefore = `const canvas = document.getElementById("canvas");
+const showBefore = `import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader";
+import { OrbitControls } from "three/addons/controls/OrbitControls";
+
+const canvas = document.getElementById("canvas");
 const loader = new GLTFLoader();
 let mixer: THREE.AnimationMixer | null = null;
 let clock = new THREE.Clock();
@@ -66,6 +72,8 @@ function animate() {
 }
 animate();`;
 
+let id: number;
+
 export const loaderSceneFunction = (userScript: string) => {
   const canvas = document.getElementById("canvas");
   const loader = new GLTFLoader();
@@ -93,6 +101,7 @@ export const loaderSceneFunction = (userScript: string) => {
   const directionalLight = new THREE.DirectionalLight(0xffff99, 1);
   directionalLight.position.set(30, 17, 26);
   scene.add(directionalLight);
+
   new OrbitControls(camera, renderer.domElement);
 
   window.addEventListener("resize", function () {
@@ -112,7 +121,7 @@ export const loaderSceneFunction = (userScript: string) => {
       // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/AnimatedCube/glTF/AnimatedCube.gltf",
       // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf",
       // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Sponza/glTF/Sponza.gltf",
-      userScript.replace(/[""]/g, ""),
+      userScript.replace(/[""]|,/g, ""),
       // called when the resource is loaded
       async function (gltf) {
         console.log("loaded");
@@ -138,27 +147,44 @@ export const loaderSceneFunction = (userScript: string) => {
     );
 
   function animate() {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
     const delta = clock.getDelta();
     if (mixer) mixer.update(delta);
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
   }
   animate();
 };
 
 const Loader: React.FC = () => {
   return (
-    <div className="flex flex-col w-full">
-      <p>Fill in any of these in the green box:</p>
-      <pre className="select-all">{`"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/AnimatedCube/glTF/AnimatedCube.gltf"`}</pre>
-      <pre className="select-all">{`"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf"`}</pre>
-      <pre className="select-all">{`"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/ABeautifulGame/glTF/ABeautifulGame.gltf"`}</pre>
+    <>
+      <CodeText>
+        <p>
+          Too import a 3D design into Three.js there are alot of accepted file
+          types. The most common and in 99% of cases the best way to import 3D
+          desings is by GLTF. GLTF loads the fastest and is overall the best
+          optimized option.
+        </p>
+        <p>
+          You can import the GLTFLoader in the same way we did the controls.
+        </p>
+        <CodeBlockInline>
+          {`import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';`}
+        </CodeBlockInline>
+
+        <p>Fill in any of these in the green box:</p>
+        <CodeBlockInline>
+          {`"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/AnimatedCube/glTF/AnimatedCube.gltf",
+"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf",
+"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/ABeautifulGame/glTF/ABeautifulGame.gltf",`}
+        </CodeBlockInline>
+      </CodeText>
       <CodeBlock
         showBefore={showBefore}
         showAfter={showAfter}
         inputHeight={1}
       ></CodeBlock>
-    </div>
+    </>
   );
 };
 

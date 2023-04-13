@@ -2,7 +2,7 @@ const colors = require("tailwindcss/colors");
 const allColors = {
   ...colors,
   ...{
-    primary: "#fbceab",
+    primary: "#021622",
     seconday: "#fce2ce",
     tertary: "#ff8f3e",
     quartery: "#ff772e",

@@ -3,6 +3,7 @@ import React, { useContext, useEffect } from "react";
 import * as THREE from "three";
 import AppContext from "../../contexts/AppContextProvider";
 import dynamic from "next/dynamic";
+import Resizable from "../global/Resizable";
 
 const CodeEditor = dynamic(() => import("./CodeEditor"), { ssr: false });
 type Props = {
@@ -10,14 +11,9 @@ type Props = {
 };
 const CodeBlockNoInput: React.FC<Props> = ({ children }) => {
   return (
-    <div
-      className="relative"
-      style={{
-        height: children && children.split(/\r\n|\r|\n/).length * 25 + "px",
-      }}
-    >
+    <Resizable resizeTarget="Code">
       <CodeEditor>{children}</CodeEditor>
-    </div>
+    </Resizable>
   );
 };
 

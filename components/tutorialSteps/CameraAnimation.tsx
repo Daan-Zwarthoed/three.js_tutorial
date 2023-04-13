@@ -1,13 +1,14 @@
 import React from "react";
 import * as THREE from "three";
 import gsap from "gsap";
-import CodeBlock from "../global/CodeBlock";
-import CodeBlockNoInput from "../global/CodeBlockNoInput";
+import CodeBlock from "../code/CodeBlock";
+import CodeBlockNoInput from "../code/CodeBlockNoInput";
+import CodeBlockInline from "../code/CodeBlockInline";
+import Link from "next/link";
+import CodeText from "../tutorialHelpers/CodeText";
 
 const code = `const canvas = document.getElementById("canvas");
 const raycaster = new THREE.Raycaster();
-
-if (!canvas) return;
 
 const scene = new THREE.Scene();
 
@@ -21,9 +22,7 @@ camera.position.z = 30;
 
 const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-
-const light2 = new THREE.HemisphereLight(0xffff99, 0xb97a20, 0.5);
-scene.add(light2);
+renderer.setClearColor(0x01e3d59, 1);
 
 const geometry = new THREE.BoxGeometry(10, 10, 10);
 const material1 = new THREE.MeshBasicMaterial({ color: "#d63e4d" });
@@ -51,16 +50,6 @@ scene.add(cube2);
 scene.add(cube3);
 scene.add(cube4);
 
-window.addEventListener("resize", function () {
-  renderer.setSize(
-    canvas.parentElement!.clientWidth,
-    canvas.parentElement!.clientHeight,
-    true
-  );
-  camera.aspect = canvas.clientWidth / canvas.clientHeight;
-  camera.updateProjectionMatrix();
-});
-
 const pointer = new THREE.Vector2();
 
 function onPointerMove(event: { clientX: number; clientY: number }) {
@@ -72,7 +61,7 @@ function onPointerMove(event: { clientX: number; clientY: number }) {
 }
 canvas.addEventListener("mousemove", onPointerMove);
 
-let intersect: THREE.Object3D<THREE.Event> | null;
+let intersect;
 
 function onClick() {
   if (!intersect) return;
@@ -113,9 +102,7 @@ export const cameraAnimationSceneFunction = (userScript: string) => {
 
   const renderer = new THREE.WebGLRenderer({ canvas });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-
-  const light2 = new THREE.HemisphereLight(0xffff99, 0xb97a20, 0.5);
-  scene.add(light2);
+  renderer.setClearColor(0x01e3d59, 1);
 
   const geometry = new THREE.BoxGeometry(10, 10, 10);
   const material1 = new THREE.MeshBasicMaterial({ color: "#d63e4d" });
@@ -189,11 +176,25 @@ export const cameraAnimationSceneFunction = (userScript: string) => {
 };
 const CameraAnimation: React.FC = () => {
   return (
-    <div className="flex flex-col w-full">
-      <h2>Code block for camera animation</h2>
+    <>
+      <CodeText>
+        <h2>Code block for camera animation</h2>
+        <p>
+          For simple animations like moving the camera from its current position
+          to another we will use{" "}
+          <Link href={"https://greensock.com/gsap/"}>gsap</Link> . Gsap can
+          animate anything that javascript can touch. Including Three.js objects
+          and camera's. This makes animating the camera incredibly easy.
+        </p>
+        <CodeBlockInline>{`gsap.to(camera.position, {
+  ...new THREE.Vector2(position.x, position.y),
+  duration: 1,
+  ease: "power1.out",
+});`}</CodeBlockInline>
+      </CodeText>
 
       <CodeBlockNoInput>{code}</CodeBlockNoInput>
-    </div>
+    </>
   );
 };
 

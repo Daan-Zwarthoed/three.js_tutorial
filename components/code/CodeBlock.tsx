@@ -1,8 +1,8 @@
 import Head from "next/head";
 import React, { useContext, useEffect } from "react";
-import * as THREE from "three";
 import AppContext from "../../contexts/AppContextProvider";
 import dynamic from "next/dynamic";
+import Resizable from "../global/Resizable";
 
 // import ace from "ace-builds";
 const CodeEditor = dynamic(() => import("./CodeEditor"), { ssr: false });
@@ -21,17 +21,17 @@ const CodeBlock: React.FC<Props> = ({
   inputHeight,
   noInput,
 }) => {
-  const { setUserScript } = useContext(AppContext);
+  const { userScript } = useContext(AppContext);
   const beforeHeight = showBefore.split(/\r\n|\r|\n/).length;
   if (!inputHeight && !inputValue)
     return (
       <>Input value or height needs to be defined or noInput needs to be true</>
     );
-
+  if (userScript && !inputValue) inputValue = userScript;
   inputHeight = inputHeight || inputValue!.split(/\r\n|\r|\n/).length;
 
   return (
-    <div className="relative h-full w-full">
+    <Resizable resizeTarget="Code">
       <CodeEditor
         inputHeight={beforeHeight + inputHeight}
         beforeHeight={beforeHeight}
@@ -42,8 +42,7 @@ const CodeBlock: React.FC<Props> = ({
             : [...Array(inputHeight + 1)].map(() => "\n").join("")) +
           showAfter}
       </CodeEditor>
-      {/* <ConsoleLog /> */}
-    </div>
+    </Resizable>
   );
 };
 

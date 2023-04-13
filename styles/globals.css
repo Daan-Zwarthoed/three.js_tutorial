@@ -76,3 +76,7 @@ blockquote {
   /* original width is 48px */
   width: 48px !important;
 }
+
+.ace_scrollbar-h {
+  display: none;
+}
