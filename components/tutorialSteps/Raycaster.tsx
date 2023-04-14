@@ -73,7 +73,7 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();`;
-
+let id: number;
 export const raycasterSceneFunction = (userScript: string) => {
   const canvas = document.getElementById("canvas");
 
@@ -91,6 +91,7 @@ export const raycasterSceneFunction = (userScript: string) => {
 
   const renderer = new THREE.WebGLRenderer({ canvas });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+  renderer.setClearColor(0x01e3d59, 1);
 
   const light2 = new THREE.HemisphereLight(0xffff99, 0xb97a20, 0.5);
   scene.add(light2);
@@ -108,9 +109,10 @@ export const raycasterSceneFunction = (userScript: string) => {
   scene.add(cube2);
 
   window.addEventListener("resize", function () {
+    if (!canvas.parentElement) return;
     renderer.setSize(
-      canvas.parentElement!.clientWidth,
-      canvas.clientHeight,
+      canvas.parentElement.clientWidth,
+      canvas.parentElement.clientHeight,
       true
     );
     camera.aspect = canvas.clientWidth / canvas.clientHeight;
@@ -132,6 +134,7 @@ export const raycasterSceneFunction = (userScript: string) => {
 
   let INTERSECTED: THREE.Object3D<THREE.Event> | null = null;
   let INTERSECTEDCOLOR: null = null;
+  if (id) cancelAnimationFrame(id);
 
   function animate() {
     raycaster.setFromCamera(pointer, camera);
@@ -151,7 +154,7 @@ export const raycasterSceneFunction = (userScript: string) => {
       INTERSECTED = null;
     }
 
-    requestAnimationFrame(animate);
+    id = requestAnimationFrame(animate);
     renderer.render(scene, camera);
   }
   animate();

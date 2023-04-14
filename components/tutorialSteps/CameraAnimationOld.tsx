@@ -134,6 +134,7 @@ export const cameraAnimationOldSceneFunction = (userScript: string) => {
 
   const renderer = new THREE.WebGLRenderer({ canvas });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+  renderer.setClearColor(0x01e3d59, 1);
 
   const light2 = new THREE.HemisphereLight(0xffff99, 0xb97a20, 0.5);
   scene.add(light2);
@@ -165,9 +166,10 @@ export const cameraAnimationOldSceneFunction = (userScript: string) => {
   scene.add(cube4);
 
   window.addEventListener("resize", function () {
+    if (!canvas.parentElement) return;
     renderer.setSize(
-      canvas.parentElement!.clientWidth,
-      canvas.clientHeight,
+      canvas.parentElement.clientWidth,
+      canvas.parentElement.clientHeight,
       true
     );
     camera.aspect = canvas.clientWidth / canvas.clientHeight;
@@ -226,7 +228,7 @@ export const cameraAnimationOldSceneFunction = (userScript: string) => {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
   }
-  if (userScript === null) animate();
+  animate();
 };
 const CameraAnimationOld: React.FC = () => {
   return (

@@ -47,9 +47,10 @@ export const rendererSceneFunction = (userScript: string) => {
   renderer.setClearColor(0x01e3d59, 1);
 
   window.addEventListener("resize", function () {
+    if (!canvas.parentElement) return;
     renderer.setSize(
-      canvas.parentElement!.clientWidth,
-      canvas.clientHeight,
+      canvas.parentElement.clientWidth,
+      canvas.parentElement.clientHeight,
       true
     );
     camera.aspect = canvas.clientWidth / canvas.clientHeight;
@@ -62,7 +63,7 @@ export const rendererSceneFunction = (userScript: string) => {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
   }
-  if (userScript === null) animate();
+  animate();
 };
 
 const Renderer: React.FC = () => (

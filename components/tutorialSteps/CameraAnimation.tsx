@@ -83,7 +83,6 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();`;
-
 export const cameraAnimationSceneFunction = (userScript: string) => {
   const canvas = document.getElementById("canvas");
   const raycaster = new THREE.Raycaster();
@@ -131,9 +130,10 @@ export const cameraAnimationSceneFunction = (userScript: string) => {
   scene.add(cube4);
 
   window.addEventListener("resize", function () {
+    if (!canvas.parentElement) return;
     renderer.setSize(
-      canvas.parentElement!.clientWidth,
-      canvas.parentElement!.clientHeight,
+      canvas.parentElement.clientWidth,
+      canvas.parentElement.clientHeight,
       true
     );
     camera.aspect = canvas.clientWidth / canvas.clientHeight;
@@ -164,15 +164,16 @@ export const cameraAnimationSceneFunction = (userScript: string) => {
   canvas.addEventListener("click", onClick);
 
   function animate() {
+    requestAnimationFrame(animate);
     if (canvas) renderer.setSize(canvas.clientWidth, canvas.clientHeight);
     raycaster.setFromCamera(pointer, camera);
     const intersects = raycaster.intersectObjects(scene.children, false);
     intersect = intersects[0] && intersects[0].object;
 
-    requestAnimationFrame(animate);
     renderer.render(scene, camera);
   }
-  if (userScript === null) animate();
+
+  animate();
 };
 const CameraAnimation: React.FC = () => {
   return (

@@ -43,7 +43,6 @@ function animate() {
 
 animate();
 `;
-let id: number;
 export const addonsSceneFunction = (userScript: string) => {
   const canvas = document.getElementById("canvas");
 
@@ -59,12 +58,12 @@ export const addonsSceneFunction = (userScript: string) => {
   const renderer = new THREE.WebGLRenderer({ canvas });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
   renderer.setClearColor(0x01e3d59, 1);
-  renderer.autoClear = true;
 
   window.addEventListener("resize", function () {
+    if (!canvas.parentElement) return;
     renderer.setSize(
-      canvas.parentElement!.clientWidth,
-      canvas.parentElement!.clientHeight,
+      canvas.parentElement.clientWidth,
+      canvas.parentElement.clientHeight,
       true
     );
     camera.aspect = canvas.clientWidth / canvas.clientHeight;
@@ -78,10 +77,9 @@ export const addonsSceneFunction = (userScript: string) => {
   scene.add(cube);
 
   new OrbitControls(camera, renderer.domElement);
-  if (id) cancelAnimationFrame(id);
 
   function animate() {
-    id = requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
     renderer.render(scene, camera);
   }
 

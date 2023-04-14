@@ -212,6 +212,7 @@ export const infoBubbleSceneFunction = (userScript: string) => {
 
   const renderer = new THREE.WebGLRenderer({ canvas });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+  renderer.setClearColor(0x01e3d59, 1);
 
   const light1 = new THREE.DirectionalLight(0xffff99, 2);
   light1.position.x = 5;
@@ -248,9 +249,10 @@ export const infoBubbleSceneFunction = (userScript: string) => {
   );
 
   addEventListener("resize", function () {
+    if (!canvas.parentElement) return;
     renderer.setSize(
-      canvas.parentElement!.clientWidth,
-      canvas.clientHeight,
+      canvas.parentElement.clientWidth,
+      canvas.parentElement.clientHeight,
       true
     );
     camera.aspect = canvas.clientWidth / canvas.clientHeight;
@@ -380,7 +382,7 @@ export const infoBubbleSceneFunction = (userScript: string) => {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
   }
-  if (userScript === null) animate();
+  animate();
 };
 
 const InfoBubble: React.FC = () => {

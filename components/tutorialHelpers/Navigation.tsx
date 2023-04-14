@@ -28,6 +28,7 @@ const Navigation: React.FC<InputProps> = ({ children }) => {
     (stepList[stepIndex + 1] && stepList[stepIndex + 1].id) || null;
 
   const changeStep = (next: boolean) => {
+    setUserScript(null);
     Router.push({
       pathname: "/tutorial",
       query: { ...Router.query, step: next ? nextStepId : previousStepId },
@@ -45,7 +46,9 @@ const Navigation: React.FC<InputProps> = ({ children }) => {
             <div onClick={() => changeStep(false)}>Go to {previousStepId}</div>
           )}
           {!previousStepId && <div></div>}
-          <div>{stepList[stepIndex].id}</div>
+          <div onClick={() => setUserScript(null)}>
+            {stepList[stepIndex].id}
+          </div>
           {nextStepId && (
             <div onClick={() => changeStep(true)}>Go to {nextStepId}</div>
           )}

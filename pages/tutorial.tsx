@@ -1,7 +1,7 @@
 import Head from "next/head";
 import * as THREE from "three";
 import Router from "next/router";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Scene from "../components/Scene";
 import Resizable from "../components/global/Resizable";
 import Prerequisites from "../components/tutorialSteps/Prerequisites";
@@ -88,15 +88,17 @@ export const stepList: StepList = [
   },
 ];
 const Tutorial = () => {
-  const { userScript, setUserScript } = useContext(AppContext);
-  const [stepIndex, setStepIndex] = useState<number>(-1);
+  const { userScript, setUserScript, tutorialStep, setTutorialStep } =
+    useContext(AppContext);
+  // const [stepIndex, setStepIndex] = useState<number>(-1);
+  // const stepIndex = useRef<number>(-1);
+  // let routerStepIndex = -1;
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const routerStepIndex = stepList.findIndex(
       (item) => item.id === Router.query.step
     );
-    if (routerStepIndex !== stepIndex) setStepIndex(routerStepIndex);
+    if (routerStepIndex !== tutorialStep) setTutorialStep(routerStepIndex);
   });
   return (
     <>
@@ -110,8 +112,8 @@ const Tutorial = () => {
           id="ResizableCanvasNeighbour"
           className="flex flex-row w-full h-full"
         >
-          {stepList[stepIndex] && stepList[stepIndex].element}
-          {!stepList[stepIndex] && (
+          {stepList[tutorialStep] && stepList[tutorialStep].element}
+          {!stepList[tutorialStep] && (
             <div
               onClick={() => {
                 Router.query.step = "box";
@@ -122,8 +124,8 @@ const Tutorial = () => {
             </div>
           )}
         </div>
-        {stepList[stepIndex] && stepList[stepIndex].pageFunction && (
-          <Scene threeScript={stepList[stepIndex].pageFunction}></Scene>
+        {stepList[tutorialStep] && stepList[tutorialStep].pageFunction && (
+          <Scene threeScript={stepList[tutorialStep].pageFunction}></Scene>
         )}
         <Navigation></Navigation>
       </div>

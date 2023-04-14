@@ -72,8 +72,6 @@ function animate() {
 }
 animate();`;
 
-let id: number;
-
 export const loaderSceneFunction = (userScript: string) => {
   const canvas = document.getElementById("canvas");
   const loader = new GLTFLoader();
@@ -105,6 +103,7 @@ export const loaderSceneFunction = (userScript: string) => {
   new OrbitControls(camera, renderer.domElement);
 
   window.addEventListener("resize", function () {
+    if (!canvas.parentElement) return;
     renderer.setSize(
       canvas.parentElement!.clientWidth,
       canvas.parentElement!.clientHeight,

@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import * as THREE from "three";
 import userFunction from "../../helpers/userFunction";
 import CodeBlock from "../code/CodeBlock";
 import CodeBlockInline from "../code/CodeBlockInline";
 import CodeText from "../tutorialHelpers/CodeText";
+import AppContext from "../../contexts/AppContextProvider";
 
 const showBefore = `import * as THREE from "three";
 
@@ -32,7 +33,6 @@ function animate() {
   }
 }
 animate();`;
-let id: number;
 export const boxSceneFunction = (userScript: string) => {
   const canvas = document.getElementById("canvas");
 
@@ -50,9 +50,10 @@ export const boxSceneFunction = (userScript: string) => {
   renderer.setClearColor(0x01e3d59, 1);
 
   window.addEventListener("resize", function () {
+    if (!canvas.parentElement) return;
     renderer.setSize(
-      canvas.parentElement!.clientWidth,
-      canvas.parentElement!.clientHeight,
+      canvas.parentElement.clientWidth,
+      canvas.parentElement.clientHeight,
       true
     );
     camera.aspect = canvas.clientWidth / canvas.clientHeight;
@@ -65,14 +66,12 @@ export const boxSceneFunction = (userScript: string) => {
     "cube"
   );
 
-  if (id) cancelAnimationFrame(id);
-
   function animate() {
     if (cube) {
       cube.rotation.x += 0.01;
       cube.rotation.y += 0.01;
     }
-    id = requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
     renderer.render(scene, camera);
   }
 

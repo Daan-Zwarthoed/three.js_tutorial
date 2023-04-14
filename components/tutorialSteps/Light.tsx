@@ -94,9 +94,10 @@ export const lightSceneFunction = (userScript: string) => {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   window.addEventListener("resize", function () {
+    if (!canvas.parentElement) return;
     renderer.setSize(
-      canvas.parentElement!.clientWidth,
-      canvas.parentElement!.clientHeight,
+      canvas.parentElement.clientWidth,
+      canvas.parentElement.clientHeight,
       true
     );
     camera.aspect = canvas.clientWidth / canvas.clientHeight;
@@ -127,14 +128,12 @@ export const lightSceneFunction = (userScript: string) => {
   });
 
   if (id) cancelAnimationFrame(id);
-  console.log("lights");
+
   function animate() {
     id = requestAnimationFrame(animate);
     renderer.render(scene, camera);
   }
   animate();
-
-  return id;
 };
 
 const ambientScript = `const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);

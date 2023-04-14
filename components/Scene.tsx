@@ -9,13 +9,23 @@ import Router from "next/router";
 type InputProps = {
   threeScript: Function;
 };
+let firstLoad = true;
 const Scene: React.FC<InputProps> = ({ threeScript }) => {
-  const { userScript } = useContext(AppContext);
-
+  const { userScript, tutorialStep } = useContext(AppContext);
+  const [resetKey, setResetKey] = useState(1);
   useEffect(() => {
     threeScript(userScript);
-  }, [userScript]);
+  }, [userScript, resetKey]);
 
+  const reset = () => {
+    if (firstLoad) return (firstLoad = false);
+
+    setResetKey(Math.random());
+  };
+
+  useEffect(() => {
+    reset();
+  }, [tutorialStep]);
   return (
     <Resizable resizeTarget="Canvas">
       <div
@@ -28,6 +38,7 @@ const Scene: React.FC<InputProps> = ({ threeScript }) => {
         <div>hallo ik ben daan</div>
       </div>
       <canvas
+        key={resetKey}
         id="canvas"
         className="relative z-10 object-contain mx-auto w-full h-full"
       ></canvas>
