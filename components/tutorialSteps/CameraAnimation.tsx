@@ -7,7 +7,10 @@ import CodeBlockInline from "../code/CodeBlockInline";
 import Link from "next/link";
 import CodeText from "../tutorialHelpers/CodeText";
 
-const code = `const canvas = document.getElementById("canvas");
+const code = `import * as THREE from "three";
+import gsap from "gsap";
+
+const canvas = document.getElementById("canvas");
 const raycaster = new THREE.Raycaster();
 
 const scene = new THREE.Scene();
@@ -54,10 +57,10 @@ const pointer = new THREE.Vector2();
 
 function onPointerMove(event: { clientX: number; clientY: number }) {
   if (!canvas) return;
-  const restWidth = window.innerWidth - canvas.clientWidth;
-  const restHeight = window.innerHeight - canvas.clientHeight;
-  pointer.x = ((event.clientX - restWidth) / canvas.clientWidth) * 2 - 1;
-  pointer.y = -((event.clientY - restHeight) / canvas.clientHeight) * 2 + 1;
+  const canvasLeft = canvas.getBoundingClientRect().left;
+  const canvasTop = canvas.getBoundingClientRect().top;
+  pointer.x = ((event.clientX - canvasLeft) / canvas.clientWidth) * 2 - 1;
+  pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
 }
 canvas.addEventListener("mousemove", onPointerMove);
 
@@ -144,10 +147,10 @@ export const cameraAnimationSceneFunction = (userScript: string) => {
 
   function onPointerMove(event: { clientX: number; clientY: number }) {
     if (!canvas) return;
-    const restWidth = window.innerWidth - canvas.clientWidth;
-    const restHeight = window.innerHeight - canvas.clientHeight;
-    pointer.x = ((event.clientX - restWidth) / canvas.clientWidth) * 2 - 1;
-    pointer.y = -((event.clientY - restHeight) / canvas.clientHeight) * 2 + 1;
+    const canvasLeft = canvas.getBoundingClientRect().left;
+    const canvasTop = canvas.getBoundingClientRect().top;
+    pointer.x = ((event.clientX - canvasLeft) / canvas.clientWidth) * 2 - 1;
+    pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
   }
   canvas.addEventListener("mousemove", onPointerMove);
 
@@ -182,19 +185,40 @@ const CameraAnimation: React.FC = () => {
         <h2>Code block for camera animation</h2>
         <p>
           For simple animations like moving the camera from its current position
-          to another we will use{" "}
-          <Link href={"https://greensock.com/gsap/"}>gsap</Link> . Gsap can
-          animate anything that javascript can touch. Including Three.js objects
-          and camera's. This makes animating the camera incredibly easy.
+          to another we will use gsap. Here is a link to the{" "}
+          <a
+            className="text-blue-500 underline"
+            target="_blank"
+            href="https://greensock.com/get-started/"
+          >
+            get started
+          </a>{" "}
+          page and its{" "}
+          <a
+            className="text-blue-500 underline"
+            target="_blank"
+            href="https://greensock.com/docs/v3/Installation"
+          >
+            installation guide.
+          </a>{" "}
+          . Gsap can animate anything that javascript can touch. Including
+          Three.js objects and camera's. This makes animating the camera
+          incredibly easy.
         </p>
         <CodeBlockInline>{`gsap.to(camera.position, {
   ...new THREE.Vector2(position.x, position.y),
   duration: 1,
   ease: "power1.out",
 });`}</CodeBlockInline>
+        <p>
+          Just this code will animate your camera from its current position to
+          one you selected
+        </p>
       </CodeText>
 
-      <CodeBlockNoInput>{code}</CodeBlockNoInput>
+      <CodeBlockNoInput highlightArea={{ startRow: 47, endRow: 79 }}>
+        {code}
+      </CodeBlockNoInput>
     </>
   );
 };

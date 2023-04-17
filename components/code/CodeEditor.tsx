@@ -14,6 +14,10 @@ type Props = {
   beforeHeight?: number;
   inputHeight?: number;
   inline?: boolean;
+  highlightArea?: {
+    startRow: number;
+    endRow: number;
+  };
 };
 
 const CodeBlock: React.FC<Props> = ({
@@ -21,6 +25,7 @@ const CodeBlock: React.FC<Props> = ({
   beforeHeight,
   inputHeight,
   inline,
+  highlightArea,
 }) => {
   const { setUserScript } = useContext(AppContext);
   let timeout: NodeJS.Timeout | null = null;
@@ -60,8 +65,12 @@ const CodeBlock: React.FC<Props> = ({
   };
 
   const setup = () => {
-    if (!editor || !inputHeight || !beforeHeight) return;
+    if (!editor) return;
     savedLength = editor.session.doc.getAllLines().length;
+
+    // Make it so you can only edit inside of the edit area
+    // editor.commands.on("exec", (event: any) => handleExec(event));
+    // if (editor.session.getValue() !== children) editor.setValue(children, 1);
     const prevMarkers = editor.session.getMarkers();
     if (prevMarkers) {
       const prevMarkersArr = Object.keys(prevMarkers);
@@ -69,21 +78,26 @@ const CodeBlock: React.FC<Props> = ({
         editor.session.removeMarker(+item);
       });
     }
+    if (highlightArea) {
+      editor.session.addMarker(
+        new Range(highlightArea.startRow - 1, 0, highlightArea.endRow - 1, 1),
+        "highlightArea",
+        "fullLine"
+      );
+      editor.scrollToLine(highlightArea.startRow, true, true, function () {});
+    }
 
-    editor.session.addMarker(
-      new Range(beforeHeight!, 0, inputHeight! - 1, 1),
-      "editArea",
-      "fullLine"
-    );
-    // Make it so you can only edit inside of the edit area
-    // editor.commands.on("exec", (event: any) => handleExec(event));
-    // if (editor.session.getValue() !== children) editor.setValue(children, 1);
+    if (inputHeight && beforeHeight)
+      editor.session.addMarker(
+        new Range(beforeHeight, 0, inputHeight - 1, 1),
+        "editArea",
+        "fullLine"
+      );
   };
   useEffect(() => setup());
 
-  const handleLoad = (loadEditor: ace.Ace.Editor) => {
-    if (!inputHeight || !beforeHeight) return;
-    setEditor(loadEditor);
+  const handleLoad = (editor: ace.Ace.Editor) => {
+    setEditor(editor);
   };
 
   return (

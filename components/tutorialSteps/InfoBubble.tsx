@@ -157,10 +157,10 @@ const pointer = new THREE.Vector2();
 
 function onPointerMove(event: { clientX: number; clientY: number }) {
   if (!canvas) return;
-  const restHeight = window.innerHeight - canvas.clientHeight;
-  const restWidth = window.innerWidth - canvas.clientWidth;
-  pointer.x = ((event.clientX - restWidth) / canvas.clientWidth) * 2 - 1;
-  pointer.y = -((event.clientY - restHeight) / canvas.clientHeight) * 2 + 1;
+  const canvasLeft = canvas.getBoundingClientRect().left;
+  const canvasTop = canvas.getBoundingClientRect().top;
+  pointer.x = ((event.clientX - canvasLeft) / canvas.clientWidth) * 2 - 1;
+  pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
 
   if (controls.enabled) {
     const horAngle = controls.getAzimuthalAngle();
@@ -347,10 +347,10 @@ export const infoBubbleSceneFunction = (userScript: string) => {
 
   function onPointerMove(event: { clientX: number; clientY: number }) {
     if (!canvas) return;
-    const restHeight = window.innerHeight - canvas.clientHeight;
-    const restWidth = window.innerWidth - canvas.clientWidth;
-    pointer.x = ((event.clientX - restWidth) / canvas.clientWidth) * 2 - 1;
-    pointer.y = -((event.clientY - restHeight) / canvas.clientHeight) * 2 + 1;
+    const canvasLeft = canvas.getBoundingClientRect().left;
+    const canvasTop = canvas.getBoundingClientRect().top;
+    pointer.x = ((event.clientX - canvasLeft) / canvas.clientWidth) * 2 - 1;
+    pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
 
     if (controls.enabled) {
       const horAngle = controls.getAzimuthalAngle();
@@ -389,7 +389,8 @@ const InfoBubble: React.FC = () => {
   return (
     <>
       <CodeText>
-        <h2>Code block for info bubble</h2>
+        <h2>Now for the finale</h2>
+        <p></p>
       </CodeText>
       <CodeBlockNoInput>{code}</CodeBlockNoInput>
     </>

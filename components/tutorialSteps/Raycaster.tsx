@@ -3,6 +3,7 @@ import * as THREE from "three";
 
 import CodeBlockNoInput from "../code/CodeBlockNoInput";
 import CodeText from "../tutorialHelpers/CodeText";
+import CodeBlockInline from "../code/CodeBlockInline";
 
 const code = `import * as THREE from "three";
 
@@ -21,9 +22,6 @@ camera.position.z = 40;
 const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
-const light2 = new THREE.HemisphereLight(0xffff99, 0xb97a20, 0.5);
-scene.add(light2);
-
 const geometry = new THREE.BoxGeometry(10, 10, 10);
 const material = new THREE.MeshBasicMaterial({ color: "#d63e4d" });
 const cube = new THREE.Mesh(geometry, material);
@@ -40,10 +38,10 @@ const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 
 function onPointerMove(event) {
-  const restWidth = window.innerWidth - canvas.clientWidth;
-  const restHeight = window.innerHeight - canvas.clientHeight;
-  pointer.x = ((event.clientX - restWidth) / canvas.clientWidth) * 2 - 1;
-  pointer.y = -((event.clientY - restHeight) / canvas.clientHeight) * 2 + 1;
+  const canvasLeft = canvas.getBoundingClientRect().left;
+  const canvasTop = canvas.getBoundingClientRect().top;
+  pointer.x = ((event.clientX - canvasLeft) / canvas.clientWidth) * 2 - 1;
+  pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
 }
 
 canvas.addEventListener("mousemove", onPointerMove);
@@ -55,14 +53,15 @@ function animate() {
   if (canvas) renderer.setSize(canvas.clientWidth, canvas.clientHeight);
   raycaster.setFromCamera(pointer, camera);
   const intersects = raycaster.intersectObjects(scene.children, false);
-  const intersect = intersects[0];
+  const intersect = intersects[0] && intersects[0].object;
 
   if (intersect) {
-    if (intersect.object !== INTERSECTED) {
-      if (INTERSECTED) INTERSECTED.material.color.set(INTERSECTEDCOLOR);
-      INTERSECTED = intersect.object;
-      INTERSECTEDCOLOR = intersect.object.material.color.clone();
-      intersect.object.material.color.set(0xff0000);
+    if (intersect !== INTERSECTED) {
+      if (INTERSECTED)
+        INTERSECTED.material.color.set(INTERSECTEDCOLOR);
+      INTERSECTED = intersect;
+      INTERSECTEDCOLOR = intersect.material.color.clone();
+      intersect.material.color.set(0xff0000);
     }
   } else if (INTERSECTED) {
     INTERSECTED.material.color.set(INTERSECTEDCOLOR);
@@ -93,9 +92,6 @@ export const raycasterSceneFunction = (userScript: string) => {
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
   renderer.setClearColor(0x01e3d59, 1);
 
-  const light2 = new THREE.HemisphereLight(0xffff99, 0xb97a20, 0.5);
-  scene.add(light2);
-
   const geometry = new THREE.BoxGeometry(10, 10, 10);
   const material = new THREE.MeshBasicMaterial({ color: "#d63e4d" });
   const cube = new THREE.Mesh(geometry, material);
@@ -124,10 +120,10 @@ export const raycasterSceneFunction = (userScript: string) => {
 
   function onPointerMove(event: { clientX: number; clientY: number }) {
     if (!canvas) return;
-    const restWidth = window.innerWidth - canvas.clientWidth;
-    const restHeight = window.innerHeight - canvas.clientHeight;
-    pointer.x = ((event.clientX - restWidth) / canvas.clientWidth) * 2 - 1;
-    pointer.y = -((event.clientY - restHeight) / canvas.clientHeight) * 2 + 1;
+    const canvasLeft = canvas.getBoundingClientRect().left;
+    const canvasTop = canvas.getBoundingClientRect().top;
+    pointer.x = ((event.clientX - canvasLeft) / canvas.clientWidth) * 2 - 1;
+    pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
   }
 
   canvas.addEventListener("mousemove", onPointerMove);
@@ -139,15 +135,15 @@ export const raycasterSceneFunction = (userScript: string) => {
   function animate() {
     raycaster.setFromCamera(pointer, camera);
     const intersects = raycaster.intersectObjects(scene.children, false);
-    const intersect = intersects[0];
+    const intersect = intersects[0] && intersects[0].object;
 
     if (intersect) {
-      if (intersect.object !== INTERSECTED) {
+      if (intersect !== INTERSECTED) {
         if (INTERSECTED)
           (INTERSECTED as any).material.color.set(INTERSECTEDCOLOR);
-        INTERSECTED = intersect.object;
-        INTERSECTEDCOLOR = (intersect.object as any).material.color.clone();
-        (intersect.object as any).material.color.set(0xff0000);
+        INTERSECTED = intersect;
+        INTERSECTEDCOLOR = (intersect as any).material.color.clone();
+        (intersect as any).material.color.set(0xff0000);
       }
     } else if (INTERSECTED) {
       (INTERSECTED as any).material.color.set(INTERSECTEDCOLOR);
@@ -164,8 +160,63 @@ const Raycaster: React.FC = () => {
     <>
       <CodeText>
         <h2>Code block for raycasters</h2>
+        <p>
+          To make objects react to the users cursor you will need to use a
+          raycaster
+        </p>
+        <CodeBlockInline>{`const pointer = new THREE.Vector2();
+
+function onPointerMove(event) {
+  const canvasLeft = canvas.getBoundingClientRect().left;
+  const canvasTop = canvas.getBoundingClientRect().top;
+  pointer.x = ((event.clientX - canvasLeft) / canvas.clientWidth) * 2 - 1;
+  pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
+}
+
+canvas.addEventListener("mousemove", onPointerMove);`}</CodeBlockInline>
+        <p>
+          This code will keep track of the x and y value of the cursor on the
+          canvas in normalized device coordinates. Now for using this
+        </p>
+        <CodeBlockInline>{`const intersects = raycaster.intersectObjects(scene.children, false);
+const intersect = intersects[0] && intersects[0].object;
+
+if (intersect) {
+  if (intersect !== INTERSECTED) {
+    if (INTERSECTED)
+      INTERSECTED.material.color.set(INTERSECTEDCOLOR);
+    INTERSECTED = intersect;
+    INTERSECTEDCOLOR = intersect.material.color.clone();
+    intersect.material.color.set(0xff0000);
+  }
+} else if (INTERSECTED) {
+  INTERSECTED.material.color.set(INTERSECTEDCOLOR);
+  INTERSECTED = null;
+}`}</CodeBlockInline>
+        <p>
+          This looks very overwhelming at first glance but dont worry. I'll take
+          you through it step by step.
+        </p>
+        <ol>
+          <li>
+            First we intersect with all the objects in the scene. From these
+            intersections we get the first one and save its object.
+          </li>
+          <li>
+            Next we check if intersect exists and if it's a new intersection. If
+            this is true we reverse the previous intersection if necessary, we
+            save the new intersect in INTERSECTED and we clone the color to
+            INTERSECTEDCOLOR. Then we set our new intersection to a darkish red.
+          </li>
+          <li>
+            If intersect doesn't exist we check if our INTERSECTED exists and
+            reset it if it does.
+          </li>
+        </ol>
       </CodeText>
-      <CodeBlockNoInput>{code}</CodeBlockNoInput>
+      <CodeBlockNoInput highlightArea={{ startRow: 30, endRow: 67 }}>
+        {code}
+      </CodeBlockNoInput>
     </>
   );
 };

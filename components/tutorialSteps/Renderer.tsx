@@ -69,7 +69,10 @@ export const rendererSceneFunction = (userScript: string) => {
 const Renderer: React.FC = () => (
   <CodeText>
     <h4>Basic setup</h4>
-    <p>First thing is creating a scene and adding a few things to it.</p>
+    <p>
+      First thing we need to do before the fun stuff is creating a scene and
+      adding a few things to it.
+    </p>
     <p>
       We starting by adding a canvas to our html with the ID of canvas. After
       this we can work on our javascript:

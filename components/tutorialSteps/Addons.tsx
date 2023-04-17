@@ -97,7 +97,12 @@ const Addons: React.FC = () => {
           be imported seperatly from the addons/ directory. Note that you don't
           need to install them seperatly just import them seperatly.
         </p>
-        <p>Importing controls will in most cases look like this:</p>
+        <p>
+          Try dragging the cube and you will see that you can now control it!
+        </p>
+        <p className="mt-2">
+          Importing controls will in most cases look like this:
+        </p>
         <CodeBlockInline>
           {`import { OrbitControls } from 'three/addons/controls/OrbitControls.js';`}
         </CodeBlockInline>
@@ -105,9 +110,37 @@ const Addons: React.FC = () => {
         <CodeBlockInline>
           {`import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";`}
         </CodeBlockInline>
+        <p>
+          If you installed Three.js with a CDN you will need to add an importmap
+          to the head element of your html.
+        </p>
+        <CodeBlockInline>
+          {`<script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.149.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.149.0/examples/jsm/"
+    }
+  }
+</script>`}
+        </CodeBlockInline>
+        <p>
+          You can read more about import maps in the{" "}
+          <a
+            className="text-blue-500 underline"
+            target="_blank"
+            href="https://threejs.org/docs/#manual/en/introduction/Installation"
+          >
+            installation guide.
+          </a>
+        </p>
       </CodeText>
 
-      <CodeBlockNoInput>{code}</CodeBlockNoInput>
+      <CodeBlockNoInput highlightArea={{ startRow: 27, endRow: 27 }}>
+        {code}
+      </CodeBlockNoInput>
     </>
   );
 };

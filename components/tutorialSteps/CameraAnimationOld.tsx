@@ -1,11 +1,12 @@
 import React from "react";
 import * as THREE from "three";
-
-import CodeBlock from "../code/CodeBlock";
+import { Range } from "ace-builds";
 import CodeBlockNoInput from "../code/CodeBlockNoInput";
 import CodeText from "../tutorialHelpers/CodeText";
 
-const code = `const canvas = document.getElementById("canvas");
+const code = `import * as THREE from "three";
+
+const canvas = document.getElementById("canvas");
 const raycaster = new THREE.Raycaster();
 
 if (!canvas) return;
@@ -52,24 +53,14 @@ scene.add(cube2);
 scene.add(cube3);
 scene.add(cube4);
 
-window.addEventListener("resize", function () {
-  renderer.setSize(
-    canvas.parentElement!.clientWidth,
-    canvas.clientHeight,
-    true
-  );
-  camera.aspect = canvas.clientWidth / canvas.clientHeight;
-  camera.updateProjectionMatrix();
-});
-
 const pointer = new THREE.Vector2();
 
 function onPointerMove(event: { clientX: number; clientY: number }) {
   if (!canvas) return;
-  const restWidth = window.innerWidth - canvas.clientWidth;
-  const restHeight = window.innerHeight - canvas.clientHeight;
-  pointer.x = ((event.clientX - restWidth) / canvas.clientWidth) * 2 - 1;
-  pointer.y = -((event.clientY - restHeight) / canvas.clientHeight) * 2 + 1;
+  const canvasLeft = canvas.getBoundingClientRect().left;
+  const canvasTop = canvas.getBoundingClientRect().top;
+  pointer.x = ((event.clientX - canvasLeft) / canvas.clientWidth) * 2 - 1;
+  pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
 }
 canvas.addEventListener("mousemove", onPointerMove);
 
@@ -99,8 +90,8 @@ function animateCamera() {
     camera.position.y.toFixed(5) === cameraPositionGoal.y.toFixed(5)
   )
     return (cameraPositionGoal = null);
-  camera.position.x = camera.position.x + animationDistance.x;
-  camera.position.y = camera.position.y + animationDistance.y;
+    camera.position.x += animationDistance.x;
+    camera.position.y += animationDistance.y;;
 }
 
 function animate() {
@@ -114,7 +105,7 @@ function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
 }
-if (userScript === null) animate();`;
+animate();`;
 
 export const cameraAnimationOldSceneFunction = (userScript: string) => {
   const canvas = document.getElementById("canvas");
@@ -180,10 +171,10 @@ export const cameraAnimationOldSceneFunction = (userScript: string) => {
 
   function onPointerMove(event: { clientX: number; clientY: number }) {
     if (!canvas) return;
-    const restWidth = window.innerWidth - canvas.clientWidth;
-    const restHeight = window.innerHeight - canvas.clientHeight;
-    pointer.x = ((event.clientX - restWidth) / canvas.clientWidth) * 2 - 1;
-    pointer.y = -((event.clientY - restHeight) / canvas.clientHeight) * 2 + 1;
+    const canvasLeft = canvas.getBoundingClientRect().left;
+    const canvasTop = canvas.getBoundingClientRect().top;
+    pointer.x = ((event.clientX - canvasLeft) / canvas.clientWidth) * 2 - 1;
+    pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
   }
   canvas.addEventListener("mousemove", onPointerMove);
 
@@ -213,8 +204,8 @@ export const cameraAnimationOldSceneFunction = (userScript: string) => {
       camera.position.y.toFixed(5) === cameraPositionGoal.y.toFixed(5)
     )
       return (cameraPositionGoal = null);
-    camera.position.x = camera.position.x + animationDistance.x;
-    camera.position.y = camera.position.y + animationDistance.y;
+    camera.position.x += animationDistance.x;
+    camera.position.y += animationDistance.y;
   }
 
   function animate() {
@@ -235,8 +226,20 @@ const CameraAnimationOld: React.FC = () => {
     <>
       <CodeText>
         <h2>Code block for bad camera animation</h2>
+        <p>
+          To nail the hammer home what a gift gsap is for your Three.js
+          animations I made the same functionality as in the last step but
+          without gsap.
+        </p>
+        <p>
+          It has worse performance, looks worse for the user, doesn't even work
+          for colors, takes more code and is way harder to read then gsap.
+        </p>
+        <p>Long story short. Just use gsap</p>
       </CodeText>
-      <CodeBlockNoInput>{code}</CodeBlockNoInput>
+      <CodeBlockNoInput highlightArea={{ startRow: 50, endRow: 101 }}>
+        {code}
+      </CodeBlockNoInput>
     </>
   );
 };

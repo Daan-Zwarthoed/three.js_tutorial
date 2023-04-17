@@ -14,7 +14,7 @@ const CodeBlockInline: React.FC<Props> = ({ children }) => {
     <div
       className="relative my-2"
       style={{
-        height: children && children.split(/\r\n|\r|\n/).length * 20 + "px",
+        height: children && children.split(/\r\n|\r|\n/).length * 20.5 + "px",
       }}
     >
       <CodeEditor inline>{children}</CodeEditor>

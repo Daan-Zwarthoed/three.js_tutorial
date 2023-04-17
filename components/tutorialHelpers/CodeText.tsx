@@ -8,7 +8,7 @@ const CodeText: React.FC<InputProps> = ({ children }) => {
   return (
     <div
       id="ResizableCodeNeighbour"
-      className=" w-full h-full overflow-auto p-5 pb-10"
+      className="w-full h-full overflow-auto p-5"
     >
       {children}
     </div>

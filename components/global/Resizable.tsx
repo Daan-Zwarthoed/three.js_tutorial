@@ -83,7 +83,7 @@ const Resizable: React.FC<InputProps> = ({ children, resizeTarget }) => {
   return (
     <div
       id={`Resizable${resizeTarget}`}
-      className="relative h-full w-1/2 shrink-0"
+      className="relative h-full w-1/2 shrink-0 "
     >
       <div className="flex w-full h-full overflow-y-auto">{children}</div>
       <div

@@ -233,8 +233,8 @@ const Light: React.FC = () => {
           A hemisphere light goes from top to bottom from one color to another
         </p>
         <p>
-          You can try out the different lights and there helpers witht the
-          button below:
+          You can try out the different lights and their helpers with the button
+          below:
         </p>
         <div className="grid grid-cols-2 gap-2 w-full flex flex-row flex-wrap my-5">
           {LightModeTypes.map((type) => (
@@ -265,6 +265,8 @@ const Light: React.FC = () => {
         <p>
           Also note that we did change the material to MeshPhongMaterial. This
           is because MeshBasicMaterial does not interact with lights or shadows.
+          We also manually activated the objects ability to create and receive
+          shadows.
         </p>
       </CodeText>
 

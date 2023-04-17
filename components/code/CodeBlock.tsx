@@ -13,6 +13,10 @@ type Props = {
   inputHeight?: number;
   noInput?: boolean;
   children?: any;
+  highlightArea?: {
+    startRow: number;
+    endRow: number;
+  };
 };
 const CodeBlock: React.FC<Props> = ({
   showBefore,
@@ -20,6 +24,7 @@ const CodeBlock: React.FC<Props> = ({
   inputValue,
   inputHeight,
   noInput,
+  highlightArea,
 }) => {
   const { userScript } = useContext(AppContext);
   const beforeHeight = showBefore.split(/\r\n|\r|\n/).length;
@@ -35,6 +40,7 @@ const CodeBlock: React.FC<Props> = ({
       <CodeEditor
         inputHeight={beforeHeight + inputHeight}
         beforeHeight={beforeHeight}
+        highlightArea={highlightArea}
       >
         {showBefore +
           (inputValue

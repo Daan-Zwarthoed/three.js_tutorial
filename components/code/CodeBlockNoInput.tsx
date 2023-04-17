@@ -8,11 +8,15 @@ import Resizable from "../global/Resizable";
 const CodeEditor = dynamic(() => import("./CodeEditor"), { ssr: false });
 type Props = {
   children?: any;
+  highlightArea?: {
+    startRow: number;
+    endRow: number;
+  };
 };
-const CodeBlockNoInput: React.FC<Props> = ({ children }) => {
+const CodeBlockNoInput: React.FC<Props> = ({ children, highlightArea }) => {
   return (
     <Resizable resizeTarget="Code">
-      <CodeEditor>{children}</CodeEditor>
+      <CodeEditor highlightArea={highlightArea}>{children}</CodeEditor>
     </Resizable>
   );
 };

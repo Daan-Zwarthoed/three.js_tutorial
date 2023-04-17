@@ -158,6 +158,8 @@ const Loader: React.FC = () => {
   return (
     <>
       <CodeText>
+        <h2>GLTF loader and GLTF animations</h2>
+        <h3>GLTF Loader</h3>
         <p>
           Too import a 3D design into Three.js there are alot of accepted file
           types. The most common and in 99% of cases the best way to import 3D
@@ -175,13 +177,26 @@ const Loader: React.FC = () => {
         <CodeBlockInline>
           {`"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/AnimatedCube/glTF/AnimatedCube.gltf",
 "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf",
-"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/ABeautifulGame/glTF/ABeautifulGame.gltf",`}
+"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF/CesiumMan.gltf",`}
+        </CodeBlockInline>
+        <h3>GLTF Animations</h3>
+        <p>
+          As you can see adding a link to the loader will load that file and
+          automatically play its animations. We do this by creating an animation
+          mixer and then starting all the animations in the scene. The
+          animations actually play because we update our mixer with a delta
+          gotten from the clock.
+        </p>
+        <CodeBlockInline>
+          {`const delta = clock.getDelta();
+if (mixer) mixer.update(delta);`}
         </CodeBlockInline>
       </CodeText>
       <CodeBlock
         showBefore={showBefore}
         showAfter={showAfter}
         inputHeight={1}
+        highlightArea={{ startRow: 35, endRow: 64 }}
       ></CodeBlock>
     </>
   );

@@ -38,7 +38,7 @@ const Navigation: React.FC<InputProps> = ({ children }) => {
   return (
     <div
       id="Navigation"
-      className="absolute bottom-0 w-full z-40 p-2 bg-primary flex flex-row justify-between px-2"
+      className="relative bottom-0 w-full z-40 p-2 bg-primary flex flex-row justify-between px-2"
     >
       {stepIndex !== -1 && (
         <>
