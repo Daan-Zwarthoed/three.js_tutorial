@@ -211,34 +211,37 @@ const Light: React.FC = () => {
   return (
     <>
       <CodeText>
+        <h2>Lights</h2>
         <p>
           Three js offers multiple types of lights. Adding an ambient light and
-          a directionail light will be enough for most projects.
+          a directional light will be enough for most projects:
         </p>
-        <p>
-          Ambient lights are the simpelest of the bunch. This will add an even
-          light to everything in the scene.
-        </p>
-        <p>
-          To actually create shadows in your scene you will need a directional
-          light. A directional light works just like the sun in the way that it
-          doesnt flair outwards in a cone.
-        </p>
-        <p>
-          Spotlight like the name suggests works like a spotlight or flaslight
-          in the way that it flairs out like a cone from the point you choose
-        </p>
-        <p>Point light is the same but goes in all directions</p>
-        <p>
-          A hemisphere light goes from top to bottom from one color to another
-        </p>
+        <ul>
+          <li>
+            Ambient lights are the simpelest of the bunch. This will add an even
+            light to everything in the scene.
+          </li>
+          <li>
+            A directional light works just like the sun in the way that it
+            doesnt flair outwards in a cone but comes evenly from one direction.
+          </li>
+          <li>
+            Spotlight like the name suggests works like a spotlight or flaslight
+            in the way that it flairs out like a cone from the point you choose
+          </li>
+          <li>Point light is the same but goes in all directions</li>
+          <li>
+            A hemisphere light goes from top to bottom from one color to another
+          </li>
+        </ul>
+        <p>Note that ambient and hemisphere lights can't cast shadows.</p>
         <p>
           You can try out the different lights and their helpers with the button
           below:
         </p>
         <div className="grid grid-cols-2 gap-2 w-full flex flex-row flex-wrap my-5">
           {LightModeTypes.map((type) => (
-            <div
+            <button
               key={type}
               className={`w-full text-center py-4 border-solid border-2 first:col-span-2  ${
                 lightMode.includes(type) ? "border-accent" : "border-secondary"
@@ -259,14 +262,14 @@ const Light: React.FC = () => {
               }}
             >
               {type}
-            </div>
+            </button>
           ))}
         </div>
         <p>
           Also note that we did change the material to MeshPhongMaterial. This
           is because MeshBasicMaterial does not interact with lights or shadows.
-          We also manually activated the objects ability to create and receive
-          shadows.
+          We also manually activated the objects ability to create and/or
+          receive shadows.
         </p>
       </CodeText>
 

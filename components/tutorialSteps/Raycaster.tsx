@@ -176,9 +176,11 @@ function onPointerMove(event) {
 canvas.addEventListener("mousemove", onPointerMove);`}</CodeBlockInline>
         <p>
           This code will keep track of the x and y value of the cursor on the
-          canvas in normalized device coordinates. Now for using this
+          canvas in normalized device coordinates. Now for using this to change
+          the color of the cube:
         </p>
-        <CodeBlockInline>{`const intersects = raycaster.intersectObjects(scene.children, false);
+        <CodeBlockInline>{`raycaster.setFromCamera(pointer, camera);
+const intersects = raycaster.intersectObjects(scene.children, false);
 const intersect = intersects[0] && intersects[0].object;
 
 if (intersect) {
@@ -199,8 +201,8 @@ if (intersect) {
         </p>
         <ol>
           <li>
-            First we intersect with all the objects in the scene. From these
-            intersections we get the first one and save its object.
+            First we raycast with all the objects in the scene. We get the first
+            intersection and save its object.
           </li>
           <li>
             Next we check if intersect exists and if it's a new intersection. If

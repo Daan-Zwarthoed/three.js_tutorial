@@ -10,12 +10,13 @@ const Prerequisites: React.FC = () => {
       <h3>What is Three.js?</h3>
       <p>Okay first things first. What actually is Three.js?</p>
       <p>
-        Three.js almost always uses WeBGL to draw 3D. WebGL is a very low-level
-        system that only draws points, lines, and triangles. To do anything
-        useful with WebGL generally requires quite a bit of code and that is
-        where three.js comes in. It handles stuff like scenes, lights, shadows,
-        materials, textures, 3d math, all things that you'd have to write
-        yourself if you were to use WebGL directly.
+        To understand what Three.js is we first need to understand what WebGl
+        is. Because Three.js almost always uses WebGl to draw in 3D. WebGL is a
+        very low-level system that only draws points, lines, and triangles. To
+        do anything useful with WebGL generally requires quite a bit of code and
+        that is where three.js comes in. It handles stuff like scenes, lights,
+        shadows, materials, textures, 3d math, all things that you'd have to
+        write yourself if you were to use WebGL directly.
       </p>
       <h3>What will you learn in this tutorial?</h3>
       <p>

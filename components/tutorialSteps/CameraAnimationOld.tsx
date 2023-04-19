@@ -33,17 +33,17 @@ const cube1 = new THREE.Mesh(geometry, material1);
 cube1.position.x = -7;
 cube1.position.y = 7;
 
-const material2 = new THREE.MeshBasicMaterial({ color: "#ffff99" });
+const material2 = new THREE.MeshBasicMaterial({ color: "#34eb43" });
 const cube2 = new THREE.Mesh(geometry, material2);
 cube2.position.x = 7;
 cube2.position.y = 7;
 
-const material3 = new THREE.MeshBasicMaterial({ color: "#344feb" });
+const material3 = new THREE.MeshBasicMaterial({ color: "#ffff99" });
 const cube3 = new THREE.Mesh(geometry, material3);
 cube3.position.x = -7;
 cube3.position.y = -7;
 
-const material4 = new THREE.MeshBasicMaterial({ color: "#34eb43" });
+const material4 = new THREE.MeshBasicMaterial({ color: "#344feb" });
 const cube4 = new THREE.Mesh(geometry, material4);
 cube4.position.x = 7;
 cube4.position.y = -7;
@@ -90,12 +90,11 @@ function animateCamera() {
     camera.position.y.toFixed(5) === cameraPositionGoal.y.toFixed(5)
   )
     return (cameraPositionGoal = null);
-    camera.position.x += animationDistance.x;
-    camera.position.y += animationDistance.y;;
+  camera.position.x += animationDistance.x;
+  camera.position.y += animationDistance.y;;
 }
 
 function animate() {
-  if (canvas) renderer.setSize(canvas.clientWidth, canvas.clientHeight);
   raycaster.setFromCamera(pointer, camera);
   const intersects = raycaster.intersectObjects(scene.children, false);
   intersect = intersects[0] && intersects[0].object;
@@ -121,7 +120,7 @@ export const cameraAnimationOldSceneFunction = (userScript: string) => {
     0.1,
     2000000
   );
-  camera.position.z = 20;
+  camera.position.z = 30;
 
   const renderer = new THREE.WebGLRenderer({ canvas });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
@@ -136,17 +135,17 @@ export const cameraAnimationOldSceneFunction = (userScript: string) => {
   cube1.position.x = -7;
   cube1.position.y = 7;
 
-  const material2 = new THREE.MeshBasicMaterial({ color: "#ffff99" });
+  const material2 = new THREE.MeshBasicMaterial({ color: "#34eb43" });
   const cube2 = new THREE.Mesh(geometry, material2);
   cube2.position.x = 7;
   cube2.position.y = 7;
 
-  const material3 = new THREE.MeshBasicMaterial({ color: "#344feb" });
+  const material3 = new THREE.MeshBasicMaterial({ color: "#ffff99" });
   const cube3 = new THREE.Mesh(geometry, material3);
   cube3.position.x = -7;
   cube3.position.y = -7;
 
-  const material4 = new THREE.MeshBasicMaterial({ color: "#34eb43" });
+  const material4 = new THREE.MeshBasicMaterial({ color: "#344feb" });
   const cube4 = new THREE.Mesh(geometry, material4);
   cube4.position.x = 7;
   cube4.position.y = -7;
@@ -209,7 +208,6 @@ export const cameraAnimationOldSceneFunction = (userScript: string) => {
   }
 
   function animate() {
-    if (canvas) renderer.setSize(canvas.clientWidth, canvas.clientHeight);
     raycaster.setFromCamera(pointer, camera);
     const intersects = raycaster.intersectObjects(scene.children, false);
     intersect = intersects[0] && intersects[0].object;
@@ -235,7 +233,7 @@ const CameraAnimationOld: React.FC = () => {
           It has worse performance, looks worse for the user, doesn't even work
           for colors, takes more code and is way harder to read then gsap.
         </p>
-        <p>Long story short. Just use gsap</p>
+        <p>Long story short. Just use gsap.</p>
       </CodeText>
       <CodeBlockNoInput highlightArea={{ startRow: 50, endRow: 101 }}>
         {code}

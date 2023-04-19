@@ -31,7 +31,7 @@ const geometry = new THREE.BoxGeometry(10, 10, 10);
 const material1 = new THREE.MeshBasicMaterial({ color: "#d63e4d" });
 const cube1 = new THREE.Mesh(geometry, material1);
 cube1.position.x = -7;
-cube1.position.y = 7.35;
+cube1.position.y = 7;
 
 const material2 = new THREE.MeshBasicMaterial({ color: "#34eb43" });
 const cube2 = new THREE.Mesh(geometry, material2);
@@ -110,7 +110,7 @@ export const cameraAnimationSceneFunction = (userScript: string) => {
   const material1 = new THREE.MeshBasicMaterial({ color: "#d63e4d" });
   const cube1 = new THREE.Mesh(geometry, material1);
   cube1.position.x = -7;
-  cube1.position.y = 7.35;
+  cube1.position.y = 7;
 
   const material2 = new THREE.MeshBasicMaterial({ color: "#34eb43" });
   const cube2 = new THREE.Mesh(geometry, material2);
@@ -167,12 +167,11 @@ export const cameraAnimationSceneFunction = (userScript: string) => {
   canvas.addEventListener("click", onClick);
 
   function animate() {
-    requestAnimationFrame(animate);
-    if (canvas) renderer.setSize(canvas.clientWidth, canvas.clientHeight);
     raycaster.setFromCamera(pointer, camera);
     const intersects = raycaster.intersectObjects(scene.children, false);
     intersect = intersects[0] && intersects[0].object;
 
+    requestAnimationFrame(animate);
     renderer.render(scene, camera);
   }
 

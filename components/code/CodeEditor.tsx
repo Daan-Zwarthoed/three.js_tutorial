@@ -104,7 +104,7 @@ const CodeBlock: React.FC<Props> = ({
     <AceEditor
       mode="javascript"
       theme="gruvbox"
-      name="UNIQUE_ID_OF_DIV"
+      name="AceEditor"
       fontSize={15}
       width={"100%"}
       height={"100%"}

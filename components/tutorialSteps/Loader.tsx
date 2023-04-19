@@ -163,7 +163,7 @@ const Loader: React.FC = () => {
         <p>
           Too import a 3D design into Three.js there are alot of accepted file
           types. The most common and in 99% of cases the best way to import 3D
-          desings is by GLTF. GLTF loads the fastest and is overall the best
+          designs is by GLTF. GLTF loads the fastest and is overall the best
           optimized option.
         </p>
         <p>

@@ -83,20 +83,25 @@ const Box: React.FC = () => {
     <>
       <CodeText>
         <h2>Add your own box to the scene</h2>
-        <p>
-          To create a cube, we need a BoxGeometry. This is an object that
-          contains all the points of the cube.
-        </p>
-        <p>
-          We also need a material to color the cube. Three.js comes with several
-          materials, but we'll stick to the MeshBasicMaterial for now. All
-          materials take an object of properties which will be applied to them.
-        </p>
-        <p>
-          The third thing we need is a Mesh. A mesh is an object that takes a
-          geometry, and applies a material to it, which we then can insert to
-          our scene, and move around freely.
-        </p>
+        <p>To create a cube, we need three things:</p>
+        <ol>
+          <li>
+            First we need a BoxGeometry. This is an object that contains all the
+            points and sides of the cube.
+          </li>
+          <li>
+            We also need a material to color the cube. Three.js comes with
+            several materials, but we'll stick to the MeshBasicMaterial for now.
+            All materials take an object of properties which will be applied to
+            them.
+          </li>
+          <li>
+            The third thing we need is a Mesh. A mesh is an object that takes a
+            geometry, and applies a material to it, which we then can insert to
+            our scene, and move around freely.
+          </li>
+        </ol>
+        <p></p>
         <CodeBlockInline>{`const geometry = new THREE.BoxGeometry(10, 10, 10);
 const material = new THREE.MeshBasicMaterial({ 
   color: "#d63e4d"
@@ -108,6 +113,10 @@ scene.add(cube);`}</CodeBlockInline>
           Take note of the fact we moved the camera back a bit. This is because
           anything added to the scene will by default be added at the
           coordinates 0, 0, 0 so the camera would be inside of the cube.
+        </p>
+        <p>
+          Also note that in our animation loop we are rotating the cube on every
+          frame.
         </p>
       </CodeText>
       <CodeBlock

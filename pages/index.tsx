@@ -89,7 +89,7 @@ const Home = () => {
             <h1 className="text-6xl mb-2">The best way too learn three.js</h1>
             <h2>Interactive tutorial to learn three.js</h2>
             <Link
-              href="/tutorial"
+              href="/tutorial?step=prerequisites"
               className="block w-fit bg-accent p-3 rounded-xl mt-2"
             >
               Start tutorial

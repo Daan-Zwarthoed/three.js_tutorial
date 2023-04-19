@@ -68,6 +68,7 @@ export const rendererSceneFunction = (userScript: string) => {
 
 const Renderer: React.FC = () => (
   <CodeText>
+    <h2>Creating a scene</h2>
     <h4>Basic setup</h4>
     <p>
       First thing we need to do before the fun stuff is creating a scene and
@@ -78,7 +79,9 @@ const Renderer: React.FC = () => (
       this we can work on our javascript:
     </p>
     <CodeBlockInline>
-      {`const canvas = document.getElementById("canvas"); 
+      {`import * as THREE from "three";
+
+const canvas = document.getElementById("canvas"); 
 const scene = new THREE.Scene(); 
 const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 2000 );
 
@@ -134,14 +137,6 @@ animate();`}
       screen is refreshed. (typically 60 times per second)
     </p>
     <p>Okay cool but now im just rendering a blue screen. Lets change that!</p>
-    <div
-      onClick={() => {
-        Router.query.step = "box";
-        Router.push(Router);
-      }}
-    >
-      Go to box
-    </div>
   </CodeText>
 );
 

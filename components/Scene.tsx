@@ -35,7 +35,7 @@ const Scene: React.FC<InputProps> = ({ threeScript }) => {
         <div id="backButton" className="relative h-20 w-20 ml-auto my-5">
           <Image src="/images/backButton.png" fill alt="back button"></Image>
         </div>
-        <div>hallo ik ben daan</div>
+        <div>This is my beautifaul back button it is so precious.</div>
       </div>
       <canvas
         key={resetKey}

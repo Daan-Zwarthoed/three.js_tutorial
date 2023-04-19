@@ -87,9 +87,11 @@ const Resizable: React.FC<InputProps> = ({ children, resizeTarget }) => {
     >
       <div className="flex w-full h-full overflow-y-auto">{children}</div>
       <div
-        className="absolute left-0 top-0 z-20 flex h-full w-[20px] cursor-col-resize bg-blue-500"
+        className="absolute flex justify-center items-center left-0 top-0 z-20 flex h-full w-[10px] cursor-col-resize bg-slate-700"
         onMouseDown={(event) => handleResizeStart(event)}
-      ></div>
+      >
+        <div className="h-20 w-[5px] bg-primary rounded-full"></div>
+      </div>
     </div>
   );
 };
