@@ -37,7 +37,6 @@ const Navigation: React.FC<InputProps> = ({ children }) => {
     if (!toolTip) return;
     const rect = event.target.getBoundingClientRect();
     const center = rect.left + rect.width / 2;
-    console.log(center);
     toolTip.style.left = center + "px";
     toolTip.innerHTML = id;
     // toolTip.left = center;
@@ -62,6 +61,7 @@ const Navigation: React.FC<InputProps> = ({ children }) => {
           size="sm"
           icon={step.icon}
           color={index === stepIndex ? "#D25E2F" : "white"}
+          key={step.id}
         />
       ))}
       <div

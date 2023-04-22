@@ -4,8 +4,7 @@ import AppContext from "../../contexts/AppContextProvider";
 import ace, { Range } from "ace-builds";
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-javascript";
-import "ace-builds/src-noconflict/theme-gruvbox";
-import "ace-builds/src-noconflict/theme-gruvbox_dark_hard";
+import "ace-builds/src-noconflict/theme-dracula";
 
 import "ace-builds/src-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/theme-github";
@@ -103,7 +102,7 @@ const CodeBlock: React.FC<Props> = ({
   return (
     <AceEditor
       mode="javascript"
-      theme="gruvbox"
+      theme="dracula"
       name="AceEditor"
       fontSize={15}
       width={"100%"}

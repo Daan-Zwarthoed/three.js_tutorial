@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React from "react";
+import NextStepButton from "../global/NextStepButton";
 
 const Prerequisites: React.FC = () => {
   return (
@@ -7,7 +8,7 @@ const Prerequisites: React.FC = () => {
       <h2>
         What do you need (to know) before starting this three.js adventure?
       </h2>
-      <h3>What is Three.js?</h3>
+      <h3 className="mt-3">What is Three.js?</h3>
       <p>Okay first things first. What actually is Three.js?</p>
       <p>
         To understand what Three.js is we first need to understand what WebGl
@@ -18,14 +19,14 @@ const Prerequisites: React.FC = () => {
         shadows, materials, textures, 3d math, all things that you'd have to
         write yourself if you were to use WebGL directly.
       </p>
-      <h3>What will you learn in this tutorial?</h3>
+      <h3 className="mt-3">What will you learn in this tutorial?</h3>
       <p>
         This tutorial sets out to give you a basic understanding of what
         Three.js has to offer and give you the building blocks to make your own
         creations. We will do this by showing you how to create your own scene,
         lights and objects and make the user able to interact with them.
       </p>
-      <h3>What will you need to complete this tutorial?</h3>
+      <h3 className="mt-3">What will you need to complete this tutorial?</h3>
       <p>
         To complete this tutorial you will only need a basic understanding of
         Javascript. If you need to get started with javascript first you can
@@ -33,16 +34,25 @@ const Prerequisites: React.FC = () => {
         <a
           className="text-blue-500 underline"
           target="_blank"
-          href="https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/JavaScript_basics"
+          href="https://www.w3schools.com/js/DEFAULT.asp"
         >
-          this.
+          w3schools
         </a>{" "}
+        or{" "}
+        <a
+          className="text-blue-500 underline"
+          target="_blank"
+          href="https://javascript.info/"
+        >
+          javascript.info.
+        </a>
       </p>
       <p className="mt-2">
         To add Three.js to your own project. We will assume you already have
         your own project structure with a html file linked to a js file. Have
         installed Three.js and are either running a build tool, or using a local
-        server with a CDN and import maps. If not look into the{" "}
+        server with a CDN and import maps. If not look into the official
+        Three.js{" "}
         <a
           className="text-blue-500 underline"
           target="_blank"
@@ -51,6 +61,7 @@ const Prerequisites: React.FC = () => {
           installation guide.
         </a>
       </p>
+      <NextStepButton></NextStepButton>
     </div>
   );
 };

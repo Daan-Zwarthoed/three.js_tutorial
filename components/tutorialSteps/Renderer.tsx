@@ -7,6 +7,7 @@ import CodeBlockInline from "../code/CodeBlockInline";
 import Image from "next/image";
 import Router from "next/router";
 import CodeText from "../tutorialHelpers/CodeText";
+import NextStepButton from "../global/NextStepButton";
 
 const showBefore = `import * as THREE from "three";
 

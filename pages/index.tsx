@@ -4,6 +4,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Link from "next/link";
+import Router from "next/router";
 
 const Home = () => {
   useEffect(() => {
@@ -89,7 +90,7 @@ const Home = () => {
             <h1 className="text-6xl mb-2">The best way too learn three.js</h1>
             <h2>Interactive tutorial to learn three.js</h2>
             <Link
-              href="/tutorial?step=prerequisites"
+              href="/tutorial?step=Prerequisites"
               className="block w-fit bg-accent p-3 rounded-xl mt-2"
             >
               Start tutorial
