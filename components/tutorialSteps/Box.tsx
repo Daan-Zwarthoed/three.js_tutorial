@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import * as THREE from "three";
 import userFunction from "../../helpers/userFunction";
 import CodeBlock from "../code/CodeBlock";
@@ -33,6 +33,8 @@ function animate() {
   }
 }
 animate();`;
+
+let test = false;
 export const boxSceneFunction = (userScript: string) => {
   const canvas = document.getElementById("canvas");
 
@@ -47,7 +49,7 @@ export const boxSceneFunction = (userScript: string) => {
   camera.position.z = 30;
   const renderer = new THREE.WebGLRenderer({ canvas });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-  renderer.setClearColor(0x01e3d59, 1);
+  renderer.setClearColor(0x01e3d59);
 
   window.addEventListener("resize", function () {
     if (!canvas.parentElement) return;
@@ -65,6 +67,7 @@ export const boxSceneFunction = (userScript: string) => {
     [THREE, scene],
     "cube"
   );
+  assignmentCheck(cube);
 
   function animate() {
     if (cube) {
@@ -78,7 +81,27 @@ export const boxSceneFunction = (userScript: string) => {
   animate();
 };
 
+const assignment = {
+  cubeExists: false,
+  cubeIsCone: false,
+  cubeIsGreen: false,
+  cubeIs201010: false,
+};
+
+const assignmentCheck = (cube: THREE.Mesh) => {
+  if (!cube) return;
+  if (cube) assignment.cubeExists = true;
+  if (cube.geometry.type === "ConeGeometry") assignment.cubeIsCone = true;
+  if ((cube.material as any).color.equals(new THREE.Color(0xd25e2f)))
+    assignment.cubeIsGreen = true;
+};
+
 const Box: React.FC = () => {
+  const { userScript } = useContext(AppContext);
+  const [checked, setChecked] = useState(assignment);
+  useEffect(() => {
+    setTimeout(() => setChecked({ ...assignment }));
+  }, [userScript]);
   return (
     <>
       <CodeText>
@@ -104,7 +127,7 @@ const Box: React.FC = () => {
         <p></p>
         <CodeBlockInline>{`const geometry = new THREE.BoxGeometry(10, 10, 10);
 const material = new THREE.MeshBasicMaterial({ 
-  color: "#d63e4d"
+  color: 0xd63e4d
 });
 const cube = new THREE.Mesh(geometry, material);
 scene.add(cube);`}</CodeBlockInline>
@@ -118,6 +141,36 @@ scene.add(cube);`}</CodeBlockInline>
           Also note that in our animation loop we are rotating the cube on every
           frame.
         </p>
+        <div>
+          <input
+            type="checkbox"
+            id="scales"
+            name="scales"
+            className="mr-3"
+            checked={checked.cubeExists}
+          />
+          <label htmlFor="scales">Add your own cube to the scene!</label>
+        </div>
+        <div>
+          <input
+            type="checkbox"
+            id="scales"
+            name="scales"
+            className="mr-3"
+            checked={checked.cubeIsCone}
+          />
+          <label htmlFor="scales">Make the cube a ConeGeometry</label>
+        </div>
+        <div>
+          <input
+            type="checkbox"
+            id="scales"
+            name="scales"
+            className="mr-3"
+            checked={checked.cubeIsGreen}
+          />
+          <label htmlFor="scales">Make the color: 0xd25e2f</label>
+        </div>
       </CodeText>
       <CodeBlock
         showBefore={showBefore}

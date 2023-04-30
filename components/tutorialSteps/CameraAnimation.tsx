@@ -215,9 +215,7 @@ const CameraAnimation: React.FC = () => {
         </p>
       </CodeText>
 
-      <CodeBlockNoInput highlightArea={{ startRow: 47, endRow: 79 }}>
-        {code}
-      </CodeBlockNoInput>
+      <CodeBlockNoInput>{code}</CodeBlockNoInput>
     </>
   );
 };

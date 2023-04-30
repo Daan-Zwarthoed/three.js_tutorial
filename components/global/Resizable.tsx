@@ -85,7 +85,9 @@ const Resizable: React.FC<InputProps> = ({ children, resizeTarget }) => {
       id={`Resizable${resizeTarget}`}
       className="relative h-full w-1/2 shrink-0 "
     >
-      <div className="flex w-full h-full overflow-y-auto">{children}</div>
+      <div className="flex flex-col w-full h-full overflow-y-auto">
+        {children}
+      </div>
       <div
         className="absolute flex justify-center items-center left-0 top-0 z-20 flex h-full w-[10px] cursor-col-resize bg-slate-700"
         onMouseDown={(event) => handleResizeStart(event)}

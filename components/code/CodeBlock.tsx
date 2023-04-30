@@ -37,6 +37,7 @@ const CodeBlock: React.FC<Props> = ({
 
   return (
     <Resizable resizeTarget="Code">
+      <h2 className="w-full bg-primary top-0 z-30 mb-5 pl-3">Input</h2>
       <CodeEditor
         inputHeight={beforeHeight + inputHeight}
         beforeHeight={beforeHeight}
