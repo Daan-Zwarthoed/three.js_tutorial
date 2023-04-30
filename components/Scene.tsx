@@ -28,6 +28,7 @@ const Scene: React.FC<InputProps> = ({ threeScript }) => {
   }, [tutorialStep]);
   return (
     <Resizable resizeTarget="Canvas">
+      <h2 className="w-full bg-primary top-0 z-30 pl-3">Result</h2>
       <div
         style={{ opacity: 0, display: "none" }}
         className="absolute z-20 text-center right-0 bg-white/70 pr-5"
