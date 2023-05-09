@@ -6,6 +6,7 @@ import gsap from "gsap";
 import AppContext from "../../contexts/AppContextProvider";
 import { stepList } from "../../pages/tutorial";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import StepButton from "../global/StepButton";
 type InputProps = {
   children?: any;
 };
@@ -50,27 +51,32 @@ const Navigation: React.FC<InputProps> = ({ children }) => {
   return (
     <div
       id="Navigation"
-      className="relative bottom-0 w-full z-40 p-2 bg-primary flex flex-row justify-center  px-2"
+      className="relative bottom-0 w-full z-40 p-2 bg-background flex flex-row justify-center px-2"
     >
-      {stepList.map((step, index) => (
-        <FontAwesomeIcon
-          onClick={() => changeStep(step.id)}
-          onMouseEnter={(event) => handleHover(event, step.id, true)}
-          onMouseLeave={(event) => handleHover(event, step.id, false)}
-          className="mr-2 h-5 w-5 cursor-pointer mx-3"
-          size="sm"
-          icon={step.icon}
-          color={index === stepIndex ? "#D25E2F" : "white"}
-          key={step.id}
-        />
-      ))}
-      <div
-        id="ToolTip"
-        className="absolute -top-full -translate-x-1/2 opacity-0 bg-primary py-1 px-3 text-white"
-      ></div>
+      <div className="flex flex-row items-center">
+        {stepList.map((step, index) => (
+          <FontAwesomeIcon
+            onClick={() => changeStep(step.id)}
+            onMouseEnter={(event) => handleHover(event, step.id, true)}
+            onMouseLeave={(event) => handleHover(event, step.id, false)}
+            className="mr-2 h-5 w-5 cursor-pointer mx-3"
+            size="sm"
+            icon={step.icon}
+            color={index === stepIndex ? "#D25E2F" : "white"}
+            key={step.id}
+          />
+        ))}
+        <div
+          id="ToolTip"
+          className="absolute -top-full -translate-x-1/2 opacity-0 bg-background py-1 px-3 text-white"
+        ></div>
+      </div>
+      <div className="absolute right-5 bottom-1/2 translate-y-1/2">
+        <StepButton></StepButton>
+        <StepButton next></StepButton>
+      </div>
     </div>
   );
 };
 
 export default Navigation;
-// bg-quartery

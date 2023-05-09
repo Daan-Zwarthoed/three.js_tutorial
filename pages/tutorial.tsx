@@ -22,9 +22,6 @@ import CameraAnimation, {
 import InfoBubble, {
   infoBubbleSceneFunction,
 } from "../components/tutorialSteps/InfoBubble";
-import CameraAnimationOld, {
-  cameraAnimationOldSceneFunction,
-} from "../components/tutorialSteps/CameraAnimationOld";
 import Light, { lightSceneFunction } from "../components/tutorialSteps/Light";
 import Addons, {
   addonsSceneFunction,
@@ -90,12 +87,6 @@ export const stepList: StepList = [
     pageFunction: cameraAnimationSceneFunction,
   },
   {
-    id: "Camera animation bad",
-    element: <CameraAnimationOld></CameraAnimationOld>,
-    icon: FA.faCameraRetro,
-    pageFunction: cameraAnimationOldSceneFunction,
-  },
-  {
     id: "Info bubble",
     element: <InfoBubble></InfoBubble>,
     icon: FA.faFlagCheckered,
@@ -126,10 +117,7 @@ const Tutorial = () => {
       </Head>
       <div className="flex flex-col h-screen max-h-screen w-screen">
         <div className="h-[95%] w-screen flex flex-row">
-          <div
-            id="ResizableCanvasNeighbour"
-            className="flex flex-row w-full h-full"
-          >
+          <div className="flex flex-row w-full h-full">
             {stepList[tutorialStep] && stepList[tutorialStep].element}
             {!stepList[tutorialStep] && (
               <div

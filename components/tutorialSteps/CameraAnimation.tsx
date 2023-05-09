@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import * as THREE from "three";
 import gsap from "gsap";
 import CodeBlock from "../code/CodeBlock";
@@ -6,13 +6,16 @@ import CodeBlockNoInput from "../code/CodeBlockNoInput";
 import CodeBlockInline from "../code/CodeBlockInline";
 import Link from "next/link";
 import CodeText from "../tutorialHelpers/CodeText";
+import userFunction from "../../helpers/userFunction";
+import AppContext from "../../contexts/AppContextProvider";
 
-const code = `import * as THREE from "three";
+const beforeGsapCode = `import * as THREE from "three";
 import gsap from "gsap";
+`;
 
+const gsapCode = `
 const canvas = document.getElementById("canvas");
 const raycaster = new THREE.Raycaster();
-
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(
@@ -55,7 +58,7 @@ scene.add(cube4);
 
 const pointer = new THREE.Vector2();
 
-function onPointerMove(event: { clientX: number; clientY: number }) {
+function onPointerMove(event) {
   if (!canvas) return;
   const canvasLeft = canvas.getBoundingClientRect().left;
   const canvasTop = canvas.getBoundingClientRect().top;
@@ -86,98 +89,114 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();`;
-export const cameraAnimationSceneFunction = (userScript: string) => {
-  const canvas = document.getElementById("canvas");
-  const raycaster = new THREE.Raycaster();
 
+const noGsapCode = `
+const canvas = document.getElementById("canvas");
+const raycaster = new THREE.Raycaster();
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(
+  70,
+  canvas.clientWidth / canvas.clientHeight,
+  0.1,
+  2000000
+);
+camera.position.z = 30;
+
+const renderer = new THREE.WebGLRenderer({ canvas });
+renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+renderer.setClearColor(0x01e3d59, 1);
+
+const geometry = new THREE.BoxGeometry(10, 10, 10);
+const material1 = new THREE.MeshBasicMaterial({ color: "#d63e4d" });
+const cube1 = new THREE.Mesh(geometry, material1);
+cube1.position.x = -7;
+cube1.position.y = 7;
+
+const material2 = new THREE.MeshBasicMaterial({ color: "#34eb43" });
+const cube2 = new THREE.Mesh(geometry, material2);
+cube2.position.x = 7;
+cube2.position.y = 7;
+
+const material3 = new THREE.MeshBasicMaterial({ color: "#ffff99" });
+const cube3 = new THREE.Mesh(geometry, material3);
+cube3.position.x = -7;
+cube3.position.y = -7;
+
+const material4 = new THREE.MeshBasicMaterial({ color: "#344feb" });
+const cube4 = new THREE.Mesh(geometry, material4);
+cube4.position.x = 7;
+cube4.position.y = -7;
+
+scene.add(cube1);
+scene.add(cube2);
+scene.add(cube3);
+scene.add(cube4);
+
+const pointer = new THREE.Vector2();
+
+function onPointerMove(event) {
   if (!canvas) return;
+  const canvasLeft = canvas.getBoundingClientRect().left;
+  const canvasTop = canvas.getBoundingClientRect().top;
+  pointer.x = ((event.clientX - canvasLeft) / canvas.clientWidth) * 2 - 1;
+  pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
+}
+canvas.addEventListener("mousemove", onPointerMove);
 
-  const scene = new THREE.Scene();
+let intersect;
+let cameraPositionGoal;
+let animationDistance;
 
-  const camera = new THREE.PerspectiveCamera(
-    70,
-    canvas.clientWidth / canvas.clientHeight,
-    0.1,
-    2000000
+function onClick() {
+  if (!intersect) return;
+
+  cameraPositionGoal = new THREE.Vector2(
+    intersect.position.x,
+    intersect.position.y
   );
-  camera.position.z = 30;
+  const animationTime = 100; // In frames
+  animationDistance = new THREE.Vector2(
+    (cameraPositionGoal.x - camera.position.x) / animationTime,
+    (cameraPositionGoal.y - camera.position.y) / animationTime
+  );
+}
+canvas.addEventListener("click", onClick);
 
-  const renderer = new THREE.WebGLRenderer({ canvas });
-  renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-  renderer.setClearColor(0x01e3d59, 1);
+function animateCamera() {
+  if (!cameraPositionGoal || !animationDistance) return;
+  if (
+    camera.position.x.toFixed(5) === cameraPositionGoal.x.toFixed(5) &&
+    camera.position.y.toFixed(5) === cameraPositionGoal.y.toFixed(5)
+  )
+    return (cameraPositionGoal = null);
+  camera.position.x += animationDistance.x;
+  camera.position.y += animationDistance.y;
+}
 
-  const geometry = new THREE.BoxGeometry(10, 10, 10);
-  const material1 = new THREE.MeshBasicMaterial({ color: "#d63e4d" });
-  const cube1 = new THREE.Mesh(geometry, material1);
-  cube1.position.x = -7;
-  cube1.position.y = 7;
+function animate() {
+  raycaster.setFromCamera(pointer, camera);
+  const intersects = raycaster.intersectObjects(scene.children, false);
+  intersect = intersects[0] && intersects[0].object;
 
-  const material2 = new THREE.MeshBasicMaterial({ color: "#34eb43" });
-  const cube2 = new THREE.Mesh(geometry, material2);
-  cube2.position.x = 7;
-  cube2.position.y = 7;
+  animateCamera();
 
-  const material3 = new THREE.MeshBasicMaterial({ color: "#ffff99" });
-  const cube3 = new THREE.Mesh(geometry, material3);
-  cube3.position.x = -7;
-  cube3.position.y = -7;
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+}
+animate();`;
+let renderer: THREE.WebGLRenderer | undefined;
 
-  const material4 = new THREE.MeshBasicMaterial({ color: "#344feb" });
-  const cube4 = new THREE.Mesh(geometry, material4);
-  cube4.position.x = 7;
-  cube4.position.y = -7;
-
-  scene.add(cube1);
-  scene.add(cube2);
-  scene.add(cube3);
-  scene.add(cube4);
-
-  window.addEventListener("resize", function () {
-    if (!canvas.parentElement) return;
-    renderer.setSize(
-      canvas.parentElement.clientWidth,
-      canvas.parentElement.clientHeight,
-      true
-    );
-    camera.aspect = canvas.clientWidth / canvas.clientHeight;
-    camera.updateProjectionMatrix();
-  });
-
-  const pointer = new THREE.Vector2();
-
-  function onPointerMove(event: { clientX: number; clientY: number }) {
-    if (!canvas) return;
-    const canvasLeft = canvas.getBoundingClientRect().left;
-    const canvasTop = canvas.getBoundingClientRect().top;
-    pointer.x = ((event.clientX - canvasLeft) / canvas.clientWidth) * 2 - 1;
-    pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
-  }
-  canvas.addEventListener("mousemove", onPointerMove);
-
-  let intersect: THREE.Object3D<THREE.Event> | null;
-
-  function onClick() {
-    if (!intersect) return;
-    gsap.to(camera.position, {
-      ...new THREE.Vector2(intersect.position.x, intersect.position.y),
-      duration: 1,
-      ease: "power1.out",
-    });
-  }
-  canvas.addEventListener("click", onClick);
-
-  function animate() {
-    raycaster.setFromCamera(pointer, camera);
-    const intersects = raycaster.intersectObjects(scene.children, false);
-    intersect = intersects[0] && intersects[0].object;
-
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-  }
-
-  animate();
+export const cameraAnimationSceneFunction = (userScript: string) => {
+  userFunction(userScript, ["THREE", "gsap"], [THREE, gsap], "renderer");
 };
+
 const CameraAnimation: React.FC = () => {
+  const { userScript, setUserScript, setResetCanvasKey } =
+    useContext(AppContext);
+  useEffect(() => {
+    setUserScript(gsapCode);
+  }, []);
   return (
     <>
       <CodeText>
@@ -213,9 +232,61 @@ const CameraAnimation: React.FC = () => {
           Just this code will animate your camera from its current position to
           one you selected
         </p>
+        <p>
+          On the right you will be able to see what animating the camera to move
+          infront of the clicked cube would look like.
+        </p>
+        <p>
+          To nail the hammer home what a gift gsap is for your Three.js
+          animations I made the same functionality as in the last step but
+          without gsap.
+        </p>
+        <div className="relative w-fit my-2">
+          <button
+            className="py-2 w-10 relative z-10"
+            onClick={() => {
+              setResetCanvasKey(Math.random());
+              if (renderer) {
+                renderer.dispose();
+                renderer.forceContextLoss();
+              }
+              setUserScript(gsapCode);
+            }}
+          >
+            New
+          </button>
+          <button
+            className="py-2 w-10 relative z-10"
+            onClick={() => {
+              setResetCanvasKey(Math.random());
+              if (renderer) {
+                renderer.dispose();
+                renderer.forceContextLoss();
+              }
+              setUserScript(noGsapCode);
+            }}
+          >
+            Old
+          </button>
+          <div
+            className="absolute transition-all duration-700 bg-tertary w-1/2 h-full top-0"
+            style={{
+              left: userScript === gsapCode ? "0" : "50%",
+            }}
+          ></div>
+        </div>
+        <p>
+          It has worse performance, looks worse for the user, doesn't even work
+          for colors, takes more code and is way harder to read then gsap.
+        </p>
+        <p>Long story short. Just use gsap.</p>
       </CodeText>
 
-      <CodeBlockNoInput>{code}</CodeBlockNoInput>
+      <CodeBlock
+        showBefore={beforeGsapCode}
+        inputValue={userScript}
+        showAfter={""}
+      ></CodeBlock>
     </>
   );
 };

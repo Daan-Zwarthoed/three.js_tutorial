@@ -14,6 +14,9 @@ const AppContext = React.createContext<any>(null);
 export const AppContextProvider = ({ children }: any) => {
   const [userScript, setUserScript] = React.useState<string | null>(null);
   const [tutorialStep, setTutorialStep] = React.useState<number>(-1);
+  const [resetCanvasKey, setResetCanvasKey] = React.useState<number>(
+    Math.random()
+  );
 
   return (
     <AppContext.Provider
@@ -22,6 +25,8 @@ export const AppContextProvider = ({ children }: any) => {
         setUserScript,
         tutorialStep,
         setTutorialStep,
+        resetCanvasKey,
+        setResetCanvasKey,
       }}
     >
       {children}

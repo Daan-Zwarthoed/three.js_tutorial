@@ -83,7 +83,9 @@ const CodeBlock: React.FC<Props> = ({
         "highlightArea",
         "fullLine"
       );
-      editor.scrollToLine(highlightArea.startRow, true, true, function () {});
+
+      editor.setAnimatedScroll(true);
+      editor.gotoLine(highlightArea.startRow, 0, true);
     }
 
     if (inputHeight && beforeHeight)
@@ -107,9 +109,9 @@ const CodeBlock: React.FC<Props> = ({
       fontSize={15}
       width={"100%"}
       height={"100%"}
-      style={{ position: "absolute", top: "0" }}
+      // style={{ position: "absolute", top: "0" }}
       value={children}
-      editorProps={{ $blockScrolling: true }}
+      editorProps={{ animatedScroll: true }}
       setOptions={{
         useWorker: false,
         enableBasicAutocompletion: true,

@@ -2,11 +2,11 @@ const colors = require("tailwindcss/colors");
 const allColors = {
   ...colors,
   ...{
-    primary: "#021622",
+    primary: "#D25E2F",
     seconday: "#fce2ce",
-    tertary: "#ff8f3e",
-    quartery: "#586ba4",
-    accent: "#D25E2F",
+    tertary: "#334155",
+    background: "#021622",
+    accent: "#46A0A0",
   },
 };
 

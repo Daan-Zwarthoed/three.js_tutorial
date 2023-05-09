@@ -4,20 +4,22 @@ import { stepList } from "../../pages/tutorial";
 import Router from "next/router";
 import AppContext from "../../contexts/AppContextProvider";
 type InputProps = {
-  children?: any;
+  next?: true;
 };
 
-const NextStepButton: React.FC<InputProps> = ({ children }) => {
+const StepButton: React.FC<InputProps> = ({ next }) => {
   const { setUserScript } = useContext(AppContext);
-  const [nextStepId, setNextStepId] = useState<string | undefined>(undefined);
+  const [goalStepId, setGoalStepId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const routerStepIndex = stepList.findIndex(
       (item) => item.id === Router.query.step
     );
 
-    const nextStep = stepList[routerStepIndex + 1];
-    if (nextStep) setNextStepId(nextStep.id);
+    const goalStep = next
+      ? stepList[routerStepIndex + 1]
+      : stepList[routerStepIndex - 1];
+    if (goalStep) setGoalStepId(goalStep.id);
   });
   const changeStep = (id: string | string[] | undefined) => {
     if (typeof id !== "string") return;
@@ -27,14 +29,15 @@ const NextStepButton: React.FC<InputProps> = ({ children }) => {
       query: { ...Router.query, step: id },
     });
   };
+  if (!goalStepId) return <></>;
   return (
     <button
-      className="p-2 mt-3 bg-accent rounded-xl w-fit"
-      onClick={() => changeStep(nextStepId)}
+      className={`p-1 rounded-xl w-fit ml-4 ${next ? "bg-primary" : ""}`}
+      onClick={() => changeStep(goalStepId)}
     >
-      Go to: {nextStepId}
+      {next ? "Next" : "Back"}
     </button>
   );
 };
 
-export default NextStepButton;
+export default StepButton;

@@ -200,19 +200,20 @@ if (intersect) {
           you through it step by step.
         </p>
         <ol>
-          <li>
-            First we raycast with all the objects in the scene. We get the first
-            intersection and save its object.
+          <li className="my-3">
+            First we <strong>raycast</strong> with all the objects in the scene.
+            We get the first intersection and save its object.
           </li>
-          <li>
-            Next we check if intersect exists and if it's a new intersection. If
-            this is true we reverse the previous intersection if necessary, we
-            save the new intersect in INTERSECTED and we clone the color to
-            INTERSECTEDCOLOR. Then we set our new intersection to a darkish red.
+          <li className="my-3">
+            Next we check if <strong>intersect</strong> exists and if it's a new
+            intersection. If this is true we reverse the previous intersection
+            if necessary, we save the new intersect in INTERSECTED and we clone
+            the color to INTERSECTEDCOLOR. Then we set our new intersection to a
+            darkish red.
           </li>
-          <li>
-            If intersect doesn't exist we check if our INTERSECTED exists and
-            reset it if it does.
+          <li className="my-3">
+            If intersect <strong>doesn't</strong> exist we check if our
+            INTERSECTED exists and reset it if it does.
           </li>
         </ol>
       </CodeText>

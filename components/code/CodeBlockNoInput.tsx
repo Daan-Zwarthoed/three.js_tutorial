@@ -16,6 +16,8 @@ type Props = {
 const CodeBlockNoInput: React.FC<Props> = ({ children, highlightArea }) => {
   return (
     <Resizable resizeTarget="Code">
+      <h2 className="w-full bg-background top-0 z-30 pl-3">Input</h2>
+
       <CodeEditor highlightArea={highlightArea}>{children}</CodeEditor>
     </Resizable>
   );

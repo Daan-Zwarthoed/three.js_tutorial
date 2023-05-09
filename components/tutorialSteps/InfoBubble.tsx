@@ -14,7 +14,7 @@ const SubStepTypes = [
   "hide info behind car",
   "info button position",
 ] as const;
-type SubStep = typeof SubStepTypes[number];
+type SubStep = (typeof SubStepTypes)[number];
 const code = `import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader";
 import { OrbitControls } from "three/addons/controls/OrbitControls";
@@ -249,7 +249,7 @@ export const infoBubbleSceneFunction = (userScript: string) => {
     }
   );
 
-  addEventListener("resize", function () {
+  window.addEventListener("resize", function () {
     if (!canvas.parentElement) return;
     renderer.setSize(
       canvas.parentElement.clientWidth,
@@ -491,7 +491,7 @@ const InfoBubble: React.FC = () => {
             <button
               key={type}
               className={`flex items-center justify-center w-full text-center p-2 border-solid border-2  ${
-                subStep.includes(type) ? "border-accent" : "border-secondary"
+                subStep.includes(type) ? "border-primary" : "border-secondary"
               }`}
               onClick={() => setSubStep(type)}
             >

@@ -5,6 +5,8 @@ import CodeBlock from "../code/CodeBlock";
 import CodeBlockInline from "../code/CodeBlockInline";
 import CodeText from "../tutorialHelpers/CodeText";
 import AppContext from "../../contexts/AppContextProvider";
+import Assignment from "../tutorialHelpers/Assignment";
+import Note from "../tutorialHelpers/Note";
 
 const showBefore = `import * as THREE from "three";
 
@@ -81,47 +83,51 @@ export const boxSceneFunction = (userScript: string) => {
   animate();
 };
 
-const assignment = {
-  cubeExists: false,
-  cubeIsCone: false,
-  cubeIsGreen: false,
-  cubeIs201010: false,
+const assignments = {
+  cubeExists: { title: "Add your own cube to the scene!", checked: false },
+  cubeIsCone: {
+    title: "Make the cube a ConeGeometry",
+    subParagraph:
+      "Okay good! There are alot of geometries like circle, cone, cylinder and a bunch of others.",
+    checked: false,
+  },
+  cubeIsGreen: { title: "Change the color to: 0xd25e2f", checked: false },
 };
 
 const assignmentCheck = (cube: THREE.Mesh) => {
   if (!cube) return;
-  if (cube) assignment.cubeExists = true;
-  if (cube.geometry.type === "ConeGeometry") assignment.cubeIsCone = true;
+  if (cube) assignments.cubeExists.checked = true;
+  if (cube.geometry.type === "ConeGeometry")
+    assignments.cubeIsCone.checked = true;
   if ((cube.material as any).color.equals(new THREE.Color(0xd25e2f)))
-    assignment.cubeIsGreen = true;
+    assignments.cubeIsGreen.checked = true;
 };
 
 const Box: React.FC = () => {
-  const { userScript } = useContext(AppContext);
-  const [checked, setChecked] = useState(assignment);
-  useEffect(() => {
-    setTimeout(() => setChecked({ ...assignment }));
-  }, [userScript]);
   return (
     <>
       <CodeText>
-        <h2>Add your own box to the scene</h2>
+        <h2>Add your own cube/box to the scene</h2>
+        <p>
+          There are alot of things you can add to a scene but lets start simple
+          by creating and adding a cube.
+        </p>
         <p>To create a cube, we need three things:</p>
         <ol>
-          <li>
-            First we need a BoxGeometry. This is an object that contains all the
-            points and sides of the cube.
+          <li className="my-3">
+            First we need a <strong>BoxGeometry</strong>. This is an object that
+            contains all the points and sides of the cube.
           </li>
-          <li>
-            We also need a material to color the cube. Three.js comes with
-            several materials, but we'll stick to the MeshBasicMaterial for now.
-            All materials take an object of properties which will be applied to
-            them.
+          <li className="my-3">
+            We also need a <strong>Material</strong> to color the cube. Three.js
+            comes with several materials, but we'll stick to the
+            MeshBasicMaterial for now. All materials take an object of
+            properties which will be applied to them.
           </li>
-          <li>
-            The third thing we need is a Mesh. A mesh is an object that takes a
-            geometry, and applies a material to it, which we then can insert to
-            our scene, and move around freely.
+          <li className="my-3">
+            The third thing we need is a <strong>Mesh</strong>. A mesh is an
+            object that takes a geometry, and applies a material to it, which we
+            then can insert to our scene, and move around freely.
           </li>
         </ol>
         <p></p>
@@ -131,46 +137,17 @@ const material = new THREE.MeshBasicMaterial({
 });
 const cube = new THREE.Mesh(geometry, material);
 scene.add(cube);`}</CodeBlockInline>
-        <p>Try adding your own cube to the scene!</p>
-        <p>
+        <h2>Okay your turn!</h2>
+        <Assignment assignments={assignments}></Assignment>{" "}
+        <Note>
           Take note of the fact we moved the camera back a bit. This is because
-          anything added to the scene will by default be added at the
-          coordinates 0, 0, 0 so the camera would be inside of the cube.
-        </p>
-        <p>
+          anything added to the scene will be added at the coordinates 0, 0, 0
+          so the camera would be inside of the cube.
+        </Note>
+        <Note>
           Also note that in our animation loop we are rotating the cube on every
           frame.
-        </p>
-        <div>
-          <input
-            type="checkbox"
-            id="scales"
-            name="scales"
-            className="mr-3"
-            checked={checked.cubeExists}
-          />
-          <label htmlFor="scales">Add your own cube to the scene!</label>
-        </div>
-        <div>
-          <input
-            type="checkbox"
-            id="scales"
-            name="scales"
-            className="mr-3"
-            checked={checked.cubeIsCone}
-          />
-          <label htmlFor="scales">Make the cube a ConeGeometry</label>
-        </div>
-        <div>
-          <input
-            type="checkbox"
-            id="scales"
-            name="scales"
-            className="mr-3"
-            checked={checked.cubeIsGreen}
-          />
-          <label htmlFor="scales">Make the color: 0xd25e2f</label>
-        </div>
+        </Note>
       </CodeText>
       <CodeBlock
         showBefore={showBefore}

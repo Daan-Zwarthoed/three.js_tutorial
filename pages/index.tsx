@@ -91,7 +91,7 @@ const Home = () => {
             <h2>Interactive tutorial to learn three.js</h2>
             <Link
               href="/tutorial?step=Prerequisites"
-              className="block w-fit bg-accent p-3 rounded-xl mt-2"
+              className="block w-fit bg-primary p-3 rounded-xl mt-2"
             >
               Start tutorial
             </Link>

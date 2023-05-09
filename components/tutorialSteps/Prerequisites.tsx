@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import NextStepButton from "../global/NextStepButton";
+import NextStepButton from "../global/StepButton";
 
 const Prerequisites: React.FC = () => {
   return (
