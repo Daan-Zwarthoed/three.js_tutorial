@@ -28,9 +28,9 @@ type Lightmode = (typeof LightModeTypes)[number];
 const showBefore = `import * as THREE from "three";
 import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper";
 
+// Basic setup
 const canvas = document.getElementById("canvas");
 const scene = new THREE.Scene();
-
 const camera = new THREE.PerspectiveCamera(
   75,
   canvas.clientWidth / canvas.clientHeight,
@@ -43,6 +43,7 @@ const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 renderer.setClearColor(0x01e3d59, 1);
 
+// Add objects
 const material = new THREE.MeshStandardMaterial({
   color: "#d63e4d",
 });
@@ -59,10 +60,11 @@ floor.receiveShadow = true;
 scene.add(floor);
 
 new OrbitControls(camera, renderer.domElement);
-`;
+
+// Lights`;
 
 const showAfter = `
-
+// Animation loop
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);

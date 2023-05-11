@@ -14,6 +14,7 @@ import gsap from "gsap";
 `;
 
 const gsapCode = `
+// Basic setup
 const canvas = document.getElementById("canvas");
 const raycaster = new THREE.Raycaster();
 const scene = new THREE.Scene();
@@ -30,6 +31,7 @@ const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 renderer.setClearColor(0x01e3d59, 1);
 
+// Add objects
 const geometry = new THREE.BoxGeometry(10, 10, 10);
 const material1 = new THREE.MeshBasicMaterial({ color: "#d63e4d" });
 const cube1 = new THREE.Mesh(geometry, material1);
@@ -56,6 +58,7 @@ scene.add(cube2);
 scene.add(cube3);
 scene.add(cube4);
 
+// Raycaster setup
 const pointer = new THREE.Vector2();
 
 function onPointerMove(event) {
@@ -67,10 +70,13 @@ function onPointerMove(event) {
 }
 canvas.addEventListener("mousemove", onPointerMove);
 
-let intersect;
-
+// Animate on click
 function onClick() {
+  raycaster.setFromCamera(pointer, camera);
+  const intersects = raycaster.intersectObjects(scene.children, false);
+  const intersect = intersects[0] && intersects[0].object;
   if (!intersect) return;
+
   gsap.to(camera.position, {
     ...new THREE.Vector2(intersect.position.x, intersect.position.y),
     duration: 1,
@@ -79,18 +85,15 @@ function onClick() {
 }
 canvas.addEventListener("click", onClick);
 
+// Animation loop
 function animate() {
-  if (canvas) renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-  raycaster.setFromCamera(pointer, camera);
-  const intersects = raycaster.intersectObjects(scene.children, false);
-  intersect = intersects[0] && intersects[0].object;
-
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
 }
 animate();`;
 
 const noGsapCode = `
+// Basic setup
 const canvas = document.getElementById("canvas");
 const raycaster = new THREE.Raycaster();
 const scene = new THREE.Scene();
@@ -107,6 +110,7 @@ const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 renderer.setClearColor(0x01e3d59, 1);
 
+// Add objects
 const geometry = new THREE.BoxGeometry(10, 10, 10);
 const material1 = new THREE.MeshBasicMaterial({ color: "#d63e4d" });
 const cube1 = new THREE.Mesh(geometry, material1);
@@ -133,6 +137,7 @@ scene.add(cube2);
 scene.add(cube3);
 scene.add(cube4);
 
+// Raycaster setup
 const pointer = new THREE.Vector2();
 
 function onPointerMove(event) {
@@ -144,11 +149,14 @@ function onPointerMove(event) {
 }
 canvas.addEventListener("mousemove", onPointerMove);
 
-let intersect;
+// Set animation goal on click
 let cameraPositionGoal;
 let animationDistance;
 
 function onClick() {
+  raycaster.setFromCamera(pointer, camera);
+  const intersects = raycaster.intersectObjects(scene.children, false);
+  const intersect = intersects[0] && intersects[0].object;
   if (!intersect) return;
 
   cameraPositionGoal = new THREE.Vector2(
@@ -163,6 +171,7 @@ function onClick() {
 }
 canvas.addEventListener("click", onClick);
 
+// Animate camera to goal if it exists
 function animateCamera() {
   if (!cameraPositionGoal || !animationDistance) return;
   if (
@@ -174,11 +183,8 @@ function animateCamera() {
   camera.position.y += animationDistance.y;
 }
 
+// Animation loop
 function animate() {
-  raycaster.setFromCamera(pointer, camera);
-  const intersects = raycaster.intersectObjects(scene.children, false);
-  intersect = intersects[0] && intersects[0].object;
-
   animateCamera();
 
   requestAnimationFrame(animate);
@@ -271,7 +277,12 @@ const CameraAnimation: React.FC = () => {
           <div
             className="absolute transition-all duration-700 bg-tertary w-1/2 h-full top-0"
             style={{
-              left: userScript === gsapCode ? "0" : "50%",
+              left:
+                userScript === gsapCode
+                  ? "0"
+                  : userScript === noGsapCode
+                  ? "50%"
+                  : "25%",
             }}
           ></div>
         </div>

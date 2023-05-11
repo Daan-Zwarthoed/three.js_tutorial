@@ -7,10 +7,9 @@ import CodeBlockInline from "../code/CodeBlockInline";
 
 const code = `import * as THREE from "three";
 
+// Basic setup
 const canvas = document.getElementById("canvas");
-
 const scene = new THREE.Scene();
-
 const camera = new THREE.PerspectiveCamera(
   70,
   canvas.clientWidth / canvas.clientHeight,
@@ -22,6 +21,7 @@ camera.position.z = 40;
 const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
+// Add objects
 const geometry = new THREE.BoxGeometry(10, 10, 10);
 const material = new THREE.MeshBasicMaterial({ color: "#d63e4d" });
 const cube = new THREE.Mesh(geometry, material);
@@ -34,6 +34,7 @@ cube2.position.x = 7;
 scene.add(cube);
 scene.add(cube2);
 
+// Raycaster setup
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 
@@ -46,11 +47,11 @@ function onPointerMove(event) {
 
 canvas.addEventListener("mousemove", onPointerMove);
 
+// Raycast
 let INTERSECTED = null;
 let INTERSECTEDCOLOR = null;
 
-function animate() {
-  if (canvas) renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+function raycast(){
   raycaster.setFromCamera(pointer, camera);
   const intersects = raycaster.intersectObjects(scene.children, false);
   const intersect = intersects[0] && intersects[0].object;
@@ -67,7 +68,12 @@ function animate() {
     INTERSECTED.material.color.set(INTERSECTEDCOLOR);
     INTERSECTED = null;
   }
+}
 
+
+// Animation loop
+function animate() {
+  raycast();
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
 }

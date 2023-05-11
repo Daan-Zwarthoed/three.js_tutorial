@@ -13,12 +13,29 @@ type InputProps = {
   children?: any;
   assignments: { [key: string]: Assignment };
 };
-
+let assignmentsClone: { [key: string]: Assignment };
 const Assignment: React.FC<InputProps> = ({ children, assignments }) => {
-  const { userScript } = useContext(AppContext);
+  const { userScript, setShowRobot } = useContext(AppContext);
   const [resetKey, setResetKey] = useState(Math.random());
   useEffect(() => {
-    setTimeout(() => setResetKey(Math.random()));
+    setTimeout(() => {
+      if (
+        assignmentsClone &&
+        Object.keys(assignments).every(
+          (val, index) => val === Object.keys(assignmentsClone)[index]
+        )
+      ) {
+        const completedAssignment = Object.keys(assignments).find(
+          (key) => assignments[key].checked !== assignmentsClone[key].checked
+        );
+        console.log(completedAssignment);
+
+        if (completedAssignment)
+          setShowRobot(assignments[completedAssignment].subParagraph || true);
+      }
+      assignmentsClone = JSON.parse(JSON.stringify(assignments));
+      setResetKey(Math.random());
+    });
   }, [userScript]);
 
   return (

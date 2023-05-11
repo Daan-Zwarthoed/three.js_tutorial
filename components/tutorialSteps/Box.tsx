@@ -10,6 +10,7 @@ import Note from "../tutorialHelpers/Note";
 
 const showBefore = `import * as THREE from "three";
 
+// Basic setup
 const canvas = document.getElementById("canvas");
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -26,6 +27,7 @@ renderer.setClearColor(0x01e3d59, 1);
 `;
 
 const showAfter = `
+// Animation loop
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);

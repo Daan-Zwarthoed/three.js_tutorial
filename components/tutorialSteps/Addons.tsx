@@ -40,8 +40,8 @@ const beforeCodeTrackball = `import { TrackballControls } from 'three/addons/con
 const beforeCodeTransform = `import { TransformControls } from 'three/addons/controls/TransformControls.js';`;
 
 const code = `
+// Basic setup
 const canvas = document.getElementById("canvas");
-
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
   75,
@@ -49,7 +49,6 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   2000
 );
-
 camera.position.set(30, 30, 30); 
 camera.lookAt(0, 0, 0);
 
@@ -57,6 +56,7 @@ const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 renderer.setClearColor(0x01e3d59, 1);
 
+// Add objects
 const geometry = new THREE.BoxGeometry(10, 10, 10);
 const material = new THREE.MeshBasicMaterial({
   color: "#d63e4d",
@@ -64,10 +64,12 @@ const material = new THREE.MeshBasicMaterial({
 const cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 
+// Controls
 `;
 
 const afterCodeArcball = `const controls = new ArcballControls(camera, renderer.domElement);
 
+// Animation loop
 function animate() {
   id = requestAnimationFrame(animate);
   renderer.render(scene, camera);
@@ -78,6 +80,7 @@ animate();`;
 
 const afterCodeDrag = `new DragControls(scene.children, camera, renderer.domElement);
 
+// Animation loop
 function animate() {
   id = requestAnimationFrame(animate);
   renderer.render(scene, camera);
@@ -88,6 +91,7 @@ animate();`;
 const afterCodeFirstPerson = `const controls = new FirstPersonControls(camera, renderer.domElement);
 controls.movementSpeed = 50;
 
+// Animation loop
 const clock = new THREE.Clock();
 
 function animate() {
@@ -102,6 +106,8 @@ animate();`;
 const afterCodeFly = `const controls = new FlyControls(camera, renderer.domElement);
 controls.movementSpeed = 50;
 
+// Animation loop
+
 const clock = new THREE.Clock();
 
 function animate() {
@@ -115,6 +121,7 @@ animate();`;
 
 const afterCodeOrbit = `new OrbitControls(camera, renderer.domElement);
 
+// Animation loop
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
@@ -127,6 +134,7 @@ canvas.addEventListener("click", () => {
   if (canvas) controls.isLocked ? controls.unlock() : controls.lock();
 });
 
+// Animation loop
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
@@ -135,6 +143,7 @@ animate();`;
 
 const afterCodeTrackball = `const controls = new TrackballControls(camera, renderer.domElement);
 
+// Animation loop
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
@@ -148,6 +157,7 @@ controls.attach(cube);
 controls.setMode("scale"); // "translate", "rotate" or "scale"
 scene.add(controls);
 
+// Animation loop
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);

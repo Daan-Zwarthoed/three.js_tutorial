@@ -11,11 +11,11 @@ const showBefore = `import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader";
 import { OrbitControls } from "three/addons/controls/OrbitControls";
 
+// Basic setup
 const canvas = document.getElementById("canvas");
 const loader = new GLTFLoader();
-let mixer: THREE.AnimationMixer | null = null;
+let mixer = null;
 let clock = new THREE.Clock();
-if (!canvas) return;
 
 const scene = new THREE.Scene();
 
@@ -31,16 +31,18 @@ const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 renderer.setClearColor(0x01e3d59, 1);
 
+// Lights
 const light1 = new THREE.DirectionalLight(0xffff99, 2);
 light1.position.x = 5;
 light1.position.z = 5;
-
 scene.add(light1);
+
 const light2 = new THREE.HemisphereLight(0xffff99, 0xb97a20, 0.5);
 scene.add(light2);
 
 new OrbitControls(camera, renderer.domElement);
 
+// Loader
 loader.load(`;
 
 const showAfter = ` // called when the resource is loaded
@@ -64,6 +66,7 @@ const showAfter = ` // called when the resource is loaded
   }
 );
 
+// Animation loop
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);

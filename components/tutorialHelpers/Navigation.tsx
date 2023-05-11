@@ -51,7 +51,7 @@ const Navigation: React.FC<InputProps> = ({ children }) => {
   return (
     <div
       id="Navigation"
-      className="relative bottom-0 w-full z-40 p-2 bg-background flex flex-row justify-center px-2"
+      className="relative bottom-0 w-full z-20 p-2 bg-background flex flex-row justify-center px-2"
     >
       <div className="flex flex-row items-center">
         {stepList.map((step, index) => (

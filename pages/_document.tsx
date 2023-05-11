@@ -28,7 +28,7 @@ class MyDocument extends Document {
             content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
           ></meta>
         </Head>
-        <body className="overflow-x-hidden w-screen min-h-screen bg-background">
+        <body className="overflow-hidden w-screen min-h-screen bg-background">
           <Main />
           <NextScript />
         </body>

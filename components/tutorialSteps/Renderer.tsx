@@ -12,8 +12,10 @@ import CodeText from "../tutorialHelpers/CodeText";
 import NextStepButton from "../global/StepButton";
 import Assignment from "../tutorialHelpers/Assignment";
 
-const code = `const canvas = document.getElementById("canvas");
+const code = `import * as THREE from "three";
 
+// Basic setup
+const canvas = document.getElementById("canvas");
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
   75,
@@ -26,6 +28,7 @@ const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 renderer.setClearColor(0x01e3d59, 1);
 
+// Animation loop
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);

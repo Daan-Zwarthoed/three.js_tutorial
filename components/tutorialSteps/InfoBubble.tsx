@@ -20,12 +20,10 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader";
 import { OrbitControls } from "three/addons/controls/OrbitControls";
 import gsap from "gsap";
 
+// Basic setup
 const loader = new GLTFLoader();
-
 const canvas = document.getElementById("canvas");
-
 const scene = new THREE.Scene();
-
 const camera = new THREE.PerspectiveCamera(
   75,
   canvas.clientWidth / canvas.clientHeight,
@@ -38,6 +36,7 @@ const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 renderer.setClearColor(0x01e3d59, 1);
 
+// Add lights
 const directionalLight = new THREE.DirectionalLight(0xffff99, 2);
 directionalLight.position.x = 5;
 directionalLight.position.z = 5;
@@ -46,9 +45,11 @@ scene.add(directionalLight);
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
+// Add controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.minDistance = 7;
 
+// Load car
 let wheel1 = null;
 let info = null;
 
@@ -73,6 +74,7 @@ loader.load(
   }
 );
 
+// Gsap animation
 function animateTo(item, to) {
   return gsap.to(item, {
     ...to,
@@ -81,6 +83,7 @@ function animateTo(item, to) {
   });
 }
 
+// Toogle info button shown or hidden
 let infoIsShown = true;
 function toggleInfo(show: boolean) {
   if (!info || (show && infoIsShown) || (!show && !infoIsShown)) return;
@@ -100,6 +103,7 @@ function toggleInfo(show: boolean) {
 let intersectInfo;
 let oldCameraPosAndQua = null;
 
+// Zoom into info button
 function infoClick() {
   if (!wheel1 || !info || !intersectInfo || !infoIsShown) return;
 
@@ -137,6 +141,7 @@ function infoClick() {
 
 canvas.addEventListener("click", infoClick);
 
+// Zoom back out of info button
 function backClick(backButton) {
   if (!oldCameraPosAndQua || !info) return;
   animateTo(camera.position, oldCameraPosAndQua.position);
@@ -154,6 +159,7 @@ function backClick(backButton) {
   });
 }
 
+// Raycaster setup
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 
@@ -172,10 +178,12 @@ function onPointerMove(event) {
 
 canvas.addEventListener("mousemove", onPointerMove);
 
+// Info positioning formula
 function infoPos(wheelPos, cameraPos) {
   return wheelPos + (cameraPos - wheelPos) / 1.1;
 }
 
+// Animation loop
 function animate() {
   if (wheel1 && info) {
     info.position.set(
@@ -390,6 +398,7 @@ const InfoBubble: React.FC = () => {
     highlightArea = { startRow: 149, endRow: 153 };
   if (subStep === "info button position")
     highlightArea = { startRow: 158, endRow: 170 };
+  const subStepIndex = SubStepTypes.findIndex((step) => step === subStep);
 
   return (
     <>
@@ -486,18 +495,23 @@ const InfoBubble: React.FC = () => {
           </>
         )}
 
-        <div className="grid grid-cols-3 gap-2 mt-5">
+        <div className="grid grid-cols-3 mt-5 relative">
           {SubStepTypes.map((type) => (
             <button
               key={type}
-              className={`flex items-center justify-center w-full text-center p-2 border-solid border-2  ${
-                subStep.includes(type) ? "border-primary" : "border-secondary"
-              }`}
+              className="relative z-10 flex items-center justify-center w-full text-center p-2"
               onClick={() => setSubStep(type)}
             >
               {type}
             </button>
           ))}
+          <div
+            className="absolute z-0 h-1/2 w-1/3 top-0 left-0 bg-tertary transition-all"
+            style={{
+              top: subStepIndex > 2 ? "50%" : "0",
+              left: subStepIndex * 33 - (subStepIndex > 2 ? 100 : 0) + "%",
+            }}
+          ></div>
         </div>
       </CodeText>
       <CodeBlockNoInput highlightArea={highlightArea}>{code}</CodeBlockNoInput>
