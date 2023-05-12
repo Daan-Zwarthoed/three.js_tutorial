@@ -15,8 +15,7 @@ type InputProps = {
 };
 let assignmentsClone: { [key: string]: Assignment };
 const Assignment: React.FC<InputProps> = ({ children, assignments }) => {
-  const { userScript, setShowRobot } = useContext(AppContext);
-  const [resetKey, setResetKey] = useState(Math.random());
+  const { setShowRobot } = useContext(AppContext);
   useEffect(() => {
     setTimeout(() => {
       if (
@@ -26,17 +25,17 @@ const Assignment: React.FC<InputProps> = ({ children, assignments }) => {
         )
       ) {
         const completedAssignment = Object.keys(assignments).find(
-          (key) => assignments[key].checked !== assignmentsClone[key].checked
+          (key) =>
+            assignmentsClone[key].checked !== assignments[key].checked &&
+            assignments[key].checked
         );
-        console.log(completedAssignment);
 
         if (completedAssignment)
           setShowRobot(assignments[completedAssignment].subParagraph || true);
       }
       assignmentsClone = JSON.parse(JSON.stringify(assignments));
-      setResetKey(Math.random());
     });
-  }, [userScript]);
+  });
 
   return (
     <div>
@@ -53,9 +52,9 @@ const Assignment: React.FC<InputProps> = ({ children, assignments }) => {
               readOnly
             />
             <label htmlFor="scales">{assignment.title}</label>
-            {assignment.subParagraph && assignment.checked && (
+            {/* {assignment.subParagraph && assignment.checked && (
               <p className="mt-1 mb-2 ml-2">{assignment.subParagraph}</p>
-            )}
+            )} */}
           </div>
         );
       })}

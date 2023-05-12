@@ -107,7 +107,6 @@ const afterCodeFly = `const controls = new FlyControls(camera, renderer.domEleme
 controls.movementSpeed = 50;
 
 // Animation loop
-
 const clock = new THREE.Clock();
 
 function animate() {

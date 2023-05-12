@@ -73,20 +73,20 @@ const assignments = {
     title: "Open up the code tab",
     subParagraph:
       "Well done. Now here is where I will show you the code written with every step of the tutorial and is also where you will be able to write your own code as we go along",
-    checked: false,
+    checked: true,
   },
   canvasOpened: {
     title: "Lets also open up the output tab. Drag the other slider!",
     subParagraph:
       "Alright, here is the ouput of our code. As you can see right now we are just rendering a blue screen. Lets change that with the next step!",
-    checked: false,
+    checked: true,
   },
 };
 
 const assignmentCheck = (codeBlockWidth: number, canvasWidth: number) => {
   const assignmentsClone = JSON.parse(JSON.stringify(assignments));
-  if (codeBlockWidth > 200) assignments.codeOpened.checked = true;
-  if (canvasWidth > 200) assignments.canvasOpened.checked = true;
+  assignments.codeOpened.checked = codeBlockWidth > 350;
+  assignments.canvasOpened.checked = canvasWidth > 350;
   if (
     assignmentsClone.codeOpened.checked !== assignments.codeOpened.checked ||
     assignmentsClone.canvasOpened.checked !== assignments.canvasOpened.checked
@@ -105,6 +105,7 @@ const Renderer: React.FC = () => {
     );
     if (updated) setResetKey(Math.random());
   };
+
   useEffect(() => {
     window.removeEventListener("resize", () => update());
     window.addEventListener("resize", () => update());

@@ -176,7 +176,7 @@ const Loader: React.FC = () => {
           {`import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';`}
         </CodeBlockInline>
 
-        <p>Fill in any of these in the green box:</p>
+        <p>Fill in any of these in the purple box:</p>
         <CodeBlockInline>
           {`"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/AnimatedCube/glTF/AnimatedCube.gltf",
 "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf",
