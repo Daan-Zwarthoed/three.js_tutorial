@@ -10,6 +10,7 @@ import { stepList } from "../../pages/tutorial";
 import Router from "next/router";
 import gsap from "gsap";
 import AppContext from "../../contexts/AppContextProvider";
+import StepButton from "../global/StepButton";
 type InputProps = {
   next?: true;
 };
@@ -20,14 +21,18 @@ const complimentOptions = [
   "Nice!",
   "Great job!",
   "Good!",
-  ":))))",
+  "Doing great :)",
 ];
 const randomCompliment = () =>
   complimentOptions[Math.floor(Math.random() * complimentOptions.length)];
-
+let robotIsHidden = true;
 const Robot: React.FC<InputProps> = ({ next }) => {
   const { showRobot, setShowRobot } = useContext(AppContext);
-  const [text, setText] = useState<{ compliment: boolean; text: string }>({
+  const [text, setText] = useState<{
+    compliment: boolean;
+    text: string;
+    nextButton?: boolean;
+  }>({
     compliment: true,
     text: complimentOptions[0],
   });
@@ -36,6 +41,7 @@ const Robot: React.FC<InputProps> = ({ next }) => {
   const eyeDisplay = createRef<HTMLDivElement>();
   const thruster = createRef<HTMLDivElement>();
 
+  // Default animations of the robot
   useEffect(() => {
     if (!eyeDisplay.current || !thruster.current || !robotSelf.current) return;
     gsap.to(robotSelf.current.style, {
@@ -66,44 +72,54 @@ const Robot: React.FC<InputProps> = ({ next }) => {
     animating.push(thrusterAnimation);
   }, []);
 
-  const hideRobot = (tl: gsap.core.Timeline | typeof gsap) => {
+  const hideRobot = () => {
     if (!robot.current) return;
     const dissappearXSide = Boolean(Math.round(Math.random()));
     const topOrLeft = Boolean(Math.round(Math.random()));
     const topOrLeftAmount = topOrLeft ? "0%" : "100%";
     const translateAmount = topOrLeft ? "-120%" : "0%";
 
-    tl.to(robot.current.style, {
-      left: dissappearXSide ? topOrLeftAmount : Math.random() * 100 + "%",
-      top: !dissappearXSide ? topOrLeftAmount : Math.random() * 100 + "%",
-      transform: `translate(${translateAmount}, ${translateAmount})`,
-      duration: 1.5,
-      ease: "power1",
-    }).eventCallback("onComplete", () => setShowRobot(false));
+    gsap
+      .to(robot.current.style, {
+        left: dissappearXSide ? topOrLeftAmount : Math.random() * 100 + "%",
+        top: !dissappearXSide ? topOrLeftAmount : Math.random() * 100 + "%",
+        transform: `translate(${translateAmount}, ${translateAmount})`,
+        duration: 1.5,
+        ease: "power1",
+      })
+      .eventCallback("onComplete", () => {
+        animating.forEach((animation) => animation.pause());
+        robotIsHidden = true;
+      });
   };
 
+  // Show or hide the robot
   useEffect(() => {
     if (!showRobot || !robot.current) {
-      animating.forEach((animation) => animation.pause());
+      if (!robotIsHidden) hideRobot();
       return;
     }
-    const compliment = typeof showRobot !== "string";
+
+    robotIsHidden = false;
+
     setText({
-      compliment: compliment,
-      text: compliment ? randomCompliment() : showRobot,
+      compliment: !showRobot.text,
+      text: showRobot.text || randomCompliment(),
+      nextButton: showRobot.nextButton,
     });
     animating.forEach((animation) => animation.play());
 
-    const tl = gsap.timeline();
-    tl.to(robot.current.style, {
-      left: "50%",
-      top: "50%",
-      transform: "translate(-50%, -50%)",
-      duration: 3,
-      ease: "elastic",
-    });
-
-    if (compliment) hideRobot(tl);
+    gsap
+      .to(robot.current.style, {
+        left: "50%",
+        top: "50%",
+        transform: "translate(-50%, -50%)",
+        duration: 3,
+        ease: "elastic",
+      })
+      .eventCallback("onComplete", () => {
+        if (!showRobot.text && !showRobot.nextButton) setShowRobot(null);
+      });
   }, [showRobot]);
 
   return (
@@ -118,18 +134,29 @@ const Robot: React.FC<InputProps> = ({ next }) => {
       }}
     >
       <div className="relative w-max max-w-[800px] p-3 text-center min-w-[150px] rounded-xl border-2 border-accent bg-background mb-3">
-        {text.compliment && <h2>{text.text}</h2>}
-        {!text.compliment && (
-          <>
-            <p className="mb-8">{text.text}</p>{" "}
+        {text.compliment && (
+          <h2 className={text.nextButton ? "mb-8" : ""}>{text.text}</h2>
+        )}
+        {!text.compliment && <p className="mb-8">{text.text}</p>}
+
+        <div className="absolute -bottom-0.5 -right-0.5 rounded-xl">
+          {(!text.compliment || text.nextButton) && (
             <button
-              className="absolute -bottom-0.5 -right-0.5 p-1 rounded-xl border-2 border-solid border-accent"
-              onClick={() => hideRobot(gsap)}
+              className={`p-1 border-2 border-solid border-accent ${
+                text.nextButton ? "rounded-l-xl" : "rounded-xl"
+              }`}
+              onClick={() => setShowRobot(null)}
             >
               Got it
             </button>
-          </>
-        )}
+          )}
+          {text.nextButton && (
+            <StepButton
+              classes={"p-1 rounded-r-xl border-2 border-solid border-primary"}
+              next
+            ></StepButton>
+          )}
+        </div>
       </div>
       <div
         ref={robotSelf}

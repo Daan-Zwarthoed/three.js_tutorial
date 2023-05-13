@@ -8,9 +8,7 @@ import AppContext from "../../contexts/AppContextProvider";
 import Assignment from "../tutorialHelpers/Assignment";
 import Note from "../tutorialHelpers/Note";
 
-const showBefore = `import * as THREE from "three";
-
-// Basic setup
+const code = `// Basic setup
 const canvas = document.getElementById("canvas");
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -24,65 +22,23 @@ camera.position.z = 30;
 const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 renderer.setClearColor(0x01e3d59, 1);
-`;
 
-const showAfter = `
+
+
 // Animation loop
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
-  if (cube) {
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-  }
+  // if (cube) {
+  //   cube.rotation.x += 0.01;
+  //   cube.rotation.y += 0.01;
+  // }
 }
 animate();`;
 
-let test = false;
 export const boxSceneFunction = (userScript: string) => {
-  const canvas = document.getElementById("canvas");
-
-  if (!canvas) return;
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(
-    75,
-    canvas.clientWidth / canvas.clientHeight,
-    0.1,
-    2000
-  );
-  camera.position.z = 30;
-  const renderer = new THREE.WebGLRenderer({ canvas });
-  renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-  renderer.setClearColor(0x01e3d59);
-
-  window.addEventListener("resize", function () {
-    if (!canvas.parentElement) return;
-    renderer.setSize(
-      canvas.parentElement.clientWidth,
-      canvas.parentElement.clientHeight,
-      true
-    );
-    camera.aspect = canvas.clientWidth / canvas.clientHeight;
-    camera.updateProjectionMatrix();
-  });
-  const cube = userFunction(
-    userScript,
-    ["THREE", "scene"],
-    [THREE, scene],
-    "cube"
-  );
-  assignmentCheck(cube);
-
-  function animate() {
-    if (cube) {
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
-    }
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-  }
-
-  animate();
+  const cube = userFunction(userScript, ["THREE"], [THREE], "cube");
+  if (cube) assignmentCheck(cube);
 };
 
 const assignments = {
@@ -99,9 +55,13 @@ const assignments = {
 const assignmentCheck = (cube: THREE.Mesh) => {
   if (!cube) return;
   if (cube) assignments.cubeExists.checked = true;
-  if (cube.geometry.type === "ConeGeometry")
+  if (cube.geometry && cube.geometry.type === "ConeGeometry")
     assignments.cubeIsCone.checked = true;
-  if ((cube.material as any).color.equals(new THREE.Color(0xd25e2f)))
+  if (
+    cube.material &&
+    (cube.material as any).color &&
+    (cube.material as any).color.equals(new THREE.Color(0xd25e2f))
+  )
     assignments.cubeIsGreen.checked = true;
 };
 
@@ -151,11 +111,7 @@ scene.add(cube);`}</CodeBlockInline>
           frame.
         </Note>
       </CodeText>
-      <CodeBlock
-        showBefore={showBefore}
-        showAfter={showAfter}
-        inputHeight={6}
-      ></CodeBlock>
+      <CodeBlock code={code}></CodeBlock>
     </>
   );
 };

@@ -5,10 +5,11 @@ import Router from "next/router";
 import AppContext from "../../contexts/AppContextProvider";
 type InputProps = {
   next?: true;
+  classes?: string;
 };
 
-const StepButton: React.FC<InputProps> = ({ next }) => {
-  const { setUserScript } = useContext(AppContext);
+const StepButton: React.FC<InputProps> = ({ next, classes }) => {
+  const { setUserScript, setShowRobot } = useContext(AppContext);
   const [goalStepId, setGoalStepId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -23,6 +24,7 @@ const StepButton: React.FC<InputProps> = ({ next }) => {
   });
   const changeStep = (id: string | string[] | undefined) => {
     if (typeof id !== "string") return;
+    setShowRobot(null);
     setUserScript(null);
     Router.push({
       pathname: "/tutorial",
@@ -32,7 +34,9 @@ const StepButton: React.FC<InputProps> = ({ next }) => {
   if (!goalStepId) return <></>;
   return (
     <button
-      className={`p-1 rounded-xl w-fit ml-4 ${next ? "bg-primary" : ""}`}
+      className={
+        classes || `p-1 rounded-xl w-fit ml-4 ${next ? "bg-primary" : ""}`
+      }
       onClick={() => changeStep(goalStepId)}
     >
       {next ? "Next" : "Back"}

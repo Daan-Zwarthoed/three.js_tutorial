@@ -16,7 +16,7 @@ const Home = () => {
 
     const camera = new THREE.PerspectiveCamera(
       75,
-      canvas.clientWidth / canvas.clientHeight,
+      window.innerWidth / window.innerHeight,
       0.1,
       2000000
     );
@@ -24,7 +24,7 @@ const Home = () => {
     camera.position.y = 3;
 
     const renderer = new THREE.WebGLRenderer({ canvas });
-    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0xfffff, 0);
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -96,7 +96,10 @@ const Home = () => {
               Start tutorial
             </Link>
           </article>
-          <canvas id="canvas" className="max-w-[800px]"></canvas>
+          <canvas
+            id="canvas"
+            className="max-w-[700px] max-h-[400px] object-cover"
+          ></canvas>
         </div>
       </main>
     </>

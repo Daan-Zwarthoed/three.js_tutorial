@@ -1,20 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import * as THREE from "three";
 import userFunction from "../../helpers/userFunction";
 import CodeBlock from "../code/CodeBlock";
 import gsap from "gsap";
-
-import CodeBlockNoInput from "../code/CodeBlockNoInput";
 import CodeBlockInline from "../code/CodeBlockInline";
 import Image from "next/image";
 import Router from "next/router";
 import CodeText from "../tutorialHelpers/CodeText";
 import NextStepButton from "../global/StepButton";
 import Assignment from "../tutorialHelpers/Assignment";
+import AppContext from "../../contexts/AppContextProvider";
 
-const code = `import * as THREE from "three";
-
-// Basic setup
+const code = `// Basic setup
 const canvas = document.getElementById("canvas");
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -34,38 +31,9 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();`;
+
 export const rendererSceneFunction = (userScript: string) => {
-  const canvas = document.getElementById("canvas");
-
-  if (!canvas) return;
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(
-    75,
-    canvas.clientWidth / canvas.clientHeight,
-    0.1,
-    2000
-  );
-
-  const renderer = new THREE.WebGLRenderer({ canvas });
-  renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-  renderer.setClearColor(0x01e3d59, 1);
-
-  window.addEventListener("resize", function () {
-    if (!canvas.parentElement) return;
-    renderer.setSize(
-      canvas.parentElement.clientWidth,
-      canvas.parentElement.clientHeight,
-      true
-    );
-    camera.aspect = canvas.clientWidth / canvas.clientHeight;
-    camera.updateProjectionMatrix();
-  });
-
-  function animate() {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-  }
-  animate();
+  userFunction(userScript, ["THREE"], [THREE]);
 };
 
 const assignments = {
@@ -96,9 +64,11 @@ const assignmentCheck = (codeBlockWidth: number, canvasWidth: number) => {
 
 const Renderer: React.FC = () => {
   const [resetKey, setResetKey] = useState(Math.random());
+
   const update = () => {
     const codeBlock = document.getElementById("ResizableCode");
     const canvasBlock = document.getElementById("ResizableCanvas");
+    if (!codeBlock || !canvasBlock) return;
     const updated = assignmentCheck(
       codeBlock!.clientWidth,
       canvasBlock!.clientWidth
@@ -190,7 +160,7 @@ animate();`}
         </p>
         <Assignment assignments={assignments}></Assignment>
       </CodeText>
-      <CodeBlockNoInput>{code}</CodeBlockNoInput>
+      <CodeBlock code={code}></CodeBlock>
     </>
   );
 };

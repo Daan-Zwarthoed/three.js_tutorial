@@ -2,15 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 import * as THREE from "three";
 import gsap from "gsap";
 import CodeBlock from "../code/CodeBlock";
-import CodeBlockNoInput from "../code/CodeBlockNoInput";
 import CodeBlockInline from "../code/CodeBlockInline";
 import Link from "next/link";
 import CodeText from "../tutorialHelpers/CodeText";
 import userFunction from "../../helpers/userFunction";
 import AppContext from "../../contexts/AppContextProvider";
 
-const beforeGsapCode = `import * as THREE from "three";
-import gsap from "gsap";
+const beforeGsapCode = `import gsap from "gsap";
 `;
 
 const gsapCode = `
@@ -200,9 +198,7 @@ export const cameraAnimationSceneFunction = (userScript: string) => {
 const CameraAnimation: React.FC = () => {
   const { userScript, setUserScript, setResetCanvasKey } =
     useContext(AppContext);
-  useEffect(() => {
-    setUserScript(gsapCode);
-  }, []);
+  const [showCode, setShowCode] = useState(gsapCode);
   return (
     <>
       <CodeText>
@@ -256,7 +252,7 @@ const CameraAnimation: React.FC = () => {
                 renderer.dispose();
                 renderer.forceContextLoss();
               }
-              setUserScript(gsapCode);
+              setShowCode(gsapCode);
             }}
           >
             New
@@ -269,7 +265,7 @@ const CameraAnimation: React.FC = () => {
                 renderer.dispose();
                 renderer.forceContextLoss();
               }
-              setUserScript(noGsapCode);
+              setShowCode(noGsapCode);
             }}
           >
             Old
@@ -293,11 +289,7 @@ const CameraAnimation: React.FC = () => {
         <p>Long story short. Just use gsap.</p>
       </CodeText>
 
-      <CodeBlock
-        showBefore={beforeGsapCode}
-        inputValue={userScript}
-        showAfter={""}
-      ></CodeBlock>
+      <CodeBlock showImports={beforeGsapCode} code={showCode}></CodeBlock>
     </>
   );
 };

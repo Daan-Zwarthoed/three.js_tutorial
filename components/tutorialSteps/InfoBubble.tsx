@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import CodeBlock from "../code/CodeBlock";
 import gsap from "gsap";
-import CodeBlockNoInput from "../code/CodeBlockNoInput";
 import CodeText from "../tutorialHelpers/CodeText";
+import userFunction from "../../helpers/userFunction";
+import AppContext from "../../contexts/AppContextProvider";
 const SubStepTypes = [
   "loader",
   "toggle info",
@@ -15,11 +16,11 @@ const SubStepTypes = [
   "info button position",
 ] as const;
 type SubStep = (typeof SubStepTypes)[number];
-const code = `import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader";
+const showImports = `import { GLTFLoader } from "three/addons/loaders/GLTFLoader";
 import { OrbitControls } from "three/addons/controls/OrbitControls";
-import gsap from "gsap";
+import gsap from "gsap";`;
 
+const code = `
 // Basic setup
 const loader = new GLTFLoader();
 const canvas = document.getElementById("canvas");
@@ -85,11 +86,11 @@ function animateTo(item, to) {
 
 // Toogle info button shown or hidden
 let infoIsShown = true;
-function toggleInfo(show: boolean) {
+function toggleInfo(show) {
   if (!info || (show && infoIsShown) || (!show && !infoIsShown)) return;
   infoIsShown = show;
   if (show) scene.add(info);
-  info.children.forEach((child: any) => {
+  info.children.forEach((child) => {
     child.material.transparent = true;
     animateTo(child.material, { opacity: show ? 1 : 0 }).eventCallback(
       "onComplete",
@@ -128,7 +129,7 @@ function infoClick() {
 
   const backButton = document.getElementById("backButton");
   if (backButton) {
-    animateTo(backButton.parentElement!.style, {
+    animateTo(backButton.parentElement.style, {
       display: "flex",
       opacity: 1,
     });
@@ -146,7 +147,7 @@ function backClick(backButton) {
   if (!oldCameraPosAndQua || !info) return;
   animateTo(camera.position, oldCameraPosAndQua.position);
   animateTo(camera.quaternion, oldCameraPosAndQua.quaternion);
-  animateTo(backButton.parentElement!.style, {
+  animateTo(backButton.parentElement.style, {
     display: "none",
     opacity: 0,
   }).eventCallback("onComplete", () => {
@@ -203,189 +204,11 @@ function animate() {
 animate();`;
 
 export const infoBubbleSceneFunction = (userScript: string) => {
-  const loader = new GLTFLoader();
-
-  const canvas = document.getElementById("canvas");
-  if (!canvas) return;
-
-  const scene = new THREE.Scene();
-
-  const camera = new THREE.PerspectiveCamera(
-    75,
-    canvas.clientWidth / canvas.clientHeight,
-    0.1,
-    2000
+  userFunction(
+    userScript,
+    ["THREE", "GLTFLoader", "OrbitControls", "gsap"],
+    [THREE, GLTFLoader, OrbitControls, gsap]
   );
-  camera.position.z = 20;
-
-  const renderer = new THREE.WebGLRenderer({ canvas });
-  renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-  renderer.setClearColor(0x01e3d59, 1);
-
-  const directionalLight = new THREE.DirectionalLight(0xffff99, 2);
-  directionalLight.position.x = 5;
-  directionalLight.position.z = 5;
-  scene.add(directionalLight);
-
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-  scene.add(ambientLight);
-
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.minDistance = 7;
-
-  let wheel1: THREE.Object3D<THREE.Event> | null | undefined = null;
-  let info: THREE.Object3D<THREE.Event> | null | undefined = null;
-
-  loader.load(
-    "scenes/Car2.glb",
-    // called when the resource is loaded
-    async function (gltf) {
-      console.log("loaded");
-      scene.add(gltf.scenes[0]);
-      scene.add(gltf.scenes[1]);
-
-      wheel1 = gltf.scenes[0].getObjectByName("Wheel1");
-      info = gltf.scenes[1];
-    },
-    // called while loading is progressing
-    function (xhr) {
-      if (xhr.total) console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-    },
-    // called when loading has errors
-    function (error) {
-      console.log(error);
-    }
-  );
-
-  window.addEventListener("resize", function () {
-    if (!canvas.parentElement) return;
-    renderer.setSize(
-      canvas.parentElement.clientWidth,
-      canvas.parentElement.clientHeight,
-      true
-    );
-    camera.aspect = canvas.clientWidth / canvas.clientHeight;
-    camera.updateProjectionMatrix();
-  });
-
-  function animateTo(item: gsap.TweenTarget, to: gsap.TweenVars) {
-    return gsap.to(item, {
-      ...to,
-      duration: 1,
-      ease: "power1.out",
-    });
-  }
-
-  let infoIsShown = true;
-  function toggleInfo(show: boolean) {
-    if (!info || (show && infoIsShown) || (!show && !infoIsShown)) return;
-    infoIsShown = show;
-    if (show) scene.add(info);
-    info.children.forEach((child: any) => {
-      child.material.transparent = true;
-      animateTo(child.material, { opacity: show ? 1 : 0 }).eventCallback(
-        "onComplete",
-        () => {
-          if (info && !infoIsShown && !show) scene.remove(info);
-        }
-      );
-    });
-  }
-
-  let intersectInfo: boolean;
-  let oldCameraPosAndQua: {
-    position: THREE.Vector3;
-    quaternion: THREE.Quaternion;
-  } | null = null;
-
-  function infoClick() {
-    if (!wheel1 || !info || !intersectInfo || !infoIsShown) return;
-
-    oldCameraPosAndQua = {
-      position: camera.position.clone(),
-      quaternion: camera.quaternion.clone(),
-    };
-
-    controls.enabled = false;
-
-    animateTo(
-      camera.position,
-      new THREE.Vector3(
-        wheel1.position.x,
-        wheel1.position.y,
-        wheel1.position.z + 5
-      )
-    );
-    animateTo(camera.quaternion, new THREE.Vector3());
-    toggleInfo(false);
-
-    const backButton = document.getElementById("backButton");
-    if (backButton) {
-      animateTo(backButton.parentElement!.style, {
-        display: "flex",
-        opacity: 1,
-      });
-      backButton.addEventListener("click", backClick);
-    }
-  }
-
-  canvas.addEventListener("click", infoClick);
-
-  function backClick() {
-    const backButton = document.getElementById("backButton");
-    if (!oldCameraPosAndQua || !info || !backButton) return;
-    animateTo(camera.position, oldCameraPosAndQua.position);
-    animateTo(camera.quaternion, oldCameraPosAndQua.quaternion);
-    animateTo(backButton.parentElement!.style, {
-      display: "none",
-      opacity: 0,
-    }).eventCallback("onComplete", () => {
-      controls.enabled = true;
-    });
-    toggleInfo(true);
-    backButton.removeEventListener("click", backClick);
-  }
-
-  const raycaster = new THREE.Raycaster();
-  const pointer = new THREE.Vector2();
-
-  function onPointerMove(event: { clientX: number; clientY: number }) {
-    if (!canvas) return;
-    const canvasLeft = canvas.getBoundingClientRect().left;
-    const canvasTop = canvas.getBoundingClientRect().top;
-    pointer.x = ((event.clientX - canvasLeft) / canvas.clientWidth) * 2 - 1;
-    pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
-
-    if (controls.enabled) {
-      const horAngle = controls.getAzimuthalAngle();
-      const verAngle = controls.getPolarAngle();
-      toggleInfo((-1.4 < horAngle && horAngle < 1.5) || verAngle < 0.6);
-    }
-  }
-
-  canvas.addEventListener("mousemove", onPointerMove);
-
-  function infoPos(wheelPos: number, cameraPos: number) {
-    return wheelPos + (cameraPos - wheelPos) / 1.1;
-  }
-
-  function animate() {
-    if (wheel1 && info) {
-      info.position.set(
-        infoPos(wheel1.position.x, camera.position.x),
-        infoPos(wheel1.position.y, camera.position.y),
-        infoPos(wheel1.position.z, camera.position.z)
-      );
-      info.lookAt(camera.position);
-    }
-
-    raycaster.setFromCamera(pointer, camera);
-    if (info) intersectInfo = !!raycaster.intersectObject(info).length;
-
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-  }
-  animate();
 };
 
 const InfoBubble: React.FC = () => {
@@ -514,7 +337,11 @@ const InfoBubble: React.FC = () => {
           ></div>
         </div>
       </CodeText>
-      <CodeBlockNoInput highlightArea={highlightArea}>{code}</CodeBlockNoInput>
+      <CodeBlock
+        showImports={showImports}
+        code={code}
+        highlightArea={highlightArea}
+      ></CodeBlock>
     </>
   );
 };

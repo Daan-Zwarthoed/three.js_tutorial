@@ -25,10 +25,11 @@ const LightModeTypes = [
 ] as const;
 type Lightmode = (typeof LightModeTypes)[number];
 
-const showBefore = `import * as THREE from "three";
+const showImports = `import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper";
+`;
 
-// Basic setup
+const codeBefore = `// Basic setup
 const canvas = document.getElementById("canvas");
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -61,9 +62,10 @@ scene.add(floor);
 
 new OrbitControls(camera, renderer.domElement);
 
-// Lights`;
+// Lights
+`;
 
-const showAfter = `
+const codeAfter = `
 // Animation loop
 function animate() {
   requestAnimationFrame(animate);
@@ -72,79 +74,36 @@ function animate() {
 animate();`;
 
 let savedCameraPosition: THREE.Vector3;
-let id: number;
+let renderer: THREE.WebGLRenderer | undefined;
 export const lightSceneFunction = (userScript: string) => {
   const canvas = document.getElementById("canvas");
-  if (!canvas) return;
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(
-    75,
-    canvas.clientWidth / canvas.clientHeight,
-    0.1,
-    2000000
-  );
-  if (savedCameraPosition) {
-    camera.position.set(
-      savedCameraPosition.x,
-      savedCameraPosition.y,
-      savedCameraPosition.z
-    );
-  } else {
-    camera.position.set(-75, 40, 75);
-  }
-
-  const renderer = new THREE.WebGLRenderer({ canvas });
-  renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-  renderer.setClearColor(0x01e3d59, 1);
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-  window.addEventListener("resize", function () {
-    if (!canvas.parentElement) return;
-    renderer.setSize(
-      canvas.parentElement.clientWidth,
-      canvas.parentElement.clientHeight,
-      true
-    );
-    camera.aspect = canvas.clientWidth / canvas.clientHeight;
-    camera.updateProjectionMatrix();
-  });
-
-  const cubeGeometry = new THREE.BoxGeometry(10, 10, 10);
-  const material = new THREE.MeshStandardMaterial({
-    color: "#d63e4d",
-  });
-  const cube = new THREE.Mesh(cubeGeometry, material);
-  cube.castShadow = true;
-  cube.receiveShadow = true;
-  scene.add(cube);
-
-  const floorGeometry = new THREE.BoxGeometry(100, 1, 100);
-  const floor = new THREE.Mesh(floorGeometry, material);
-  floor.position.y = -8;
-  floor.receiveShadow = true;
-  scene.add(floor);
-
-  userFunction(
+  const cameraAndRenderer = userFunction(
     userScript,
-    ["THREE", "scene", "renderer", "camera", "RectAreaLightHelper"],
-    [THREE, scene, renderer, camera, RectAreaLightHelper]
+    ["THREE", "RectAreaLightHelper", "OrbitControls"],
+    [THREE, RectAreaLightHelper, OrbitControls],
+    "[camera, renderer]"
   );
-
-  new OrbitControls(camera, renderer.domElement);
-
-  canvas.addEventListener("mouseup", () => {
-    savedCameraPosition = camera.position;
-  });
-
-  if (id) cancelAnimationFrame(id);
-
-  function animate() {
-    id = requestAnimationFrame(animate);
-    renderer.render(scene, camera);
+  if (cameraAndRenderer) {
+    const camera = cameraAndRenderer[0];
+    renderer = cameraAndRenderer[1];
+    if (camera) {
+      if (savedCameraPosition) {
+        camera.position.set(
+          savedCameraPosition.x,
+          savedCameraPosition.y,
+          savedCameraPosition.z
+        );
+        camera.lookAt(0, 0, 0);
+      } else {
+        camera.position.set(-75, 40, 75);
+        camera.lookAt(0, 0, 0);
+      }
+      if (canvas)
+        canvas.addEventListener("mouseup", () => {
+          savedCameraPosition = camera.position;
+        });
+    }
   }
-  animate();
 };
 
 const ambientScript = `const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -210,32 +169,33 @@ scene.add( pointLightHelper );
 `;
 
 const Light: React.FC = () => {
-  const { userScript, setUserScript } = useContext(AppContext);
+  const { setUserScript, setResetCanvasKey } = useContext(AppContext);
   const [lightMode, setLightMode] = useState<Lightmode[]>(["Ambient", "Spot"]);
-  useEffect(() => {
-    let lightScript = "";
-    if (lightMode.includes("Ambient")) lightScript += ambientScript;
-    if (lightMode.includes("Directional"))
-      lightScript += "\n" + directionalScript;
-    if (lightMode.includes("Directional helper"))
-      lightScript += "\n" + directionalHelperScript;
-    if (lightMode.includes("Spot")) lightScript += "\n" + spotScript;
-    if (lightMode.includes("Spot helper"))
-      lightScript += "\n" + spotHelperScript;
-    if (lightMode.includes("Point")) lightScript += "\n" + pointScript;
-    if (lightMode.includes("Point helper"))
-      lightScript += "\n" + pointHelperScript;
-    if (lightMode.includes("Rect")) lightScript += "\n" + rectScript;
-    if (lightMode.includes("Rect helper"))
-      lightScript += "\n" + rectHelperScript;
-    if (lightMode.includes("Hemisphere")) lightScript += hemisphereScript;
-    if (lightMode.includes("Hemisphere helper"))
-      lightScript += hemisphereHelperScript;
+  let lightScript = codeBefore;
+  if (lightMode.includes("Ambient")) lightScript += ambientScript;
+  if (lightMode.includes("Directional"))
+    lightScript += "\n" + directionalScript;
+  if (lightMode.includes("Directional helper"))
+    lightScript += "\n" + directionalHelperScript;
+  if (lightMode.includes("Spot")) lightScript += "\n" + spotScript;
+  if (lightMode.includes("Spot helper")) lightScript += "\n" + spotHelperScript;
+  if (lightMode.includes("Point")) lightScript += "\n" + pointScript;
+  if (lightMode.includes("Point helper"))
+    lightScript += "\n" + pointHelperScript;
+  if (lightMode.includes("Rect")) lightScript += "\n" + rectScript;
+  if (lightMode.includes("Rect helper")) lightScript += "\n" + rectHelperScript;
+  if (lightMode.includes("Hemisphere")) lightScript += hemisphereScript;
+  if (lightMode.includes("Hemisphere helper"))
+    lightScript += hemisphereHelperScript;
 
-    setUserScript(lightScript);
-  }, [lightMode]);
+  lightScript += codeAfter;
 
   const handleLightClick = (type: Lightmode) => {
+    setResetCanvasKey(Math.random());
+    if (renderer) {
+      renderer.dispose();
+      renderer.forceContextLoss();
+    }
     if (lightMode.includes(type)) {
       setLightMode(
         lightMode.filter(
@@ -325,11 +285,7 @@ const Light: React.FC = () => {
         </Note>
       </CodeText>
 
-      <CodeBlock
-        showBefore={showBefore}
-        showAfter={showAfter}
-        inputValue={(userScript && userScript.trim()) || " "}
-      ></CodeBlock>
+      <CodeBlock showImports={showImports} code={lightScript}></CodeBlock>
     </>
   );
 };

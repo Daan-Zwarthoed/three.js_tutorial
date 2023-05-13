@@ -18,7 +18,7 @@ type Props = {
     endRow: number;
   };
 };
-
+let range: ace.Ace.Range;
 const CodeBlock: React.FC<Props> = ({
   children,
   beforeHeight,
@@ -29,47 +29,32 @@ const CodeBlock: React.FC<Props> = ({
   const { setUserScript } = useContext(AppContext);
   let timeout: NodeJS.Timeout | null = null;
   const [editor, setEditor] = useState<ace.Ace.Editor | null>(null);
-
-  let savedLength = 0;
+  let fromSetChange = false;
   const handleChange = () => {
-    if (!editor || !inputHeight || !beforeHeight) return;
-
-    // const length = editor.session.doc.getAllLines().length;
-    // // Add row back if person deletes row
-    // if (length < savedLength)
-    //   editor.session.insert(
-    //     {
-    //       row: editor.getCursorPosition().row + 1,
-    //       column: 0,
-    //     },
-    //     "\n"
-    //   );
-
-    // // Remove row if person adds one
-    // if (length > savedLength)
-    //   editor.session.removeFullLines(inputHeight, inputHeight);
-    // // Move cursor back
-    // if (beforeHeight && editor.getCursorPosition().row < beforeHeight) {
-    //   editor.moveCursorTo(beforeHeight, 0);
-    //   editor.selection.setAnchor(beforeHeight, 0);
-    // }
+    if (!editor || !inputHeight || !beforeHeight || fromSetChange) return;
 
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => {
-      setUserScript(
-        editor &&
-          editor.session.getLines(beforeHeight, inputHeight - 1).join("\n")
-      );
+      if (range) {
+        setUserScript(
+          editor &&
+            editor.session
+              .getLines(range.start.row, range.end.row - 1)
+              .join("\n")
+        );
+      }
     }, 500);
   };
 
   const setup = () => {
     if (!editor) return;
-    savedLength = editor.session.doc.getAllLines().length;
 
     // Make it so you can only edit inside of the edit area
     // editor.commands.on("exec", (event: any) => handleExec(event));
-    // if (editor.session.getValue() !== children) editor.setValue(children, 1);
+    fromSetChange = true;
+    if (editor.session.getValue() !== children) editor.setValue(children, 1);
+    fromSetChange = false;
+
     const prevMarkers = editor.session.getMarkers();
     if (prevMarkers) {
       const prevMarkersArr = Object.keys(prevMarkers);
@@ -87,15 +72,25 @@ const CodeBlock: React.FC<Props> = ({
       editor.setAnimatedScroll(true);
       editor.gotoLine(highlightArea.startRow, 0, true);
     }
-
-    if (inputHeight && beforeHeight)
-      editor.session.addMarker(
-        new Range(beforeHeight, 0, inputHeight - 1, 1),
-        "editArea",
-        "fullLine"
+    if (beforeHeight && inputHeight) {
+      range = new Range(beforeHeight, 0, inputHeight - 1, 0);
+      const startAnchor = editor.session.doc.createAnchor(
+        range.start.row,
+        range.start.column
       );
+      range.start = startAnchor as unknown as ace.Ace.Point;
+      const endAnchor = editor.session.doc.createAnchor(
+        range.end.row,
+        range.end.column
+      );
+      range.end = endAnchor as unknown as ace.Ace.Point;
+
+      editor.session.addMarker(range, "editArea", "fullLine");
+    }
   };
-  useEffect(() => setup());
+  useEffect(() => {
+    setup();
+  }, [editor, children]);
 
   const handleLoad = (editor: ace.Ace.Editor) => {
     setEditor(editor);
@@ -109,8 +104,7 @@ const CodeBlock: React.FC<Props> = ({
       fontSize={15}
       width={"100%"}
       height={"100%"}
-      // style={{ position: "absolute", top: "0" }}
-      value={children}
+      defaultValue={children}
       editorProps={{ animatedScroll: true }}
       setOptions={{
         useWorker: false,
@@ -121,9 +115,10 @@ const CodeBlock: React.FC<Props> = ({
         highlightSelectedWord: !inline,
         showGutter: !inline,
         showLineNumbers: !inline,
+        readOnly: inline,
         autoScrollEditorIntoView: true,
       }}
-      onChange={(value, event) => handleChange()}
+      onChange={() => handleChange()}
       onLoad={(ace) => handleLoad(ace)}
     />
   );

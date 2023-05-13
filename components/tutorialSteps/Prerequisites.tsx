@@ -16,7 +16,7 @@ const Prerequisites: React.FC = () => {
         very low-level system that only draws points, lines, and triangles. To
         do anything useful with WebGL generally requires quite a bit of code and
         that is where three.js comes in. It handles stuff like scenes, lights,
-        shadows, materials, textures, 3d math, all things that you'd have to
+        shadows, materials, textures, 3d math , all things that you'd have to
         write yourself if you were to use WebGL directly.
       </p>
       <h3 className="mt-3">What will you learn in this tutorial?</h3>

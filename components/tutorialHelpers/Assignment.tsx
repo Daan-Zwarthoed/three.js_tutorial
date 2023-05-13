@@ -18,20 +18,31 @@ const Assignment: React.FC<InputProps> = ({ children, assignments }) => {
   const { setShowRobot } = useContext(AppContext);
   useEffect(() => {
     setTimeout(() => {
+      const assignmentKeys = Object.keys(assignments);
       if (
         assignmentsClone &&
-        Object.keys(assignments).every(
+        assignmentKeys.every(
           (val, index) => val === Object.keys(assignmentsClone)[index]
         )
       ) {
-        const completedAssignment = Object.keys(assignments).find(
+        const completedAssignment = assignmentKeys.find(
           (key) =>
             assignmentsClone[key].checked !== assignments[key].checked &&
             assignments[key].checked
         );
 
-        if (completedAssignment)
-          setShowRobot(assignments[completedAssignment].subParagraph || true);
+        if (completedAssignment) {
+          console.log(
+            completedAssignment === assignmentKeys[assignmentKeys.length - 1]
+          );
+
+          assignments[completedAssignment];
+          setShowRobot({
+            text: assignments[completedAssignment].subParagraph,
+            nextButton:
+              completedAssignment === assignmentKeys[assignmentKeys.length - 1],
+          });
+        }
       }
       assignmentsClone = JSON.parse(JSON.stringify(assignments));
     });

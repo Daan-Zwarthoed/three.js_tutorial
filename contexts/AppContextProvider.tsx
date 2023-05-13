@@ -7,7 +7,10 @@ export const AppContextProvider = ({ children }: any) => {
   const [resetCanvasKey, setResetCanvasKey] = React.useState<number>(
     Math.random()
   );
-  const [showRobot, setShowRobot] = React.useState<boolean | string>(false);
+  const [showRobot, setShowRobot] = React.useState<{
+    text?: string;
+    nextButton?: boolean;
+  } | null>(null);
 
   return (
     <AppContext.Provider

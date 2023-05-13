@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -6,12 +6,13 @@ import CodeBlock from "../code/CodeBlock";
 import userFunction from "../../helpers/userFunction";
 import CodeBlockInline from "../code/CodeBlockInline";
 import CodeText from "../tutorialHelpers/CodeText";
+import AppContext from "../../contexts/AppContextProvider";
 
-const showBefore = `import * as THREE from "three";
+const showImports = `
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader";
 import { OrbitControls } from "three/addons/controls/OrbitControls";
-
-// Basic setup
+`;
+const code = `// Basic setup
 const canvas = document.getElementById("canvas");
 const loader = new GLTFLoader();
 let mixer = null;
@@ -43,9 +44,9 @@ scene.add(light2);
 new OrbitControls(camera, renderer.domElement);
 
 // Loader
-loader.load(`;
-
-const showAfter = ` // called when the resource is loaded
+loader.load( 
+  
+// called when the resource is loaded
   async function (gltf) {
     console.log("loaded");
     scene.add(gltf.scene);
@@ -76,85 +77,11 @@ function animate() {
 animate();`;
 
 export const loaderSceneFunction = (userScript: string) => {
-  const canvas = document.getElementById("canvas");
-  const loader = new GLTFLoader();
-  let mixer: THREE.AnimationMixer | null = null;
-  let clock = new THREE.Clock();
-  if (!canvas) return;
-
-  const scene = new THREE.Scene();
-
-  const camera = new THREE.PerspectiveCamera(
-    75,
-    canvas.clientWidth / canvas.clientHeight,
-    0.1,
-    2000000
+  userFunction(
+    userScript,
+    ["THREE", "GLTFLoader", "OrbitControls"],
+    [THREE, GLTFLoader, OrbitControls]
   );
-  camera.position.z = 10;
-
-  const renderer = new THREE.WebGLRenderer({ canvas });
-  renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-  renderer.setClearColor(0x01e3d59, 1);
-
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-  scene.add(ambientLight);
-
-  const directionalLight = new THREE.DirectionalLight(0xffff99, 1);
-  directionalLight.position.set(30, 17, 26);
-  scene.add(directionalLight);
-
-  new OrbitControls(camera, renderer.domElement);
-
-  window.addEventListener("resize", function () {
-    if (!canvas.parentElement) return;
-    renderer.setSize(
-      canvas.parentElement!.clientWidth,
-      canvas.parentElement!.clientHeight,
-      true
-    );
-    camera.aspect = canvas.clientWidth / canvas.clientHeight;
-    camera.updateProjectionMatrix();
-  });
-
-  if (userScript)
-    loader.load(
-      // resource URL
-      // "https://raw.githubusercontent.com/Websitebystudents/pim-pom/main/model/pim_pom_clubhuis_8.gltf"
-      // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/AnimatedCube/glTF/AnimatedCube.gltf",
-      // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf",
-      // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Sponza/glTF/Sponza.gltf",
-      userScript.replace(/[""]|,/g, ""),
-      // called when the resource is loaded
-      async function (gltf) {
-        console.log("loaded");
-        scene.add(gltf.scene);
-
-        mixer = new THREE.AnimationMixer(gltf.scene);
-        gltf.animations.forEach((clip) => {
-          if (mixer) mixer.clipAction(clip).play();
-        });
-
-        gltf.animations; // Array<THREE.AnimationClip>
-        gltf.cameras; // Array<THREE.Camera>
-        gltf.asset; // Object
-      },
-      // called while loading is progressing
-      function (xhr) {
-        if (xhr.total) console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-      },
-      // called when loading has errors
-      function (error) {
-        console.log(error);
-      }
-    );
-
-  function animate() {
-    const delta = clock.getDelta();
-    if (mixer) mixer.update(delta);
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-  }
-  animate();
 };
 
 const Loader: React.FC = () => {
@@ -176,7 +103,7 @@ const Loader: React.FC = () => {
           {`import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';`}
         </CodeBlockInline>
 
-        <p>Fill in any of these in the purple box:</p>
+        <p>Fill in any of these at line 38:</p>
         <CodeBlockInline>
           {`"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/AnimatedCube/glTF/AnimatedCube.gltf",
 "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf",
@@ -196,10 +123,9 @@ if (mixer) mixer.update(delta);`}
         </CodeBlockInline>
       </CodeText>
       <CodeBlock
-        showBefore={showBefore}
-        showAfter={showAfter}
-        inputHeight={1}
-        highlightArea={{ startRow: 35, endRow: 64 }}
+        showImports={showImports}
+        code={code}
+        highlightArea={{ startRow: 38, endRow: 38 }}
       ></CodeBlock>
     </>
   );

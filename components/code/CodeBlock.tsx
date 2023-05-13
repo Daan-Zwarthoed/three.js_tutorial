@@ -3,37 +3,32 @@ import React, { useContext, useEffect } from "react";
 import AppContext from "../../contexts/AppContextProvider";
 import dynamic from "next/dynamic";
 import Resizable from "../global/Resizable";
-
 // import ace from "ace-builds";
 const CodeEditor = dynamic(() => import("./CodeEditor"), { ssr: false });
 type Props = {
-  showBefore?: any;
-  inputValue?: string;
-  showAfter?: any;
-  inputHeight?: number;
-  noInput?: boolean;
-  children?: any;
+  showImports?: string;
+  code: string;
+  children?: string;
   highlightArea?: {
     startRow: number;
     endRow: number;
   };
 };
-const CodeBlock: React.FC<Props> = ({
-  showBefore,
-  showAfter,
-  inputValue,
-  inputHeight,
-  noInput,
-  highlightArea,
-}) => {
-  const { userScript } = useContext(AppContext);
-  const beforeHeight = showBefore.split(/\r\n|\r|\n/).length;
-  if (!inputHeight && !inputValue)
-    return (
-      <>Input value or height needs to be defined or noInput needs to be true</>
-    );
-  if (userScript && !inputValue) inputValue = userScript;
-  inputHeight = inputHeight || inputValue!.split(/\r\n|\r|\n/).length;
+
+const defaultImport = `import * as THREE from "three";
+`;
+
+const CodeBlock: React.FC<Props> = ({ code, showImports, highlightArea }) => {
+  const { setUserScript } = useContext(AppContext);
+
+  const allImports = defaultImport + (showImports ? showImports : "\n");
+
+  const beforeHeight = allImports.split(/\r\n|\r|\n/).length;
+  const inputHeight = beforeHeight + code.split(/\r\n|\r|\n/).length - 1;
+
+  useEffect(() => {
+    setUserScript(code);
+  }, [code]);
 
   return (
     <Resizable resizeTarget="Code">
@@ -43,11 +38,7 @@ const CodeBlock: React.FC<Props> = ({
         beforeHeight={beforeHeight}
         highlightArea={highlightArea}
       >
-        {showBefore +
-          (inputValue
-            ? "\n" + inputValue + "\n"
-            : [...Array(inputHeight + 1)].map(() => "\n").join("")) +
-          showAfter}
+        {allImports + ("\n" + code + "\n")}
       </CodeEditor>
     </Resizable>
   );

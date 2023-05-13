@@ -3,7 +3,6 @@ import * as THREE from "three";
 import userFunction from "../../helpers/userFunction";
 import CodeBlock from "../code/CodeBlock";
 import CodeBlockInline from "../code/CodeBlockInline";
-import CodeBlockNoInput from "../code/CodeBlockNoInput";
 import { ArcballControls } from "three/examples/jsm/controls/ArcballControls.js";
 import { DragControls } from "three/examples/jsm/controls/DragControls.js";
 import { FirstPersonControls } from "three/examples/jsm/controls/FirstPersonControls.js";
@@ -28,8 +27,6 @@ const ControlsTypes = [
 ] as const;
 type ControlsMode = (typeof ControlsTypes)[number];
 
-const beforeCodeStandard = `import * as THREE from "three";
-`;
 const beforeCodeArcball = `import { ArcballControls } from 'three/addons/controls/ArcballControls.js';`;
 const beforeCodeDrag = `import { DragControls } from 'three/addons/controls/DragControls.js';`;
 const beforeCodeFirstPerson = `import { FirstPersonControls } from 'three/addons/controls/FirstPersonControls.js';`;
@@ -195,15 +192,10 @@ export const addonsSceneFunction = (userScript: string) => {
 };
 
 const Addons: React.FC = () => {
-  const { userScript, setUserScript, setResetCanvasKey, tutorialStep } =
+  const { setUserScript, setResetCanvasKey, tutorialStep } =
     useContext(AppContext);
-  const [controlsMode, setControlsMode] = useState<ControlsMode>("Transform");
-
-  useEffect(() => {
-    let lightScript = code + eval("afterCode" + controlsMode);
-
-    setUserScript(lightScript);
-  }, [controlsMode, tutorialStep]);
+  const [controlsMode, setControlsMode] = useState<ControlsMode>("Orbit");
+  let lightScript = code + eval("afterCode" + controlsMode);
 
   return (
     <>
@@ -267,10 +259,8 @@ const Addons: React.FC = () => {
       </CodeText>
 
       <CodeBlock
-        showBefore={beforeCodeStandard + eval("beforeCode" + controlsMode)}
-        showAfter={""}
-        inputValue={(userScript && userScript.trim()) || " "}
-        highlightArea={{ startRow: 27, endRow: 27 }}
+        showImports={eval("beforeCode" + controlsMode)}
+        code={lightScript}
       ></CodeBlock>
     </>
   );
