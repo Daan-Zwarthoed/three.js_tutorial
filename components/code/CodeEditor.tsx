@@ -90,7 +90,7 @@ const CodeBlock: React.FC<Props> = ({
   };
   useEffect(() => {
     setup();
-  }, [editor, children]);
+  }, [editor, children, highlightArea]);
 
   const handleLoad = (editor: ace.Ace.Editor) => {
     setEditor(editor);

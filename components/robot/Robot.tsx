@@ -14,7 +14,7 @@ import StepButton from "../global/StepButton";
 type InputProps = {
   next?: true;
 };
-let animating: gsap.core.Tween[] = [];
+const animating: gsap.core.Tween[] = [];
 const complimentOptions = [
   "Well done!",
   "You're the best!",
@@ -44,14 +44,14 @@ const Robot: React.FC<InputProps> = ({ next }) => {
   // Default animations of the robot
   useEffect(() => {
     if (!eyeDisplay.current || !thruster.current || !robotSelf.current) return;
-    gsap.to(robotSelf.current.style, {
+    const robotSelfAnimation = gsap.to(robotSelf.current.style, {
       transform: "translate(24.5px, 2px)",
       repeat: -1,
       duration: 2,
       ease: "bounce",
       yoyoEase: "bounce",
     });
-
+    animating.push(robotSelfAnimation);
     [...eyeDisplay.current.children].forEach((element) => {
       const eyeAnimation = gsap.to((element as HTMLDivElement).style, {
         height: "20px",
@@ -63,13 +63,23 @@ const Robot: React.FC<InputProps> = ({ next }) => {
       });
       animating.push(eyeAnimation);
     });
-    const thrusterAnimation = gsap.to(thruster.current.style, {
-      transform: `scale(1, 1.1)`,
-      repeat: -1,
-      duration: 0.2,
-      yoyoEase: "back",
-    });
+    const thrusterAnimation = gsap.fromTo(
+      thruster.current.style,
+      {
+        transform: "scale(1, 1)",
+        repeat: -1,
+        duration: 0.2,
+        yoyoEase: "back",
+      },
+      {
+        transform: "scale(1, 1.1)",
+        repeat: -1,
+        duration: 0.2,
+        yoyoEase: "back",
+      }
+    );
     animating.push(thrusterAnimation);
+    animating.forEach((animation) => animation.pause());
   }, []);
 
   const hideRobot = () => {
@@ -147,7 +157,7 @@ const Robot: React.FC<InputProps> = ({ next }) => {
               }`}
               onClick={() => setShowRobot(null)}
             >
-              Got it
+              {text.nextButton ? "Stay here" : "Got it"}
             </button>
           )}
           {text.nextButton && (
@@ -194,7 +204,6 @@ const Robot: React.FC<InputProps> = ({ next }) => {
             height: "80px",
             clipPath:
               "polygon(80% 0, 70% 50%, 65% 29%, 58% 83%, 54% 53%, 46% 100%, 35% 51%, 31% 14%, 28% 43%, 20% 0)",
-            transform: "scale(1, 1)",
           }}
           ref={thruster}
         >

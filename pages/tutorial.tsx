@@ -29,7 +29,6 @@ import Addons, {
 import ResizableCanvas from "../components/global/Resizable";
 import Navigation from "../components/tutorialHelpers/Navigation";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { faInstagram } from "@fortawesome/free-brands-svg-icons";
 import * as FA from "@fortawesome/free-solid-svg-icons";
 
 type StepList = Array<{

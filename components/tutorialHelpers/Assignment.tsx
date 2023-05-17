@@ -2,9 +2,13 @@ import Head from "next/head";
 import React, { useContext, useEffect, useState } from "react";
 import NextStepButton from "../global/StepButton";
 import AppContext from "../../contexts/AppContextProvider";
+import * as FA from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import gsap from "gsap";
 
 type Assignment = {
   title: string;
+  hint: string;
   subParagraph?: string;
   checked: boolean;
 };
@@ -31,44 +35,90 @@ const Assignment: React.FC<InputProps> = ({ children, assignments }) => {
             assignments[key].checked
         );
 
-        if (completedAssignment) {
-          console.log(
-            completedAssignment === assignmentKeys[assignmentKeys.length - 1]
-          );
-
-          assignments[completedAssignment];
+        if (completedAssignment)
           setShowRobot({
             text: assignments[completedAssignment].subParagraph,
             nextButton:
               completedAssignment === assignmentKeys[assignmentKeys.length - 1],
           });
-        }
       }
       assignmentsClone = JSON.parse(JSON.stringify(assignments));
     });
   });
 
+  const handleHintClick = (event: any) => {
+    const styleSibling = (
+      (event.target as HTMLButtonElement)
+        .nextElementSibling as HTMLParagraphElement
+    ).style;
+    const styleChevron = (
+      (event.target as HTMLButtonElement).children[1] as HTMLElement
+    ).style;
+    gsap.set(styleSibling, {
+      display: styleSibling.display === "none" ? "flex" : "none",
+    });
+    gsap.to(styleChevron, {
+      transform:
+        styleChevron.transform === "rotate(0deg)"
+          ? "rotate(180deg)"
+          : "rotate(0deg)",
+      ease: "power.1",
+    });
+  };
+
   return (
-    <div>
-      {Object.keys(assignments).map((key) => {
-        const assignment = assignments[key];
-        return (
-          <div key={key}>
-            <input
-              type="checkbox"
-              id="scales"
-              name="scales"
-              className="mr-3 accent-primary"
-              checked={assignment.checked}
-              readOnly
-            />
-            <label htmlFor="scales">{assignment.title}</label>
-            {/* {assignment.subParagraph && assignment.checked && (
-              <p className="mt-1 mb-2 ml-2">{assignment.subParagraph}</p>
-            )} */}
-          </div>
-        );
-      })}
+    <div className="-mx-5">
+      <h2 className="w-full p-2 mb-4 px-5">Assignments</h2>
+      <div className="">
+        {Object.keys(assignments).map((key, index) => {
+          const assignment = assignments[key];
+          return (
+            <div key={key} className="mb-5">
+              <div className="flex flex-row items-center px-5">
+                <input
+                  type="checkbox"
+                  id="assignment"
+                  name="assignment"
+                  className="peer hidden"
+                  checked={assignment.checked}
+                  readOnly
+                />
+                <div className="shrink-0 bg-secondary peer-checked:bg-primary h-4 w-4 mr-3 flex justify-center items-center rounded-sm">
+                  <FontAwesomeIcon
+                    className="w-3/4 h-3/4"
+                    style={{ display: assignment.checked ? "flex" : "none" }}
+                    size="sm"
+                    icon={FA.faCheck}
+                    color={"white"}
+                  />
+                </div>
+                <label htmlFor="assignment">
+                  <strong className="">{index}.</strong> {assignment.title}
+                </label>
+              </div>
+              <button
+                className="w-full text-start my-3 bg-tertary px-5 flex flex-row items-center"
+                onClick={handleHintClick}
+              >
+                <p>Need some help? Get a hint.</p>
+                <FontAwesomeIcon
+                  className="w-4 h-4 ml-auto"
+                  style={{ transform: "rotate(0deg)" }}
+                  size="sm"
+                  icon={FA.faChevronDown}
+                  color={"white"}
+                />
+              </button>
+              <p
+                className="peer-checked:bg-primary pr-5 pl-7"
+                style={{ display: "none" }}
+              >
+                {assignment.hint}
+              </p>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

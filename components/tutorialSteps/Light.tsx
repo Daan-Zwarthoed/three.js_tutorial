@@ -10,6 +10,7 @@ import Image from "next/image";
 import AppContext from "../../contexts/AppContextProvider";
 import CodeText from "../tutorialHelpers/CodeText";
 import Note from "../tutorialHelpers/Note";
+import Assignment from "../tutorialHelpers/Assignment";
 const LightModeTypes = [
   "Ambient",
   "Directional",
@@ -38,16 +39,18 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   2000
 );
-camera.position.z = 30;
 
 const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 renderer.setClearColor(0x01e3d59, 1);
+renderer.shadowMap.enabled = true;
+
 
 // Add objects
 const material = new THREE.MeshStandardMaterial({
   color: "#d63e4d",
 });
+
 const cubeGeometry = new THREE.BoxGeometry(10, 10, 10);
 const cube = new THREE.Mesh(cubeGeometry, material);
 cube.castShadow = true; 
@@ -74,18 +77,26 @@ function animate() {
 animate();`;
 
 let savedCameraPosition: THREE.Vector3;
-let renderer: THREE.WebGLRenderer | undefined;
+let renderer: THREE.WebGLRenderer;
+
 export const lightSceneFunction = (userScript: string) => {
   const canvas = document.getElementById("canvas");
-  const cameraAndRenderer = userFunction(
+  const cameraRendererTextureAndSpotlight = userFunction(
     userScript,
-    ["THREE", "RectAreaLightHelper", "OrbitControls"],
-    [THREE, RectAreaLightHelper, OrbitControls],
-    "[camera, renderer]"
+    ["THREE", "RectAreaLightHelper", "OrbitControls", "GLTFLoader"],
+    [THREE, RectAreaLightHelper, OrbitControls, GLTFLoader],
+    ["camera", "renderer", "texture", "spotLight"]
   );
-  if (cameraAndRenderer) {
-    const camera = cameraAndRenderer[0];
-    renderer = cameraAndRenderer[1];
+  if (cameraRendererTextureAndSpotlight) {
+    console.log(cameraRendererTextureAndSpotlight);
+
+    const camera = cameraRendererTextureAndSpotlight[0];
+    renderer = cameraRendererTextureAndSpotlight[1];
+    const texture = cameraRendererTextureAndSpotlight[2];
+    const spotLight = cameraRendererTextureAndSpotlight[3];
+
+    assignmentCheck(texture, spotLight);
+
     if (camera) {
       if (savedCameraPosition) {
         camera.position.set(
@@ -103,6 +114,49 @@ export const lightSceneFunction = (userScript: string) => {
           savedCameraPosition = camera.position;
         });
     }
+  }
+};
+
+const assignments = {
+  textureLoader: {
+    title:
+      "Use the textureLoader to load a doge image gotten from image/doge.png and apply it to a variable called texture",
+    hint: "THREE.TextureLoader().load('images/doge.png')",
+    checked: false,
+  },
+  spotLightMapIsTexture: {
+    title: "Now apply that texture to the spotlights map.",
+    hint: "the spotLight has a map property you can apply your texture to",
+    subParagraph:
+      "Okay good! There are alot of geometries like circle, cone, cylinder and a bunch of others.",
+    checked: false,
+  },
+};
+
+const assignmentCheck = (
+  texture: THREE.Texture,
+  spotLight: THREE.SpotLight
+) => {
+  if (texture) {
+    const interval = setInterval(() => {
+      if (texture.source.data) {
+        clearInterval(interval as unknown as number);
+
+        const assignmentsClone = JSON.parse(JSON.stringify(assignments));
+
+        assignments.textureLoader.checked = true;
+        if (spotLight.map === texture)
+          assignments.spotLightMapIsTexture.checked = true;
+
+        if (
+          assignmentsClone.textureLoader.checked !==
+            assignments.textureLoader.checked ||
+          assignmentsClone.spotLightMapIsTexture.checked !==
+            assignments.spotLightMapIsTexture.checked
+        )
+          update();
+      }
+    }, 1000);
   }
 };
 
@@ -168,22 +222,28 @@ const pointLightHelper = new THREE.PointLightHelper( pointLight, sphereSize );
 scene.add( pointLightHelper );
 `;
 
+let update: () => void;
+
 const Light: React.FC = () => {
   const { setUserScript, setResetCanvasKey } = useContext(AppContext);
   const [lightMode, setLightMode] = useState<Lightmode[]>(["Ambient", "Spot"]);
+  const [resetKey, setResetKey] = useState(Math.random());
+
+  update = () => {
+    setResetKey(Math.random());
+  };
+
   let lightScript = codeBefore;
   if (lightMode.includes("Ambient")) lightScript += ambientScript;
-  if (lightMode.includes("Directional"))
-    lightScript += "\n" + directionalScript;
+  if (lightMode.includes("Directional")) lightScript += directionalScript;
   if (lightMode.includes("Directional helper"))
-    lightScript += "\n" + directionalHelperScript;
-  if (lightMode.includes("Spot")) lightScript += "\n" + spotScript;
-  if (lightMode.includes("Spot helper")) lightScript += "\n" + spotHelperScript;
-  if (lightMode.includes("Point")) lightScript += "\n" + pointScript;
-  if (lightMode.includes("Point helper"))
-    lightScript += "\n" + pointHelperScript;
-  if (lightMode.includes("Rect")) lightScript += "\n" + rectScript;
-  if (lightMode.includes("Rect helper")) lightScript += "\n" + rectHelperScript;
+    lightScript += directionalHelperScript;
+  if (lightMode.includes("Spot")) lightScript += spotScript;
+  if (lightMode.includes("Spot helper")) lightScript += spotHelperScript;
+  if (lightMode.includes("Point")) lightScript += pointScript;
+  if (lightMode.includes("Point helper")) lightScript += pointHelperScript;
+  if (lightMode.includes("Rect")) lightScript += rectScript;
+  if (lightMode.includes("Rect helper")) lightScript += rectHelperScript;
   if (lightMode.includes("Hemisphere")) lightScript += hemisphereScript;
   if (lightMode.includes("Hemisphere helper"))
     lightScript += hemisphereHelperScript;
@@ -254,17 +314,17 @@ const Light: React.FC = () => {
           You can try out the different lights and their helpers with the button
           below:
         </p>
-        <div className="grid grid-cols-2 columns-2 w-full my-5 border-seconday border-2">
+        <div className="grid grid-cols-2 columns-2 w-full my-5 border-secondary border-2">
           {LightModeTypes.map((type) => (
             <button
               key={type}
-              className={`relative w-full text-center py-4 first:col-span-2 border-seconday border-t-2 first:border-0`}
+              className="relative w-full text-center py-4 first:col-span-2 border-secondary border-t-2 first:border-0"
               onClick={() => handleLightClick(type)}
             >
               <p className="relative z-10">{type}</p>
               {!type.includes("helper") && (
                 <div
-                  className={`absolute transition-all duration-700 bg-tertary left-0 h-full top-0`}
+                  className="absolute transition-all duration-700 bg-tertary left-0 h-full top-0"
                   style={{
                     width: lightMode.includes(type)
                       ? lightMode.includes((type + " helper") as Lightmode)
@@ -277,12 +337,14 @@ const Light: React.FC = () => {
             </button>
           ))}
         </div>
+        <Note>Note that we added shadowMap to our renderer.</Note>
         <Note>
           Also note that we did change the material to MeshStandardMaterial.
           This is because MeshBasicMaterial does not interact with lights or
           shadows. We also manually activated the objects ability to create
           and/or receive shadows.
         </Note>
+        <Assignment assignments={assignments}></Assignment>{" "}
       </CodeText>
 
       <CodeBlock showImports={showImports} code={lightScript}></CodeBlock>

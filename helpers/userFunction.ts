@@ -10,20 +10,37 @@ window.addEventListener("resize", function () {
   camera.updateProjectionMatrix();
 });`;
 
-const returnVarFunction = (returnVar?: string) => {
+const returnVarFunction = (returnVar?: string | string[]) => {
   if (!returnVar) return "";
-  return `try {
-    return ${returnVar};
-  } catch (error) {
-    console.log("No return");
-  }`;
+  if (typeof returnVar === "string") {
+    return `try {
+      return ${returnVar}; 
+    } catch (error) {
+      console.log("No return");
+    }`;
+  } else {
+    const returnVars = JSON.stringify(returnVar);
+    return `try {
+      const returnThis = [];
+      ${returnVars}.forEach(variable => {
+        try { 
+          returnThis.push(eval(variable));
+        } catch (error) {
+          returnThis.push(undefined);
+        }
+      });
+      return returnThis;
+    } catch (error) {
+      console.log("No return");
+    }`;
+  }
 };
 
 const userFunction = (
   userScript: string,
   paramNames?: string[],
   params?: any[],
-  returnVar?: string
+  returnVar?: string | string[]
 ) => {
   const script = userScript + windowResize + returnVarFunction(returnVar);
   try {

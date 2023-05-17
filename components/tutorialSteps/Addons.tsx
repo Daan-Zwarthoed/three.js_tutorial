@@ -14,6 +14,7 @@ import { TransformControls } from "three/examples/jsm/controls/TransformControls
 
 import CodeText from "../tutorialHelpers/CodeText";
 import AppContext from "../../contexts/AppContextProvider";
+import Assignment from "../tutorialHelpers/Assignment";
 
 const ControlsTypes = [
   "Arcball",
@@ -115,7 +116,7 @@ function animate() {
 }
 animate();`;
 
-const afterCodeOrbit = `new OrbitControls(camera, renderer.domElement);
+const afterCodeOrbit = `const controls = new OrbitControls(camera, renderer.domElement);
 
 // Animation loop
 function animate() {
@@ -160,10 +161,45 @@ function animate() {
 }
 animate();`;
 
+const assignments = {
+  addOrbitControls: {
+    title: "Add orbit controls to the scene",
+    hint: "You can use the buttons above to select orbit controls",
+    checked: false,
+  },
+  autoRotate: {
+    title: "Set the controls to autoRotate",
+    hint: "autoRotate is a value of controls you can set to true",
+    subParagraph:
+      "Okay well done! But as you might see the cube is not rotating on its own yet. For that you will need to update the controls on every animation loop.",
+    checked: false,
+  },
+  updateControls: {
+    title: "Update the controls on every animation loop",
+    hint: "Update is a function you can call on controls",
+    subParagraph:
+      "Well done as you can see the cube is rotating on its own now!",
+    checked: false,
+  },
+};
+
+const assignmentCheck = (controls: OrbitControls) => {
+  if (!controls) return;
+  if (controls instanceof OrbitControls) {
+    assignments.addOrbitControls.checked = true;
+  } else return;
+  if (controls.autoRotate) assignments.autoRotate.checked = true;
+  const initialAzimuthalAngle = controls.getAzimuthalAngle();
+  setTimeout(() => {
+    if (initialAzimuthalAngle !== controls.getAzimuthalAngle())
+      assignments.updateControls.checked = true;
+  });
+};
+
 let renderer: THREE.WebGLRenderer | undefined;
 
 export const addonsSceneFunction = (userScript: string) => {
-  renderer = userFunction(
+  const rendererAndControls = userFunction(
     userScript,
     [
       "THREE",
@@ -187,14 +223,17 @@ export const addonsSceneFunction = (userScript: string) => {
       TrackballControls,
       TransformControls,
     ],
-    "renderer"
+    ["renderer", "controls"]
   );
+  if (!rendererAndControls) return;
+  renderer = rendererAndControls[0];
+  assignmentCheck(rendererAndControls[1]);
 };
 
 const Addons: React.FC = () => {
   const { setUserScript, setResetCanvasKey, tutorialStep } =
     useContext(AppContext);
-  const [controlsMode, setControlsMode] = useState<ControlsMode>("Orbit");
+  const [controlsMode, setControlsMode] = useState<ControlsMode>("Arcball");
   let lightScript = code + eval("afterCode" + controlsMode);
 
   return (
@@ -236,7 +275,7 @@ const Addons: React.FC = () => {
           {ControlsTypes.map((type) => (
             <button
               key={type}
-              className={`relative w-full text-center py-4 border-seconday border-2 first:border-t-2 border-t-0`}
+              className={`relative w-full text-center py-4 border-secondary border-2 first:border-t-2 border-t-0`}
               onClick={() => {
                 setResetCanvasKey(Math.random());
                 if (renderer) {
@@ -256,6 +295,7 @@ const Addons: React.FC = () => {
             </button>
           ))}
         </div>
+        <Assignment assignments={assignments}></Assignment>
       </CodeText>
 
       <CodeBlock

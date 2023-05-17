@@ -23,33 +23,44 @@ const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 renderer.setClearColor(0x01e3d59, 1);
 
-
-
 // Animation loop
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
-  // if (cube) {
-  //   cube.rotation.x += 0.01;
-  //   cube.rotation.y += 0.01;
-  // }
+  try { 
+    if (cube) {
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+    }
+  } catch (error) {
+    error;
+  }
 }
-animate();`;
 
+animate();`;
 export const boxSceneFunction = (userScript: string) => {
   const cube = userFunction(userScript, ["THREE"], [THREE], "cube");
   if (cube) assignmentCheck(cube);
 };
 
 const assignments = {
-  cubeExists: { title: "Add your own cube to the scene!", checked: false },
+  cubeExists: {
+    title: "Add your own cube to the scene!",
+    hint: "You can copy the code in the codeblock above",
+    checked: false,
+  },
   cubeIsCone: {
     title: "Make the cube a ConeGeometry",
+    hint: "You already have a CubeGeometry in your code. Maybe you can update that?",
     subParagraph:
       "Okay good! There are alot of geometries like circle, cone, cylinder and a bunch of others.",
     checked: false,
   },
-  cubeIsGreen: { title: "Change the color to: 0xd25e2f", checked: false },
+  cubeIsGreen: {
+    title: "Change the color to: 0xd25e2f",
+    hint: "Its the same principle as with the last assignment.",
+    checked: false,
+  },
 };
 
 const assignmentCheck = (cube: THREE.Mesh) => {

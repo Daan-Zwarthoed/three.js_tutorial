@@ -7,6 +7,7 @@ import Link from "next/link";
 import CodeText from "../tutorialHelpers/CodeText";
 import userFunction from "../../helpers/userFunction";
 import AppContext from "../../contexts/AppContextProvider";
+import Assignment from "../tutorialHelpers/Assignment";
 
 const beforeGsapCode = `import gsap from "gsap";
 `;
@@ -56,20 +57,16 @@ scene.add(cube2);
 scene.add(cube3);
 scene.add(cube4);
 
-// Raycaster setup
-const pointer = new THREE.Vector2();
 
-function onPointerMove(event) {
+function onClick(event) {
   if (!canvas) return;
+
+  const pointer = new THREE.Vector2();
   const canvasLeft = canvas.getBoundingClientRect().left;
   const canvasTop = canvas.getBoundingClientRect().top;
   pointer.x = ((event.clientX - canvasLeft) / canvas.clientWidth) * 2 - 1;
   pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
-}
-canvas.addEventListener("mousemove", onPointerMove);
 
-// Animate on click
-function onClick() {
   raycaster.setFromCamera(pointer, camera);
   const intersects = raycaster.intersectObjects(scene.children, false);
   const intersect = intersects[0] && intersects[0].object;
@@ -135,23 +132,19 @@ scene.add(cube2);
 scene.add(cube3);
 scene.add(cube4);
 
-// Raycaster setup
-const pointer = new THREE.Vector2();
-
-function onPointerMove(event) {
-  if (!canvas) return;
-  const canvasLeft = canvas.getBoundingClientRect().left;
-  const canvasTop = canvas.getBoundingClientRect().top;
-  pointer.x = ((event.clientX - canvasLeft) / canvas.clientWidth) * 2 - 1;
-  pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
-}
-canvas.addEventListener("mousemove", onPointerMove);
-
 // Set animation goal on click
 let cameraPositionGoal;
 let animationDistance;
 
-function onClick() {
+function onClick(event) {
+  if (!canvas) return;
+
+  const pointer = new THREE.Vector2();
+  const canvasLeft = canvas.getBoundingClientRect().left;
+  const canvasTop = canvas.getBoundingClientRect().top;
+  pointer.x = ((event.clientX - canvasLeft) / canvas.clientWidth) * 2 - 1;
+  pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
+
   raycaster.setFromCamera(pointer, camera);
   const intersects = raycaster.intersectObjects(scene.children, false);
   const intersect = intersects[0] && intersects[0].object;
@@ -189,16 +182,72 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();`;
-let renderer: THREE.WebGLRenderer | undefined;
+let raycaster: THREE.Raycaster;
+let camera: THREE.Camera;
+let scene: THREE.Scene;
+let renderer: THREE.WebGLRenderer;
 
 export const cameraAnimationSceneFunction = (userScript: string) => {
-  userFunction(userScript, ["THREE", "gsap"], [THREE, gsap], "renderer");
+  const raycasterCameraSceneAndRenderer = userFunction(
+    userScript,
+    ["THREE", "gsap"],
+    [THREE, gsap],
+    ["raycaster", "camera", "scene"]
+  );
+  if (!raycasterCameraSceneAndRenderer) return;
+  raycaster = raycasterCameraSceneAndRenderer[0];
+  camera = raycasterCameraSceneAndRenderer[1];
+  scene = raycasterCameraSceneAndRenderer[2];
+  renderer = raycasterCameraSceneAndRenderer[3];
+
+  const canvas = document.getElementById("canvas");
+  if (!canvas) return;
+  canvas.removeEventListener("click", assignmentCheck);
+  canvas.addEventListener("click", assignmentCheck);
 };
 
+const assignments = {
+  loadGLTF: {
+    title:
+      "Animate the scale of a cube to become smaller or bigger when you click on it",
+    hint: "Dont worry about scale being a read only property. Gsap takes care of that for you.",
+    checked: false,
+  },
+};
+
+const assignmentCheck = async (event: { clientX: number; clientY: number }) => {
+  const canvas = document.getElementById("canvas");
+
+  if (!raycaster || !canvas) return;
+  const canvasLeft = canvas.getBoundingClientRect().left;
+  const canvasTop = canvas.getBoundingClientRect().top;
+  const pointer = new THREE.Vector2();
+  pointer.x = ((event.clientX - canvasLeft) / canvas.clientWidth) * 2 - 1;
+  pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
+  raycaster.setFromCamera(pointer, camera);
+  const intersects = raycaster.intersectObjects(scene.children, false);
+  const intersect = intersects[0] && intersects[0].object;
+  if (!intersect) return;
+  const assignmentsClone = JSON.parse(JSON.stringify(assignments));
+  const scaleTween = gsap.getTweensOf(intersect.scale)[0];
+  if (await scaleTween) assignments.loadGLTF.checked = true;
+  if (
+    assignmentsClone.loadGLTF.checked !== assignments.loadGLTF.checked &&
+    update
+  )
+    update();
+};
+
+let update: () => void;
+
 const CameraAnimation: React.FC = () => {
-  const { userScript, setUserScript, setResetCanvasKey } =
-    useContext(AppContext);
+  const { userScript, setResetCanvasKey } = useContext(AppContext);
   const [showCode, setShowCode] = useState(gsapCode);
+  const [resetKey, setResetKey] = useState(Math.random());
+
+  update = () => {
+    setResetKey(Math.random());
+  };
   return (
     <>
       <CodeText>
@@ -287,6 +336,7 @@ const CameraAnimation: React.FC = () => {
           for colors, takes more code and is way harder to read then gsap.
         </p>
         <p>Long story short. Just use gsap.</p>
+        <Assignment assignments={assignments}></Assignment>{" "}
       </CodeText>
 
       <CodeBlock showImports={beforeGsapCode} code={showCode}></CodeBlock>

@@ -213,14 +213,14 @@ export const infoBubbleSceneFunction = (userScript: string) => {
 
 const InfoBubble: React.FC = () => {
   const [subStep, setSubStep] = useState<SubStep>("loader");
-  let highlightArea = { startRow: 35, endRow: 57 }; // Default when loader
-  if (subStep === "toggle info") highlightArea = { startRow: 67, endRow: 81 };
-  if (subStep === "info click") highlightArea = { startRow: 83, endRow: 121 };
-  if (subStep === "back click") highlightArea = { startRow: 123, endRow: 138 };
+  let highlightArea = { startRow: 35, endRow: 58 }; // Default when loader
+  if (subStep === "toggle info") highlightArea = { startRow: 69, endRow: 84 };
+  if (subStep === "info click") highlightArea = { startRow: 86, endRow: 125 };
+  if (subStep === "back click") highlightArea = { startRow: 127, endRow: 143 };
   if (subStep === "hide info behind car")
-    highlightArea = { startRow: 149, endRow: 153 };
+    highlightArea = { startRow: 155, endRow: 159 };
   if (subStep === "info button position")
-    highlightArea = { startRow: 158, endRow: 170 };
+    highlightArea = { startRow: 164, endRow: 171 };
   const subStepIndex = SubStepTypes.findIndex((step) => step === subStep);
 
   return (
@@ -251,8 +251,8 @@ const InfoBubble: React.FC = () => {
               hidden or try to show it if its already shown. If we want to show
               the info button we add it back to the scene and then animate its
               opacity to slowly show. Another great thing about gsap is its
-              eventCallback feature. We can use this to hide remove the info
-              button from the scene after hiding it.
+              eventCallback feature. We can use this to remove the info button
+              from the scene after hiding it.
             </p>
           </>
         )}
@@ -261,9 +261,9 @@ const InfoBubble: React.FC = () => {
             <h4>Info click</h4>
             <p>
               First up we check if we have wheel1 and info loaded correctly, we
-              also check if we are intersecting with info and if we infoIsShown
-              is false to not be able to click on info when its animation to
-              being hidden is playing.
+              also check if we are intersecting with info and if infoIsShown is
+              false to not be able to click on info when its animation to being
+              hidden is playing.
             </p>
             <p>
               After that we clone the camera position and quaternion so we can
@@ -274,7 +274,7 @@ const InfoBubble: React.FC = () => {
               hide the info button.
             </p>
             <p>
-              Then we get the back button and show it and add a eventlistener to
+              Then we get the back button, show it and add an eventlistener to
               it to for the backClick{" "}
             </p>
           </>
@@ -286,7 +286,7 @@ const InfoBubble: React.FC = () => {
               The back click button is pretty simple. We just animate the camera
               back to its original position and quaternion, remove the
               backbutton, add the info button back and give back controls when
-              its done. And then remove the event listener.
+              its done. After that we remove the event listener.
             </p>
           </>
         )}
@@ -307,9 +307,9 @@ const InfoBubble: React.FC = () => {
             <h4>Info button position</h4>
             <p>
               Even though it looks like it the info button isn't actually at the
-              same location as the wheel is. It is actually between the position
-              of the camera and the wheel. But extremely close to the camera.
-              This prevents the info button from clipping into the car.
+              same location as the wheel is. It is actually inbetween the the
+              camera and the wheel. But extremely close to the camera. This
+              prevents the info button from clipping into the car.
             </p>
             <p>
               We then also use info.lookAt() to make the info button always face

@@ -3,7 +3,7 @@ const allColors = {
   ...colors,
   ...{
     primary: "#D25E2F",
-    seconday: "#fce2ce",
+    secondary: "#fce2ce",
     tertary: "#334155",
     background: "#021622",
     accent: "#46A0A0",

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -7,6 +7,7 @@ import userFunction from "../../helpers/userFunction";
 import CodeBlockInline from "../code/CodeBlockInline";
 import CodeText from "../tutorialHelpers/CodeText";
 import AppContext from "../../contexts/AppContextProvider";
+import Assignment from "../tutorialHelpers/Assignment";
 
 const showImports = `
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader";
@@ -45,8 +46,8 @@ new OrbitControls(camera, renderer.domElement);
 
 // Loader
 loader.load( 
-  
-// called when the resource is loaded
+  "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf",
+  // called when the resource is loaded
   async function (gltf) {
     console.log("loaded");
     scene.add(gltf.scene);
@@ -76,15 +77,50 @@ function animate() {
 }
 animate();`;
 
+let checkInterval: number | NodeJS.Timer | undefined;
 export const loaderSceneFunction = (userScript: string) => {
-  userFunction(
+  const scene = userFunction(
     userScript,
     ["THREE", "GLTFLoader", "OrbitControls"],
-    [THREE, GLTFLoader, OrbitControls]
+    [THREE, GLTFLoader, OrbitControls],
+    "scene"
   );
+  checkInterval = setInterval(() => {
+    assignmentCheck(scene);
+  }, 1000);
 };
 
+const assignments = {
+  loadGLTF: {
+    title: "Add the above line at line 39",
+    hint: "Did you make sure to copy the entire line?",
+    checked: false,
+  },
+};
+
+const assignmentCheck = (scene: THREE.Scene) => {
+  if (!scene || !scene.children[2]) return;
+  clearInterval(checkInterval as number);
+  const gltfScene = scene.children[2];
+  if (gltfScene.type !== "Group") return;
+  const assignmentsClone = JSON.parse(JSON.stringify(assignments));
+  assignments.loadGLTF.checked = true;
+
+  if (
+    assignmentsClone.loadGLTF.checked !== assignments.loadGLTF.checked &&
+    update
+  )
+    update();
+};
+
+let update: () => void;
+
 const Loader: React.FC = () => {
+  const [resetKey, setResetKey] = useState(Math.random());
+
+  update = () => {
+    setResetKey(Math.random());
+  };
   return (
     <>
       <CodeText>
@@ -102,13 +138,6 @@ const Loader: React.FC = () => {
         <CodeBlockInline>
           {`import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';`}
         </CodeBlockInline>
-
-        <p>Fill in any of these at line 38:</p>
-        <CodeBlockInline>
-          {`"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/AnimatedCube/glTF/AnimatedCube.gltf",
-"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf",
-"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF/CesiumMan.gltf",`}
-        </CodeBlockInline>
         <h3>GLTF Animations</h3>
         <p>
           As you can see adding a link to the loader will load that file and
@@ -121,11 +150,15 @@ const Loader: React.FC = () => {
           {`const delta = clock.getDelta();
 if (mixer) mixer.update(delta);`}
         </CodeBlockInline>
+        <CodeBlockInline>
+          {`"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf",`}
+        </CodeBlockInline>
+        <Assignment assignments={assignments}></Assignment>{" "}
       </CodeText>
       <CodeBlock
         showImports={showImports}
         code={code}
-        highlightArea={{ startRow: 38, endRow: 38 }}
+        highlightArea={{ startRow: 39, endRow: 39 }}
       ></CodeBlock>
     </>
   );

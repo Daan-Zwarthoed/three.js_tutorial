@@ -39,12 +39,14 @@ export const rendererSceneFunction = (userScript: string) => {
 const assignments = {
   codeOpened: {
     title: "Open up the code tab",
+    hint: "On the right you see 2 handles. Drag the left one!",
     subParagraph:
       "Well done. Now here is where I will show you the code written with every step of the tutorial and is also where you will be able to write your own code as we go along",
     checked: true,
   },
   canvasOpened: {
     title: "Lets also open up the output tab. Drag the other slider!",
+    hint: "On the right you see 2 handles. Drag the right one!",
     subParagraph:
       "Alright, here is the ouput of our code. As you can see right now we are just rendering a blue screen. Lets change that with the next step!",
     checked: true,

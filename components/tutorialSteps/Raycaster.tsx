@@ -1,10 +1,11 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import * as THREE from "three";
 import CodeText from "../tutorialHelpers/CodeText";
 import CodeBlockInline from "../code/CodeBlockInline";
 import userFunction from "../../helpers/userFunction";
 import AppContext from "../../contexts/AppContextProvider";
 import CodeBlock from "../code/CodeBlock";
+import Assignment from "../tutorialHelpers/Assignment";
 
 const code = `// Basic setup
 const canvas = document.getElementById("canvas");
@@ -45,13 +46,13 @@ function onPointerMove(event) {
   pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
 }
 
-canvas.addEventListener("mousemove", onPointerMove);
+window.addEventListener("mousemove", onPointerMove);
 
 // Raycast
 let INTERSECTED = null;
 let INTERSECTEDCOLOR = null;
 
-function raycast(){
+function raycast() {
   raycaster.setFromCamera(pointer, camera);
   const intersects = raycaster.intersectObjects(scene.children, false);
   const intersect = intersects[0] && intersects[0].object;
@@ -70,7 +71,6 @@ function raycast(){
   }
 }
 
-
 // Animation loop
 function animate() {
   raycast();
@@ -78,12 +78,103 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();`;
+let raycaster: THREE.Raycaster;
+let camera: THREE.Camera;
+let scene: THREE.Scene;
 
 export const raycasterSceneFunction = (userScript: string) => {
-  userFunction(userScript, ["THREE"], [THREE]);
+  const raycasterCameraAndScene = userFunction(
+    userScript,
+    ["THREE"],
+    [THREE],
+    ["raycaster", "camera", "scene"]
+  );
+  if (!raycasterCameraAndScene) return;
+  raycaster = raycasterCameraAndScene[0];
+  camera = raycasterCameraAndScene[1];
+  scene = raycasterCameraAndScene[2];
+  const canvas = document.getElementById("canvas");
+  if (!canvas) return;
+  canvas.removeEventListener("mousemove", (event) => assignmentCheck(event));
+  canvas.addEventListener("mousemove", (event) => assignmentCheck(event));
 };
 
+const assignments = {
+  scaleCube: {
+    title: "Make it so that if you hover on a cube it becomes 1.1 times larger",
+    hint: "You can make something larger by using scale.set()",
+    checked: false,
+  },
+  scaleCubeDown: {
+    title: "Make sure the cube's also go back to their original size!",
+    hint: "Everywhere were INTERSECTEDCOLOR used to be applied is the places you should scale the cube back down.",
+    subParagraph:
+      "Okay well done. Now you have the basic understanding of raycasters down!",
+    checked: false,
+  },
+};
+
+let INTERSECTED: THREE.Object3D | null;
+const assignmentCheck = (event: any) => {
+  if (!raycaster || !camera || !scene) return;
+  const canvas = document.getElementById("canvas");
+  if (!canvas) return;
+
+  const pointer = new THREE.Vector2();
+  const canvasLeft = canvas.getBoundingClientRect().left;
+  const canvasTop = canvas.getBoundingClientRect().top;
+  pointer.x = ((event.clientX - canvasLeft) / canvas.clientWidth) * 2 - 1;
+  pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
+
+  raycaster.setFromCamera(pointer, camera);
+  const intersects = raycaster.intersectObjects(scene.children, false);
+  const intersect = intersects[0] && intersects[0].object;
+  const assignmentsClone = JSON.parse(JSON.stringify(assignments));
+
+  if (intersect) {
+    INTERSECTED = intersect;
+    if (intersect.scale.equals(new THREE.Vector3(1.1, 1.1, 1.1)))
+      assignments.scaleCube.checked = true;
+  } else if (INTERSECTED) {
+    if (
+      INTERSECTED.scale.equals(new THREE.Vector3(1, 1, 1)) &&
+      assignments.scaleCube.checked
+    ) {
+      assignments.scaleCubeDown.checked = true;
+      INTERSECTED = null;
+    }
+  }
+  if (
+    (assignmentsClone.scaleCube.checked !== assignments.scaleCube.checked ||
+      assignmentsClone.scaleCubeDown.checked !==
+        assignments.scaleCubeDown.checked) &&
+    update
+  )
+    update();
+};
+// Correct answer
+`  
+if (intersect) {
+  if (intersect !== INTERSECTED) {
+    if (INTERSECTED)
+    INTERSECTED.scale.set(1, 1, 1);
+    INTERSECTED = intersect;
+    intersect.scale.set(1.1, 1.1, 1.1);
+  }
+} else if (INTERSECTED) {
+  INTERSECTED.scale.set(1, 1, 1);
+  INTERSECTED = null;
+  }
+}
+`;
+
+let update: () => void;
 const Raycaster: React.FC = () => {
+  const [resetKey, setResetKey] = useState(Math.random());
+
+  update = () => {
+    setResetKey(Math.random());
+  };
   return (
     <>
       <CodeText>
@@ -144,6 +235,8 @@ if (intersect) {
             INTERSECTED exists and reset it if it does.
           </li>
         </ol>
+        <p>To make sure you actually understand it. Do it yourself!</p>
+        <Assignment assignments={assignments}></Assignment>{" "}
       </CodeText>
       <CodeBlock code={code}></CodeBlock>
     </>
