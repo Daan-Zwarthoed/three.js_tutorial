@@ -17,14 +17,16 @@ type Props = {
     startRow: number;
     endRow: number;
   };
+  scrollToLine?: number;
 };
-let range: ace.Ace.Range;
+let editRange: ace.Ace.Range;
 const CodeBlock: React.FC<Props> = ({
   children,
   beforeHeight,
   inputHeight,
   inline,
   highlightArea,
+  scrollToLine,
 }) => {
   const { setUserScript } = useContext(AppContext);
   let timeout: NodeJS.Timeout | null = null;
@@ -35,11 +37,11 @@ const CodeBlock: React.FC<Props> = ({
 
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => {
-      if (range) {
+      if (editRange) {
         setUserScript(
           editor &&
             editor.session
-              .getLines(range.start.row, range.end.row - 1)
+              .getLines(editRange.start.row, editRange.end.row - 1)
               .join("\n")
         );
       }
@@ -72,20 +74,27 @@ const CodeBlock: React.FC<Props> = ({
       editor.setAnimatedScroll(true);
       editor.gotoLine(highlightArea.startRow, 0, true);
     }
-    if (beforeHeight && inputHeight) {
-      range = new Range(beforeHeight, 0, inputHeight - 1, 0);
-      const startAnchor = editor.session.doc.createAnchor(
-        range.start.row,
-        range.start.column
-      );
-      range.start = startAnchor as unknown as ace.Ace.Point;
-      const endAnchor = editor.session.doc.createAnchor(
-        range.end.row,
-        range.end.column
-      );
-      range.end = endAnchor as unknown as ace.Ace.Point;
 
-      editor.session.addMarker(range, "editArea", "fullLine");
+    if (scrollToLine) {
+      editor.setAnimatedScroll(true);
+      editor.gotoLine(scrollToLine, 0, true);
+    }
+
+    if (beforeHeight && inputHeight) {
+      const importRange = new Range(0, 0, beforeHeight - 1, 0);
+      editor.session.addMarker(importRange, "importsArea", "fullLine");
+
+      editRange = new Range(beforeHeight, 0, inputHeight - 1, 0);
+      const startAnchor = editor.session.doc.createAnchor(
+        editRange.start.row,
+        editRange.start.column
+      );
+      editRange.start = startAnchor as unknown as ace.Ace.Point;
+      const endAnchor = editor.session.doc.createAnchor(
+        editRange.end.row,
+        editRange.end.column
+      );
+      editRange.end = endAnchor as unknown as ace.Ace.Point;
     }
   };
   useEffect(() => {

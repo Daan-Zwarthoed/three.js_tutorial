@@ -231,8 +231,7 @@ export const addonsSceneFunction = (userScript: string) => {
 };
 
 const Addons: React.FC = () => {
-  const { setUserScript, setResetCanvasKey, tutorialStep } =
-    useContext(AppContext);
+  const { setUserScript, setResetCanvasKey } = useContext(AppContext);
   const [controlsMode, setControlsMode] = useState<ControlsMode>("Arcball");
   let lightScript = code + eval("afterCode" + controlsMode);
 
@@ -301,6 +300,7 @@ const Addons: React.FC = () => {
       <CodeBlock
         showImports={eval("beforeCode" + controlsMode)}
         code={lightScript}
+        scrollToLine={29}
       ></CodeBlock>
     </>
   );

@@ -57,7 +57,7 @@ scene.add(cube2);
 scene.add(cube3);
 scene.add(cube4);
 
-
+// Animate on click
 function onClick(event) {
   if (!canvas) return;
 
@@ -210,7 +210,7 @@ const assignments = {
   loadGLTF: {
     title:
       "Animate the scale of a cube to become smaller or bigger when you click on it",
-    hint: "Dont worry about scale being a read only property. Gsap takes care of that for you.",
+    hint: "You animation target should be intersect.scale",
     checked: false,
   },
 };
@@ -339,7 +339,11 @@ const CameraAnimation: React.FC = () => {
         <Assignment assignments={assignments}></Assignment>{" "}
       </CodeText>
 
-      <CodeBlock showImports={beforeGsapCode} code={showCode}></CodeBlock>
+      <CodeBlock
+        showImports={beforeGsapCode}
+        code={showCode}
+        scrollToLine={50}
+      ></CodeBlock>
     </>
   );
 };

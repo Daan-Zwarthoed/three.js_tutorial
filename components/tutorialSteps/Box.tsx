@@ -23,6 +23,8 @@ const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 renderer.setClearColor(0x01e3d59, 1);
 
+
+
 // Animation loop
 function animate() {
   requestAnimationFrame(animate);
@@ -46,7 +48,7 @@ export const boxSceneFunction = (userScript: string) => {
 const assignments = {
   cubeExists: {
     title: "Add your own cube to the scene!",
-    hint: "You can copy the code in the codeblock above",
+    hint: "You can copy the code in the codeblock above and paste it somewhere in the code on the right",
     checked: false,
   },
   cubeIsCone: {
@@ -110,7 +112,6 @@ const material = new THREE.MeshBasicMaterial({
 });
 const cube = new THREE.Mesh(geometry, material);
 scene.add(cube);`}</CodeBlockInline>
-        <h2>Okay your turn!</h2>
         <Assignment assignments={assignments}></Assignment>{" "}
         <Note>
           Take note of the fact we moved the camera back a bit. This is because

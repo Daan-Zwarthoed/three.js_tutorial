@@ -7,14 +7,16 @@ import AppContext from "../../contexts/AppContextProvider";
 import { stepList } from "../../pages/tutorial";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import StepButton from "../global/StepButton";
+import * as FA from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
+
 type InputProps = {
   children?: any;
 };
 
 const Navigation: React.FC<InputProps> = ({ children }) => {
-  const { userScript, setUserScript } = useContext(AppContext);
+  const { accessibleSteps, setUserScript } = useContext(AppContext);
   const [stepIndex, setStepIndex] = useState<number>(-1);
-  let toolTip = useRef(<div></div>);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
@@ -26,6 +28,7 @@ const Navigation: React.FC<InputProps> = ({ children }) => {
   });
 
   const changeStep = (id: string) => {
+    if (!accessibleSteps.includes(id)) return;
     setUserScript(null);
     Router.push({
       pathname: "/tutorial",
@@ -51,18 +54,36 @@ const Navigation: React.FC<InputProps> = ({ children }) => {
   return (
     <div
       id="Navigation"
-      className="relative bottom-0 w-full z-20 p-2 bg-background flex flex-row justify-center px-2"
+      className="relative bottom-0 h-[5%] w-full z-20 p-2 bg-background flex flex-row items-center justify-center px-2"
     >
+      <div className="absolute left-5 bottom-1/2 translate-y-1/2">
+        <Link href="/">
+          <FontAwesomeIcon
+            className="h-5 w-5"
+            size="sm"
+            icon={FA.faHome}
+            color={"white"}
+          />
+        </Link>
+      </div>
       <div className="flex flex-row items-center">
         {stepList.map((step, index) => (
           <FontAwesomeIcon
             onClick={() => changeStep(step.id)}
             onMouseEnter={(event) => handleHover(event, step.id, true)}
             onMouseLeave={(event) => handleHover(event, step.id, false)}
-            className="mr-2 h-5 w-5 cursor-pointer mx-3"
+            className={`mr-2 h-5 w-5 mx-3 ${
+              accessibleSteps.includes(step.id) ? "cursor-pointer" : ""
+            }`}
             size="sm"
             icon={step.icon}
-            color={index === stepIndex ? "#D25E2F" : "white"}
+            color={
+              accessibleSteps.includes(step.id)
+                ? index === stepIndex
+                  ? "#D25E2F"
+                  : "white"
+                : "grey"
+            }
             key={step.id}
           />
         ))}

@@ -10,9 +10,9 @@ const Resizable: React.FC<InputProps> = ({ children, resizeTarget }) => {
   let resizableElement: HTMLElement | null;
 
   useEffect(() => {
-    window.addEventListener("mousemove", (event) => handleResize(event));
-    window.addEventListener("mouseup", (event) => handleResizeEnd(event));
-    window.addEventListener("mouseleave", (event) => handleResizeEnd(event));
+    window.addEventListener("mousemove", handleResize);
+    window.addEventListener("mouseup", handleResizeEnd);
+    window.addEventListener("mouseleave", handleResizeEnd);
 
     resizableElement = document.getElementById(`Resizable${resizeTarget}`);
 
@@ -23,9 +23,9 @@ const Resizable: React.FC<InputProps> = ({ children, resizeTarget }) => {
     if (resizableWidth && resizableElement)
       resizableElement.style.width = `${resizableWidth}px`;
     if (!resizableWidth && resizableElement && resizeTarget === "Code")
-      resizableElement.style.width = `10px`;
+      resizableElement.style.width = `90px`;
     if (!resizableWidth && resizableElement && resizeTarget === "Canvas")
-      resizableElement.style.width = `10px`;
+      resizableElement.style.width = `90px`;
   });
 
   const resize = (newSize: number) => {

@@ -13,15 +13,21 @@ type Props = {
     startRow: number;
     endRow: number;
   };
+  scrollToLine?: number;
 };
 
 const defaultImport = `import * as THREE from "three";
 `;
 
-const CodeBlock: React.FC<Props> = ({ code, showImports, highlightArea }) => {
+const CodeBlock: React.FC<Props> = ({
+  code,
+  showImports,
+  highlightArea,
+  scrollToLine,
+}) => {
   const { setUserScript } = useContext(AppContext);
 
-  const allImports = defaultImport + (showImports ? showImports : "\n");
+  const allImports = defaultImport + (showImports ? showImports : "");
 
   const beforeHeight = allImports.split(/\r\n|\r|\n/).length;
   const inputHeight = beforeHeight + code.split(/\r\n|\r|\n/).length - 1;
@@ -37,6 +43,7 @@ const CodeBlock: React.FC<Props> = ({ code, showImports, highlightArea }) => {
         inputHeight={beforeHeight + inputHeight}
         beforeHeight={beforeHeight}
         highlightArea={highlightArea}
+        scrollToLine={scrollToLine}
       >
         {allImports + ("\n" + code + "\n")}
       </CodeEditor>

@@ -95,8 +95,8 @@ export const raycasterSceneFunction = (userScript: string) => {
   scene = raycasterCameraAndScene[2];
   const canvas = document.getElementById("canvas");
   if (!canvas) return;
-  canvas.removeEventListener("mousemove", (event) => assignmentCheck(event));
-  canvas.addEventListener("mousemove", (event) => assignmentCheck(event));
+  canvas.removeEventListener("mousemove", assignmentCheck);
+  canvas.addEventListener("mousemove", assignmentCheck);
 };
 
 const assignments = {
@@ -238,7 +238,7 @@ if (intersect) {
         <p>To make sure you actually understand it. Do it yourself!</p>
         <Assignment assignments={assignments}></Assignment>{" "}
       </CodeText>
-      <CodeBlock code={code}></CodeBlock>
+      <CodeBlock code={code} scrollToLine={33}></CodeBlock>
     </>
   );
 };

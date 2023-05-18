@@ -9,8 +9,7 @@ import CodeText from "../tutorialHelpers/CodeText";
 import AppContext from "../../contexts/AppContextProvider";
 import Assignment from "../tutorialHelpers/Assignment";
 
-const showImports = `
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader";
+const showImports = `import { GLTFLoader } from "three/addons/loaders/GLTFLoader";
 import { OrbitControls } from "three/addons/controls/OrbitControls";
 `;
 const code = `// Basic setup
@@ -46,7 +45,7 @@ new OrbitControls(camera, renderer.domElement);
 
 // Loader
 loader.load( 
-  "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf",
+  
   // called when the resource is loaded
   async function (gltf) {
     console.log("loaded");
@@ -158,7 +157,7 @@ if (mixer) mixer.update(delta);`}
       <CodeBlock
         showImports={showImports}
         code={code}
-        highlightArea={{ startRow: 39, endRow: 39 }}
+        highlightArea={{ startRow: 38, endRow: 38 }}
       ></CodeBlock>
     </>
   );

@@ -82,6 +82,7 @@ const Robot: React.FC<InputProps> = ({ next }) => {
     animating.forEach((animation) => animation.pause());
   }, []);
 
+  // Hide robot
   const hideRobot = () => {
     if (!robot.current) return;
     const dissappearXSide = Boolean(Math.round(Math.random()));
@@ -103,12 +104,9 @@ const Robot: React.FC<InputProps> = ({ next }) => {
       });
   };
 
-  // Show or hide the robot
-  useEffect(() => {
-    if (!showRobot || !robot.current) {
-      if (!robotIsHidden) hideRobot();
-      return;
-    }
+  // Show robot
+  const animateShowRobot = async () => {
+    if (!robot.current) return;
 
     robotIsHidden = false;
 
@@ -118,6 +116,9 @@ const Robot: React.FC<InputProps> = ({ next }) => {
       nextButton: showRobot.nextButton,
     });
     animating.forEach((animation) => animation.play());
+
+    const runningTweens = gsap.getTweensOf(robot.current.style);
+    if (runningTweens.length > 0) runningTweens[0].kill();
 
     gsap
       .to(robot.current.style, {
@@ -130,6 +131,15 @@ const Robot: React.FC<InputProps> = ({ next }) => {
       .eventCallback("onComplete", () => {
         if (!showRobot.text && !showRobot.nextButton) setShowRobot(null);
       });
+  };
+
+  // Show or hide the robot
+  useEffect(() => {
+    if (!showRobot || !robot.current) {
+      if (!robotIsHidden) hideRobot();
+      return;
+    }
+    animateShowRobot();
   }, [showRobot]);
 
   return (

@@ -5,6 +5,8 @@ import AppContext from "../../contexts/AppContextProvider";
 import * as FA from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import gsap from "gsap";
+import { stepList } from "../../pages/tutorial";
+import Router from "next/router";
 
 type Assignment = {
   title: string;
@@ -19,8 +21,17 @@ type InputProps = {
 };
 let assignmentsClone: { [key: string]: Assignment };
 const Assignment: React.FC<InputProps> = ({ children, assignments }) => {
-  const { setShowRobot } = useContext(AppContext);
+  const { accessibleSteps, setAccessibleSteps, setShowRobot } =
+    useContext(AppContext);
+
+  let nextStepId: string;
   useEffect(() => {
+    const routerStepIndex = stepList.findIndex(
+      (item) => item.id === Router.query.step
+    );
+
+    if (stepList[routerStepIndex + 1])
+      nextStepId = stepList[routerStepIndex + 1].id;
     setTimeout(() => {
       const assignmentKeys = Object.keys(assignments);
       if (
@@ -35,12 +46,23 @@ const Assignment: React.FC<InputProps> = ({ children, assignments }) => {
             assignments[key].checked
         );
 
-        if (completedAssignment)
+        const completedFinalAssignment =
+          assignments[assignmentKeys[assignmentKeys.length - 1]] &&
+          assignments[assignmentKeys[assignmentKeys.length - 1]].checked;
+
+        if (completedAssignment) {
           setShowRobot({
             text: assignments[completedAssignment].subParagraph,
-            nextButton:
-              completedAssignment === assignmentKeys[assignmentKeys.length - 1],
+            nextButton: completedFinalAssignment,
           });
+
+          if (
+            nextStepId &&
+            !accessibleSteps.includes(nextStepId) &&
+            completedFinalAssignment
+          )
+            setAccessibleSteps([...accessibleSteps, nextStepId]);
+        }
       }
       assignmentsClone = JSON.parse(JSON.stringify(assignments));
     });
@@ -65,7 +87,6 @@ const Assignment: React.FC<InputProps> = ({ children, assignments }) => {
       ease: "power.1",
     });
   };
-
   return (
     <div className="-mx-5">
       <h2 className="w-full p-2 mb-4 px-5">Assignments</h2>

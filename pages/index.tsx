@@ -1,12 +1,16 @@
 import Head from "next/head";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Link from "next/link";
 import Router from "next/router";
+import AppContext from "../contexts/AppContextProvider";
+import { stepList } from "./tutorial";
+import InfoButton from "../components/global/InfoButton";
 
 const Home = () => {
+  const { accessibleSteps, setAccessibleSteps } = useContext(AppContext);
   useEffect(() => {
     const canvas = document.getElementById("canvas");
     const loader = new GLTFLoader();
@@ -75,7 +79,8 @@ const Home = () => {
       controls.update();
     }
     animate();
-  });
+  }, []);
+
   return (
     <>
       <Head>
@@ -89,12 +94,66 @@ const Home = () => {
           <article className="max-w-[500px]">
             <h1 className="text-6xl mb-2">The best way too learn three.js</h1>
             <h2>Interactive tutorial to learn three.js</h2>
-            <Link
-              href="/tutorial?step=Prerequisites"
-              className="block w-fit bg-primary p-3 rounded-xl mt-2"
-            >
-              Start tutorial
-            </Link>
+            <div className="flex flex-row flex-wrap">
+              {accessibleSteps.length > 0 && (
+                <div className="flex flex-row items-center mr-6">
+                  <Link
+                    href={`/tutorial?step=${
+                      accessibleSteps[accessibleSteps.length - 1]
+                    }`}
+                    className="block bg-primary p-3 rounded-xl my-1 mr-2 w-40 text-center"
+                  >
+                    Continue tutorial
+                  </Link>
+                  <InfoButton>
+                    Continue the tutorial from where you were
+                  </InfoButton>
+                </div>
+              )}
+              <div className="flex flex-row items-center mr-6">
+                <Link
+                  href="/tutorial?step=Prerequisites"
+                  onClick={() => {
+                    setAccessibleSteps(["Prerequisites", "Renderer"]);
+                    window.localStorage.setItem(
+                      "Resizable_Code_Width",
+                      JSON.stringify(90)
+                    );
+                    window.localStorage.setItem(
+                      "Resizable_Canvas_Width",
+                      JSON.stringify(90)
+                    );
+                  }}
+                  className={`block p-3 rounded-xl my-1 mr-2 w-40 text-center ${
+                    accessibleSteps.length > 0
+                      ? "border-2 border-slate-700"
+                      : "bg-primary"
+                  }`}
+                >
+                  {accessibleSteps.length > 0 ? "Restart" : "Start"} tutorial
+                </Link>
+                <InfoButton>
+                  {accessibleSteps.length > 0
+                    ? "Restart the tutorial from the beginning and remove your progress"
+                    : "Start the tutorial. You will need to complete a few assignemnts to be able to continue to the next step."}
+                </InfoButton>
+              </div>
+              <div className="flex flex-row items-center mr-6">
+                <Link
+                  href="/tutorial?step=Prerequisites"
+                  onClick={() =>
+                    setAccessibleSteps(stepList.map((step) => step.id))
+                  }
+                  className="block p-3 rounded-xl my-1 mr-2 border-2 border-slate-700 w-40 text-center"
+                >
+                  Browse tutorial
+                </Link>
+                <InfoButton>
+                  Browse around the tutorial. This will prevent assignments from
+                  being manditory to complete.
+                </InfoButton>
+              </div>
+            </div>
           </article>
           <canvas
             id="canvas"

@@ -42,14 +42,14 @@ const assignments = {
     hint: "On the right you see 2 handles. Drag the left one!",
     subParagraph:
       "Well done. Now here is where I will show you the code written with every step of the tutorial and is also where you will be able to write your own code as we go along",
-    checked: true,
+    checked: false,
   },
   canvasOpened: {
     title: "Lets also open up the output tab. Drag the other slider!",
     hint: "On the right you see 2 handles. Drag the right one!",
     subParagraph:
       "Alright, here is the ouput of our code. As you can see right now we are just rendering a blue screen. Lets change that with the next step!",
-    checked: true,
+    checked: false,
   },
 };
 
@@ -57,6 +57,7 @@ const assignmentCheck = (codeBlockWidth: number, canvasWidth: number) => {
   const assignmentsClone = JSON.parse(JSON.stringify(assignments));
   assignments.codeOpened.checked = codeBlockWidth > 350;
   assignments.canvasOpened.checked = canvasWidth > 350;
+
   if (
     assignmentsClone.codeOpened.checked !== assignments.codeOpened.checked ||
     assignmentsClone.canvasOpened.checked !== assignments.canvasOpened.checked
@@ -72,17 +73,21 @@ const Renderer: React.FC = () => {
     const canvasBlock = document.getElementById("ResizableCanvas");
     if (!codeBlock || !canvasBlock) return;
     const updated = assignmentCheck(
-      codeBlock!.clientWidth,
-      canvasBlock!.clientWidth
+      codeBlock.clientWidth,
+      canvasBlock.clientWidth
     );
     if (updated) setResetKey(Math.random());
   };
 
   useEffect(() => {
-    window.removeEventListener("resize", () => update());
-    window.addEventListener("resize", () => update());
-    setTimeout(() => update());
+    window.removeEventListener("resize", update);
+    window.addEventListener("resize", update);
+    // setResetKey(Math.random());
+    setTimeout(() => {
+      update();
+    });
   });
+
   return (
     <>
       <CodeText>

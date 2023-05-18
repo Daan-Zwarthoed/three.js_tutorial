@@ -88,8 +88,6 @@ export const lightSceneFunction = (userScript: string) => {
     ["camera", "renderer", "texture", "spotLight"]
   );
   if (cameraRendererTextureAndSpotlight) {
-    console.log(cameraRendererTextureAndSpotlight);
-
     const camera = cameraRendererTextureAndSpotlight[0];
     renderer = cameraRendererTextureAndSpotlight[1];
     const texture = cameraRendererTextureAndSpotlight[2];
@@ -347,7 +345,11 @@ const Light: React.FC = () => {
         <Assignment assignments={assignments}></Assignment>{" "}
       </CodeText>
 
-      <CodeBlock showImports={showImports} code={lightScript}></CodeBlock>
+      <CodeBlock
+        showImports={showImports}
+        code={lightScript}
+        scrollToLine={41}
+      ></CodeBlock>
     </>
   );
 };
