@@ -57,11 +57,11 @@ const Home = () => {
       // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/AnimatedCube/glTF/AnimatedCube.gltf",
       // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf",
       // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Sponza/glTF/Sponza.gltf",
-      "scenes/car.glb",
+      "scenes/Car.glb",
       // called when the resource is loaded
       async function (gltf) {
         console.log("loaded");
-        scene.add(gltf.scene);
+        scene.add(gltf.scenes[0]);
       },
       // called while loading is progressing
       function (xhr) {

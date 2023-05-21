@@ -47,7 +47,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   2000
 );
-camera.position.set(30, 30, 30); 
+camera.position.set(30, 30, 30);
 camera.lookAt(0, 0, 0);
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -57,7 +57,7 @@ renderer.setClearColor(0x01e3d59, 1);
 // Add objects
 const geometry = new THREE.BoxGeometry(10, 10, 10);
 const material = new THREE.MeshBasicMaterial({
-  color: "#d63e4d",
+  color: 0xd25e2f,
 });
 const cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
@@ -149,7 +149,7 @@ function animate() {
 }
 animate();`;
 
-const afterCodeTransform = `const controls = new TransformControls (camera, renderer.domElement);
+const afterCodeTransform = `const controls = new TransformControls(camera, renderer.domElement);
 controls.attach(cube);
 controls.setMode("scale"); // "translate", "rotate" or "scale"
 scene.add(controls);
@@ -198,9 +198,13 @@ const assignmentCheck = (controls: OrbitControls) => {
 
 let renderer: THREE.WebGLRenderer | undefined;
 
-export const addonsSceneFunction = (userScript: string) => {
+export const addonsSceneFunction = (
+  userScript: string,
+  setErrors: Function
+) => {
   const rendererAndControls = userFunction(
     userScript,
+    setErrors,
     [
       "THREE",
       "ArcballControls",
@@ -231,7 +235,7 @@ export const addonsSceneFunction = (userScript: string) => {
 };
 
 const Addons: React.FC = () => {
-  const { setUserScript, setResetCanvasKey } = useContext(AppContext);
+  const { setErrors, setResetCanvasKey } = useContext(AppContext);
   const [controlsMode, setControlsMode] = useState<ControlsMode>("Arcball");
   let lightScript = code + eval("afterCode" + controlsMode);
 

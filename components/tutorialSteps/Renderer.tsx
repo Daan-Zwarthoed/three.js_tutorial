@@ -2,15 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import * as THREE from "three";
 import userFunction from "../../helpers/userFunction";
 import CodeBlock from "../code/CodeBlock";
-import gsap from "gsap";
+import CodeText from "../tutorialHelpers/CodeText";
+import Assignment from "../tutorialHelpers/Assignment";
 import CodeBlockInline from "../code/CodeBlockInline";
 import Image from "next/image";
-import Router from "next/router";
-import CodeText from "../tutorialHelpers/CodeText";
-import NextStepButton from "../global/StepButton";
-import Assignment from "../tutorialHelpers/Assignment";
-import AppContext from "../../contexts/AppContextProvider";
-
 const code = `// Basic setup
 const canvas = document.getElementById("canvas");
 const scene = new THREE.Scene();
@@ -32,13 +27,17 @@ function animate() {
 }
 animate();`;
 
-export const rendererSceneFunction = (userScript: string) => {
-  userFunction(userScript, ["THREE"], [THREE]);
+export const rendererSceneFunction = (
+  userScript: string,
+  setErrors: Function
+) => {
+  userFunction(userScript, setErrors, ["THREE"], [THREE]);
 };
 
 const assignments = {
   codeOpened: {
-    title: "Open up the code tab",
+    title:
+      "Open up the code tab by dragging the left slider on the right side of your screen.",
     hint: "On the right you see 2 handles. Drag the left one!",
     subParagraph:
       "Well done. Now here is where I will show you the code written with every step of the tutorial and is also where you will be able to write your own code as we go along",
@@ -54,10 +53,10 @@ const assignments = {
 };
 
 const assignmentCheck = (codeBlockWidth: number, canvasWidth: number) => {
+  if (!assignments) return;
   const assignmentsClone = JSON.parse(JSON.stringify(assignments));
   assignments.codeOpened.checked = codeBlockWidth > 350;
   assignments.canvasOpened.checked = canvasWidth > 350;
-
   if (
     assignmentsClone.codeOpened.checked !== assignments.codeOpened.checked ||
     assignmentsClone.canvasOpened.checked !== assignments.canvasOpened.checked
@@ -66,7 +65,7 @@ const assignmentCheck = (codeBlockWidth: number, canvasWidth: number) => {
 };
 
 const Renderer: React.FC = () => {
-  const [resetKey, setResetKey] = useState(Math.random());
+  const [resetKey, setResetKey] = useState(Date.now());
 
   const update = () => {
     const codeBlock = document.getElementById("ResizableCode");
@@ -76,17 +75,20 @@ const Renderer: React.FC = () => {
       codeBlock.clientWidth,
       canvasBlock.clientWidth
     );
-    if (updated) setResetKey(Math.random());
+
+    if (updated) setResetKey(Date.now());
   };
 
   useEffect(() => {
-    window.removeEventListener("resize", update);
     window.addEventListener("resize", update);
-    // setResetKey(Math.random());
+
     setTimeout(() => {
       update();
     });
-  });
+    return () => {
+      window.removeEventListener("resize", update);
+    };
+  }, [resetKey]);
 
   return (
     <>
@@ -135,6 +137,7 @@ renderer.setClearColor(0x01e3d59, 1);`}
           <Image
             src="/images/perspectiveCameraExplenation.png"
             fill
+            sizes="30vw"
             alt="back button"
           ></Image>
         </div>

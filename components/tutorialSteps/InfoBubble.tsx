@@ -31,7 +31,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   2000
 );
-camera.position.z = 20;
+camera.position.set(-10, 5, 20);
 
 const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
@@ -39,8 +39,7 @@ renderer.setClearColor(0x01e3d59, 1);
 
 // Add lights
 const directionalLight = new THREE.DirectionalLight(0xffff99, 2);
-directionalLight.position.x = 5;
-directionalLight.position.z = 5;
+directionalLight.position.set(5, 5, 10);
 scene.add(directionalLight);
 
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -55,7 +54,7 @@ let wheel1 = null;
 let info = null;
 
 loader.load(
-  "scenes/Car2.glb",
+  "scenes/Car.glb",
   // called when the resource is loaded
   async function (gltf) {
     console.log("loaded");
@@ -84,7 +83,7 @@ function animateTo(item, to) {
   });
 }
 
-// Toogle info button shown or hidden
+// Toggle info button shown or hidden
 let infoIsShown = true;
 function toggleInfo(show) {
   if (!info || (show && infoIsShown) || (!show && !infoIsShown)) return;
@@ -101,12 +100,22 @@ function toggleInfo(show) {
   });
 }
 
-let intersectInfo;
-let oldCameraPosAndQua = null;
-
 // Zoom into info button
-function infoClick() {
-  if (!wheel1 || !info || !intersectInfo || !infoIsShown) return;
+let oldCameraPosAndQua = null;
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+
+function handleClick() {
+  if (!wheel1 || !info || !infoIsShown) return;
+
+  const canvasLeft = canvas.getBoundingClientRect().left;
+  const canvasTop = canvas.getBoundingClientRect().top;
+  pointer.x = ((event.clientX - canvasLeft) / canvas.clientWidth) * 2 - 1;
+  pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
+  raycaster.setFromCamera(pointer, camera);
+  const intersectInfo = !!raycaster.intersectObject(info).length;
+
+  if (!intersectInfo) return;
 
   oldCameraPosAndQua = {
     position: camera.position.clone(),
@@ -122,29 +131,26 @@ function infoClick() {
       wheel1.position.z + 5
     )
   );
-
   animateTo(camera.quaternion, new THREE.Vector3());
-
   toggleInfo(false);
 
   const backButton = document.getElementById("backButton");
-  if (backButton) {
-    animateTo(backButton.parentElement.style, {
-      display: "flex",
-      opacity: 1,
-    });
+  animateTo(backButton.parentElement.style, {
+    display: "flex",
+    opacity: 1,
+  });
 
-    backButton.addEventListener("click", function () {
-      backClick(backButton);
-    });
-  }
+  backButton.addEventListener("click", backClick);
 }
 
-canvas.addEventListener("click", infoClick);
+canvas.addEventListener("click", handleClick);
 
 // Zoom back out of info button
-function backClick(backButton) {
+function backClick() {
   if (!oldCameraPosAndQua || !info) return;
+  const backButton = document.getElementById("backButton");
+
+  toggleInfo(true);
   animateTo(camera.position, oldCameraPosAndQua.position);
   animateTo(camera.quaternion, oldCameraPosAndQua.quaternion);
   animateTo(backButton.parentElement.style, {
@@ -153,59 +159,51 @@ function backClick(backButton) {
   }).eventCallback("onComplete", () => {
     controls.enabled = true;
   });
-  toggleInfo(true);
 
-  backButton.removeEventListener("click", function () {
-    backClick(backButton);
-  });
+  backButton.removeEventListener("click", backClick);
 }
 
-// Raycaster setup
-const raycaster = new THREE.Raycaster();
-const pointer = new THREE.Vector2();
-
-function onPointerMove(event) {
-  const canvasLeft = canvas.getBoundingClientRect().left;
-  const canvasTop = canvas.getBoundingClientRect().top;
-  pointer.x = ((event.clientX - canvasLeft) / canvas.clientWidth) * 2 - 1;
-  pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
-
-  if (controls.enabled) {
-    const horAngle = controls.getAzimuthalAngle();
-    const verAngle = controls.getPolarAngle();
-    toggleInfo((-1.4 < horAngle && horAngle < 1.5) || verAngle < 0.6);
-  }
+function controlsUpdate() {
+  const horAngle = controls.getAzimuthalAngle();
+  const verAngle = controls.getPolarAngle();
+  toggleInfo((-1.4 < horAngle && horAngle < 1.5) || verAngle < 0.6);
 }
 
-canvas.addEventListener("mousemove", onPointerMove);
+controls.addEventListener("change", controlsUpdate);
 
-// Info positioning formula
-function infoPos(wheelPos, cameraPos) {
+// Info positioning calculation
+function calculateInfoPos(wheelPos, cameraPos) {
   return wheelPos + (cameraPos - wheelPos) / 1.1;
+}
+
+// Set the info position
+function setInfoPosition() {
+  if (wheel1 && info) {
+    info.position.set(
+      calculateInfoPos(wheel1.position.x, camera.position.x),
+      calculateInfoPos(wheel1.position.y, camera.position.y),
+      calculateInfoPos(wheel1.position.z, camera.position.z)
+    );
+    info.lookAt(camera.position);
+  }
 }
 
 // Animation loop
 function animate() {
-  if (wheel1 && info) {
-    info.position.set(
-      infoPos(wheel1.position.x, camera.position.x),
-      infoPos(wheel1.position.y, camera.position.y),
-      infoPos(wheel1.position.z, camera.position.z)
-    );
-    info.lookAt(camera.position);
-  }
-
-  raycaster.setFromCamera(pointer, camera);
-  if (info) intersectInfo = !!raycaster.intersectObject(info).length;
-
+  setInfoPosition();
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
 }
-animate();`;
+animate();
+`;
 
-export const infoBubbleSceneFunction = (userScript: string) => {
+export const infoBubbleSceneFunction = (
+  userScript: string,
+  setErrors: Function
+) => {
   userFunction(
     userScript,
+    setErrors,
     ["THREE", "GLTFLoader", "OrbitControls", "gsap"],
     [THREE, GLTFLoader, OrbitControls, gsap]
   );
@@ -213,21 +211,21 @@ export const infoBubbleSceneFunction = (userScript: string) => {
 
 const InfoBubble: React.FC = () => {
   const [subStep, setSubStep] = useState<SubStep>("loader");
-  let highlightArea = { startRow: 35, endRow: 58 }; // Default when loader
-  if (subStep === "toggle info") highlightArea = { startRow: 69, endRow: 84 };
-  if (subStep === "info click") highlightArea = { startRow: 86, endRow: 125 };
-  if (subStep === "back click") highlightArea = { startRow: 127, endRow: 143 };
+  let highlightArea = { startRow: 34, endRow: 57 }; // Default when loader
+  if (subStep === "toggle info") highlightArea = { startRow: 68, endRow: 83 };
+  if (subStep === "info click") highlightArea = { startRow: 85, endRow: 129 };
+  if (subStep === "back click") highlightArea = { startRow: 131, endRow: 147 };
   if (subStep === "hide info behind car")
-    highlightArea = { startRow: 155, endRow: 159 };
+    highlightArea = { startRow: 149, endRow: 155 };
   if (subStep === "info button position")
-    highlightArea = { startRow: 164, endRow: 171 };
+    highlightArea = { startRow: 157, endRow: 172 };
   const subStepIndex = SubStepTypes.findIndex((step) => step === subStep);
 
   return (
     <>
       <CodeText>
         <h2>Now for the finale</h2>
-        <p>
+        <p className="mb-10">
           Well done! You made it to the final step!! Its a big one but we will
           get you through this.
         </p>

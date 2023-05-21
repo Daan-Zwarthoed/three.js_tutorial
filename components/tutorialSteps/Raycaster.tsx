@@ -59,8 +59,7 @@ function raycast() {
 
   if (intersect) {
     if (intersect !== INTERSECTED) {
-      if (INTERSECTED)
-        INTERSECTED.material.color.set(INTERSECTEDCOLOR);
+      if (INTERSECTED) INTERSECTED.material.color.set(INTERSECTEDCOLOR);
       INTERSECTED = intersect;
       INTERSECTEDCOLOR = intersect.material.color.clone();
       intersect.material.color.set(0xff0000);
@@ -77,14 +76,19 @@ function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
 }
-animate();`;
+animate();
+`;
 let raycaster: THREE.Raycaster;
 let camera: THREE.Camera;
 let scene: THREE.Scene;
 
-export const raycasterSceneFunction = (userScript: string) => {
+export const raycasterSceneFunction = (
+  userScript: string,
+  setErrors: Function
+) => {
   const raycasterCameraAndScene = userFunction(
     userScript,
+    setErrors,
     ["THREE"],
     [THREE],
     ["raycaster", "camera", "scene"]

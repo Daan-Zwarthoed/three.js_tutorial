@@ -4,7 +4,7 @@ const AppContext = React.createContext<any>(null);
 let initialLoad = true;
 export const AppContextProvider = ({ children }: any) => {
   const [userScript, setUserScript] = React.useState<string | null>(null);
-  const [tutorialStep, setTutorialStep] = React.useState<number>(-1);
+  const [newError, setNewError] = React.useState<string | null>(null);
   const [resetCanvasKey, setResetCanvasKey] = React.useState<number>(
     Math.random()
   );
@@ -43,8 +43,8 @@ export const AppContextProvider = ({ children }: any) => {
       value={{
         userScript,
         setUserScript,
-        tutorialStep,
-        setTutorialStep,
+        newError,
+        setNewError,
         resetCanvasKey,
         setResetCanvasKey,
         showRobot,

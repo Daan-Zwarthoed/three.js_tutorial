@@ -1,10 +1,15 @@
 import Head from "next/head";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AppContext from "../../contexts/AppContextProvider";
 import dynamic from "next/dynamic";
-import Resizable from "../global/Resizable";
+import ResizableHorizontal from "../global/ResizableHorizontal";
+import ResizableVertical from "../global/ResizableVertical";
 // import ace from "ace-builds";
 const CodeEditor = dynamic(() => import("./CodeEditor"), { ssr: false });
+type Error = {
+  message: string;
+  stack: string;
+};
 type Props = {
   showImports?: string;
   code: string;
@@ -25,8 +30,8 @@ const CodeBlock: React.FC<Props> = ({
   highlightArea,
   scrollToLine,
 }) => {
-  const { setUserScript } = useContext(AppContext);
-
+  const { setUserScript, newError, setNewError } = useContext(AppContext);
+  const [allErrors, setAllErrors] = useState<string[]>([]);
   const allImports = defaultImport + (showImports ? showImports : "");
 
   const beforeHeight = allImports.split(/\r\n|\r|\n/).length;
@@ -34,10 +39,18 @@ const CodeBlock: React.FC<Props> = ({
 
   useEffect(() => {
     setUserScript(code);
+    setAllErrors([]);
   }, [code]);
 
+  useEffect(() => {
+    if (newError) {
+      setAllErrors([...allErrors, newError]);
+      setNewError(null);
+    }
+  }, [newError]);
+
   return (
-    <Resizable resizeTarget="Code">
+    <ResizableHorizontal resizeTarget="Code">
       <h2 className="w-full bg-background top-0 z-30 pl-3">Input</h2>
       <CodeEditor
         inputHeight={beforeHeight + inputHeight}
@@ -47,7 +60,20 @@ const CodeBlock: React.FC<Props> = ({
       >
         {allImports + ("\n" + code + "\n")}
       </CodeEditor>
-    </Resizable>
+      <ResizableVertical resizeTarget="Console">
+        <div className="w-full h-full pl-3 bg-black pb-10 pt-[10px]">
+          <p className="px-4 py-1 border-b border-secondary">Console</p>
+          {allErrors.map((error: string, index: number) => (
+            <p
+              className="px-4 py-1 border-b border-red-500 text-red-500 text-[15px] border-solid"
+              key={error + index}
+            >
+              {error}
+            </p>
+          ))}
+        </div>
+      </ResizableVertical>
+    </ResizableHorizontal>
   );
 };
 

@@ -29,30 +29,14 @@ const CodeBlock: React.FC<Props> = ({
   scrollToLine,
 }) => {
   const { setUserScript } = useContext(AppContext);
-  let timeout: NodeJS.Timeout | null = null;
   const [editor, setEditor] = useState<ace.Ace.Editor | null>(null);
   let fromSetChange = false;
-  const handleChange = () => {
-    if (!editor || !inputHeight || !beforeHeight || fromSetChange) return;
-
-    if (timeout) clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      if (editRange) {
-        setUserScript(
-          editor &&
-            editor.session
-              .getLines(editRange.start.row, editRange.end.row - 1)
-              .join("\n")
-        );
-      }
-    }, 500);
-  };
 
   const setup = () => {
     if (!editor) return;
 
-    // Make it so you can only edit inside of the edit area
-    // editor.commands.on("exec", (event: any) => handleExec(event));
+    editor.resize();
+
     fromSetChange = true;
     if (editor.session.getValue() !== children) editor.setValue(children, 1);
     fromSetChange = false;
@@ -101,35 +85,64 @@ const CodeBlock: React.FC<Props> = ({
     setup();
   }, [editor, children, highlightArea]);
 
+  const handleSave = (editor: ace.Ace.Editor | null) => {
+    if (!editRange || !editor) return;
+
+    setUserScript(
+      editor &&
+        editor.session
+          .getLines(editRange.start.row, editRange.end.row - 1)
+          .join("\n")
+    );
+  };
+
   const handleLoad = (editor: ace.Ace.Editor) => {
+    editor.commands.addCommand({
+      name: "save",
+      bindKey: { win: "Ctrl-S", mac: "Cmd-S" },
+      exec: handleSave,
+    });
+
+    if (inline) editor.setOptions({ maxLines: editor.session.getLength() + 1 });
     setEditor(editor);
   };
 
   return (
-    <AceEditor
-      mode="javascript"
-      theme="dracula"
-      name="AceEditor"
-      fontSize={15}
-      width={"100%"}
-      height={"100%"}
-      defaultValue={children}
-      editorProps={{ animatedScroll: true }}
-      setOptions={{
-        useWorker: false,
-        enableBasicAutocompletion: true,
-        enableLiveAutocompletion: true,
-        showPrintMargin: false,
-        highlightActiveLine: !inline,
-        highlightSelectedWord: !inline,
-        showGutter: !inline,
-        showLineNumbers: !inline,
-        readOnly: inline,
-        autoScrollEditorIntoView: true,
-      }}
-      onChange={() => handleChange()}
-      onLoad={(ace) => handleLoad(ace)}
-    />
+    <div className="h-full">
+      <AceEditor
+        mode="javascript"
+        theme="dracula"
+        name="AceEditor"
+        fontSize={15}
+        width={"100%"}
+        height={"100%"}
+        defaultValue={children}
+        editorProps={{ animatedScroll: true }}
+        setOptions={{
+          useWorker: false,
+          enableBasicAutocompletion: true,
+          enableLiveAutocompletion: true,
+          showPrintMargin: false,
+          highlightActiveLine: !inline,
+          highlightSelectedWord: !inline,
+          showGutter: !inline,
+          showLineNumbers: !inline,
+          readOnly: inline,
+          autoScrollEditorIntoView: true,
+        }}
+        onLoad={(ace) => handleLoad(ace)}
+      />
+      {!inline && (
+        <div className="absolute z-40 h-10 w-full py-0.5 bottom-0 px-4 bg-background">
+          <button
+            onClick={() => handleSave(editor)}
+            className="h-fit border-2 border-primary px-1 py-0.5 rounded-md "
+          >
+            Save
+          </button>
+        </div>
+      )}
+    </div>
   );
 };
 

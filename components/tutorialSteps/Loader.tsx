@@ -33,23 +33,22 @@ renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 renderer.setClearColor(0x01e3d59, 1);
 
 // Lights
-const light1 = new THREE.DirectionalLight(0xffff99, 2);
-light1.position.x = 5;
-light1.position.z = 5;
-scene.add(light1);
+const directionalLight = new THREE.DirectionalLight(0xffff99, 2);
+directionalLight.position.set(5, 5, 10);
+scene.add(directionalLight);
 
-const light2 = new THREE.HemisphereLight(0xffff99, 0xb97a20, 0.5);
-scene.add(light2);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
 
+// Controls
 new OrbitControls(camera, renderer.domElement);
 
 // Loader
-loader.load( 
-  
+loader.load(
+  "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf",
   // called when the resource is loaded
   async function (gltf) {
     console.log("loaded");
-    scene.add(gltf.scene);
 
     mixer = new THREE.AnimationMixer(gltf.scene);
 
@@ -74,12 +73,17 @@ function animate() {
   const delta = clock.getDelta();
   if (mixer) mixer.update(delta);
 }
-animate();`;
+animate();
+`;
 
 let checkInterval: number | NodeJS.Timer | undefined;
-export const loaderSceneFunction = (userScript: string) => {
+export const loaderSceneFunction = (
+  userScript: string,
+  setErrors: Function
+) => {
   const scene = userFunction(
     userScript,
+    setErrors,
     ["THREE", "GLTFLoader", "OrbitControls"],
     [THREE, GLTFLoader, OrbitControls],
     "scene"
@@ -90,9 +94,9 @@ export const loaderSceneFunction = (userScript: string) => {
 };
 
 const assignments = {
-  loadGLTF: {
-    title: "Add the above line at line 39",
-    hint: "Did you make sure to copy the entire line?",
+  addGLTF: {
+    title: "Add the scene gotten from the loaded gltf to your own scene.",
+    hint: "gltf has the property you can add to your scene like any other object or light.",
     checked: false,
   },
 };
@@ -103,12 +107,9 @@ const assignmentCheck = (scene: THREE.Scene) => {
   const gltfScene = scene.children[2];
   if (gltfScene.type !== "Group") return;
   const assignmentsClone = JSON.parse(JSON.stringify(assignments));
-  assignments.loadGLTF.checked = true;
+  assignments.addGLTF.checked = true;
 
-  if (
-    assignmentsClone.loadGLTF.checked !== assignments.loadGLTF.checked &&
-    update
-  )
+  if (assignmentsClone.addGLTF.checked !== assignments.addGLTF.checked)
     update();
 };
 
@@ -149,15 +150,12 @@ const Loader: React.FC = () => {
           {`const delta = clock.getDelta();
 if (mixer) mixer.update(delta);`}
         </CodeBlockInline>
-        <CodeBlockInline>
-          {`"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf",`}
-        </CodeBlockInline>
         <Assignment assignments={assignments}></Assignment>{" "}
       </CodeText>
       <CodeBlock
         showImports={showImports}
         code={code}
-        highlightArea={{ startRow: 38, endRow: 38 }}
+        scrollToLine={37}
       ></CodeBlock>
     </>
   );

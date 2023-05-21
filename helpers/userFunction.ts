@@ -16,7 +16,7 @@ const returnVarFunction = (returnVar?: string | string[]) => {
     return `try {
       return ${returnVar}; 
     } catch (error) {
-      console.log("No return");
+      error;
     }`;
   } else {
     const returnVars = JSON.stringify(returnVar);
@@ -31,13 +31,14 @@ const returnVarFunction = (returnVar?: string | string[]) => {
       });
       return returnThis;
     } catch (error) {
-      console.log("No return");
+      error;
     }`;
   }
 };
 
 const userFunction = (
   userScript: string,
+  setNewError: any,
   paramNames?: string[],
   params?: any[],
   returnVar?: string | string[]
@@ -50,7 +51,7 @@ const userFunction = (
       return Function(script);
     }
   } catch (error) {
-    console.error(error);
+    setNewError((error as any).message);
   }
 };
 

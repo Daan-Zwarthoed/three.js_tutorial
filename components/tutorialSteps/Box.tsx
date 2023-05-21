@@ -29,7 +29,7 @@ renderer.setClearColor(0x01e3d59, 1);
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
-  try { 
+  try {
     if (cube) {
       cube.rotation.x += 0.01;
       cube.rotation.y += 0.01;
@@ -40,8 +40,8 @@ function animate() {
 }
 
 animate();`;
-export const boxSceneFunction = (userScript: string) => {
-  const cube = userFunction(userScript, ["THREE"], [THREE], "cube");
+export const boxSceneFunction = (userScript: string, setErrors: Function) => {
+  const cube = userFunction(userScript, setErrors, ["THREE"], [THREE], "cube");
   if (cube) assignmentCheck(cube);
 };
 
@@ -105,7 +105,7 @@ const Box: React.FC = () => {
             then can insert to our scene, and move around freely.
           </li>
         </ol>
-        <p></p>
+        <p>Combining all of that will look a little something like this:</p>
         <CodeBlockInline>{`const geometry = new THREE.BoxGeometry(10, 10, 10);
 const material = new THREE.MeshBasicMaterial({ 
   color: 0xd63e4d

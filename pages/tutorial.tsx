@@ -3,7 +3,7 @@ import * as THREE from "three";
 import Router from "next/router";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Scene from "../components/Scene";
-import Resizable from "../components/global/Resizable";
+import Resizable from "../components/global/ResizableHorizontal";
 import Prerequisites from "../components/tutorialSteps/Prerequisites";
 import AppContext from "../contexts/AppContextProvider";
 import Box, { boxSceneFunction } from "../components/tutorialSteps/Box";
@@ -26,7 +26,7 @@ import Light, { lightSceneFunction } from "../components/tutorialSteps/Light";
 import Addons, {
   addonsSceneFunction,
 } from "../components/tutorialSteps/Addons";
-import ResizableCanvas from "../components/global/Resizable";
+import ResizableCanvas from "../components/global/ResizableHorizontal";
 import Navigation from "../components/tutorialHelpers/Navigation";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import * as FA from "@fortawesome/free-solid-svg-icons";
@@ -95,8 +95,8 @@ export const stepList: StepList = [
 ];
 let initialLoad = true;
 const Tutorial = () => {
-  const { accessibleSteps, tutorialStep, setTutorialStep } =
-    useContext(AppContext);
+  const { accessibleSteps } = useContext(AppContext);
+  const [tutorialStep, setTutorialStep] = React.useState<number>(-1);
 
   const startSetup = () => {
     if (initialLoad) return (initialLoad = false);

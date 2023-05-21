@@ -66,13 +66,13 @@ const Robot: React.FC<InputProps> = ({ next }) => {
     const thrusterAnimation = gsap.fromTo(
       thruster.current.style,
       {
-        transform: "scale(1, 1)",
+        transform: "scaleY(1)",
         repeat: -1,
         duration: 0.2,
         yoyoEase: "back",
       },
       {
-        transform: "scale(1, 1.1)",
+        transform: "scaleY(1.1)",
         repeat: -1,
         duration: 0.2,
         yoyoEase: "back",

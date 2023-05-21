@@ -45,15 +45,14 @@ renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 renderer.setClearColor(0x01e3d59, 1);
 renderer.shadowMap.enabled = true;
 
-
 // Add objects
 const material = new THREE.MeshStandardMaterial({
-  color: "#d63e4d",
+  color: 0xd25e2f,
 });
 
 const cubeGeometry = new THREE.BoxGeometry(10, 10, 10);
 const cube = new THREE.Mesh(cubeGeometry, material);
-cube.castShadow = true; 
+cube.castShadow = true;
 cube.receiveShadow = true;
 scene.add(cube);
 
@@ -79,10 +78,11 @@ animate();`;
 let savedCameraPosition: THREE.Vector3;
 let renderer: THREE.WebGLRenderer;
 
-export const lightSceneFunction = (userScript: string) => {
+export const lightSceneFunction = (userScript: string, setErrors: Function) => {
   const canvas = document.getElementById("canvas");
   const cameraRendererTextureAndSpotlight = userFunction(
     userScript,
+    setErrors,
     ["THREE", "RectAreaLightHelper", "OrbitControls", "GLTFLoader"],
     [THREE, RectAreaLightHelper, OrbitControls, GLTFLoader],
     ["camera", "renderer", "texture", "spotLight"]
@@ -116,17 +116,21 @@ export const lightSceneFunction = (userScript: string) => {
 };
 
 const assignments = {
+  addSpotLight: {
+    title: "Add a spot light to the scene",
+    hint: "You can use the buttons above to select the spot light",
+    checked: false,
+  },
   textureLoader: {
     title:
-      "Use the textureLoader to load a doge image gotten from image/doge.png and apply it to a variable called texture",
-    hint: "THREE.TextureLoader().load('images/doge.png')",
+      "Use the textureLoader to load a doge image gotten from 'image/doge.png' and apply it to a variable called texture",
+    hint: "Use this: THREE.TextureLoader().load('images/doge.png')",
     checked: false,
   },
   spotLightMapIsTexture: {
     title: "Now apply that texture to the spotlights map.",
     hint: "the spotLight has a map property you can apply your texture to",
-    subParagraph:
-      "Okay good! There are alot of geometries like circle, cone, cylinder and a bunch of others.",
+    subParagraph: "Nice well done. You made a doge themed spotlight!",
     checked: false,
   },
 };
@@ -135,6 +139,7 @@ const assignmentCheck = (
   texture: THREE.Texture,
   spotLight: THREE.SpotLight
 ) => {
+  if (spotLight) assignments.addSpotLight.checked = true;
   if (texture) {
     const interval = setInterval(() => {
       if (texture.source.data) {
@@ -163,13 +168,13 @@ scene.add(ambientLight);
 `;
 
 const hemisphereScript = `
-const hemisphereLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+const hemisphereLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
 hemisphereLight.position.set(30, 50, 50);
-scene.add( hemisphereLight );
+scene.add(hemisphereLight);
 `;
 const hemisphereHelperScript = `
-const hemisphereHelper = new THREE.HemisphereLightHelper( hemisphereLight, 20 );
-scene.add( hemisphereHelper );
+const hemisphereHelper = new THREE.HemisphereLightHelper(hemisphereLight, 20);
+scene.add(hemisphereHelper);
 `;
 
 const directionalScript = `
@@ -180,20 +185,20 @@ scene.add(directionalLight);
 `;
 
 const directionalHelperScript = `
-const directionalHelper = new THREE.DirectionalLightHelper( directionalLight, 5 );
-scene.add( directionalHelper );
+const directionalHelper = new THREE.DirectionalLightHelper(directionalLight, 5);
+scene.add(directionalHelper);
 `;
 
 const spotScript = `
-const spotLight = new THREE.SpotLight( 0xffff99, 1 );
-spotLight.position.set( 30, 10, 10 );
+const spotLight = new THREE.SpotLight(0xffff99, 1);
+spotLight.position.set(30, 10, 10);
 spotLight.castShadow = true;
 scene.add(spotLight);
 `;
 
 const spotHelperScript = `
-const spotLightHelper = new THREE.SpotLightHelper( spotLight );
-scene.add( spotLightHelper );
+const spotLightHelper = new THREE.SpotLightHelper(spotLight);
+scene.add(spotLightHelper);
 `;
 
 const rectScript = `
@@ -209,22 +214,22 @@ scene.add(rectLightHelper);
 `;
 
 const pointScript = `
-const pointLight = new THREE.PointLight( 0xff0000, 1, 100 );
-pointLight.position.set( 15, 15, 15 );
-pointLight.castShadow = true
-scene.add( pointLight );
+const pointLight = new THREE.PointLight(0xff0000, 1, 100);
+pointLight.position.set(15, 15, 15);
+pointLight.castShadow = true;
+scene.add(pointLight);
 `;
 const pointHelperScript = `
 const sphereSize = 20;
-const pointLightHelper = new THREE.PointLightHelper( pointLight, sphereSize );
-scene.add( pointLightHelper );
+const pointLightHelper = new THREE.PointLightHelper(pointLight, sphereSize);
+scene.add(pointLightHelper);
 `;
 
 let update: () => void;
 
 const Light: React.FC = () => {
   const { setUserScript, setResetCanvasKey } = useContext(AppContext);
-  const [lightMode, setLightMode] = useState<Lightmode[]>(["Ambient", "Spot"]);
+  const [lightMode, setLightMode] = useState<Lightmode[]>(["Ambient", "Point"]);
   const [resetKey, setResetKey] = useState(Math.random());
 
   update = () => {

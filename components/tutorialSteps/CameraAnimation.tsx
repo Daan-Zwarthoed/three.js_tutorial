@@ -12,8 +12,7 @@ import Assignment from "../tutorialHelpers/Assignment";
 const beforeGsapCode = `import gsap from "gsap";
 `;
 
-const gsapCode = `
-// Basic setup
+const gsapCode = `// Basic setup
 const canvas = document.getElementById("canvas");
 const raycaster = new THREE.Raycaster();
 const scene = new THREE.Scene();
@@ -22,7 +21,7 @@ const camera = new THREE.PerspectiveCamera(
   70,
   canvas.clientWidth / canvas.clientHeight,
   0.1,
-  2000000
+  2000
 );
 camera.position.z = 30;
 
@@ -85,7 +84,8 @@ function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
 }
-animate();`;
+animate();
+`;
 
 const noGsapCode = `
 // Basic setup
@@ -97,7 +97,7 @@ const camera = new THREE.PerspectiveCamera(
   70,
   canvas.clientWidth / canvas.clientHeight,
   0.1,
-  2000000
+  2000
 );
 camera.position.z = 30;
 
@@ -181,15 +181,20 @@ function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
 }
-animate();`;
+animate();
+`;
 let raycaster: THREE.Raycaster;
 let camera: THREE.Camera;
 let scene: THREE.Scene;
 let renderer: THREE.WebGLRenderer;
 
-export const cameraAnimationSceneFunction = (userScript: string) => {
+export const cameraAnimationSceneFunction = (
+  userScript: string,
+  setErrors: Function
+) => {
   const raycasterCameraSceneAndRenderer = userFunction(
     userScript,
+    setErrors,
     ["THREE", "gsap"],
     [THREE, gsap],
     ["raycaster", "camera", "scene"]
