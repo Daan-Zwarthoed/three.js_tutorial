@@ -6,10 +6,8 @@ import ResizableHorizontal from "../global/ResizableHorizontal";
 import ResizableVertical from "../global/ResizableVertical";
 // import ace from "ace-builds";
 const CodeEditor = dynamic(() => import("./CodeEditor"), { ssr: false });
-type Error = {
-  message: string;
-  stack: string;
-};
+import { Hook, Console, Decode } from "console-feed";
+import { Message } from "console-feed/lib/definitions/Component";
 type Props = {
   showImports?: string;
   code: string;
@@ -30,8 +28,9 @@ const CodeBlock: React.FC<Props> = ({
   highlightArea,
   scrollToLine,
 }) => {
-  const { setUserScript, newError, setNewError } = useContext(AppContext);
-  const [allErrors, setAllErrors] = useState<string[]>([]);
+  const { setUserScript } = useContext(AppContext);
+  const [logs, setLogs] = useState<Message[]>([]);
+
   const allImports = defaultImport + (showImports ? showImports : "");
 
   const beforeHeight = allImports.split(/\r\n|\r|\n/).length;
@@ -39,15 +38,16 @@ const CodeBlock: React.FC<Props> = ({
 
   useEffect(() => {
     setUserScript(code);
-    setAllErrors([]);
   }, [code]);
 
   useEffect(() => {
-    if (newError) {
-      setAllErrors([...allErrors, newError]);
-      setNewError(null);
-    }
-  }, [newError]);
+    Hook(window.console, (log) => {
+      const newLog = Decode(log);
+      if (newLog && newLog.data && newLog.method === "error")
+        newLog.data[0] = newLog.data[0].split("\n")[0];
+      setLogs([...logs, newLog as Message]);
+    });
+  });
 
   return (
     <ResizableHorizontal resizeTarget="Code">
@@ -62,15 +62,7 @@ const CodeBlock: React.FC<Props> = ({
       </CodeEditor>
       <ResizableVertical resizeTarget="Console">
         <div className="w-full h-full pl-3 bg-black pb-10 pt-[10px]">
-          <p className="px-4 py-1 border-b border-secondary">Console</p>
-          {allErrors.map((error: string, index: number) => (
-            <p
-              className="px-4 py-1 border-b border-red-500 text-red-500 text-[15px] border-solid"
-              key={error + index}
-            >
-              {error}
-            </p>
-          ))}
+          <Console filter={["log", "error"]} logs={logs} variant="dark" />
         </div>
       </ResizableVertical>
     </ResizableHorizontal>

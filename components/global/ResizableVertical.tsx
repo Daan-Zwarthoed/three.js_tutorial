@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 type InputProps = {
-  children?: any;
+  children?: React.ReactNode;
   resizeTarget: "Console";
 };
 const ResizableVertical: React.FC<InputProps> = ({
@@ -40,18 +40,20 @@ const ResizableVertical: React.FC<InputProps> = ({
     window.dispatchEvent(new Event("resize"));
   };
 
-  const handleResizeStart = (event: any) => {
+  const handleResizeStart = (
+    event: MouseEvent | React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
     mouseDown = true;
     initialPos = event.clientY;
     initialSize = resizableElement!.clientHeight;
   };
 
-  const handleResize = (event: any) => {
+  const handleResize = (event: MouseEvent) => {
     if (!mouseDown) return;
     resize(initialSize! - (event.clientY - initialPos!));
   };
 
-  const handleResizeEnd = (event: any) => {
+  const handleResizeEnd = (event: MouseEvent) => {
     mouseDown = false;
     initialPos = event.clientY;
     initialSize = resizableElement!.clientHeight;
@@ -66,7 +68,7 @@ const ResizableVertical: React.FC<InputProps> = ({
   return (
     <div
       id={`Resizable${resizeTarget}`}
-      className="relative w-full h-1/2 shrink-0 z-10"
+      className="relative w-full h-1/2 shrink-0 z-10 mt-auto"
     >
       <div className="flex flex-col w-full h-full overflow-y-auto">
         {children}

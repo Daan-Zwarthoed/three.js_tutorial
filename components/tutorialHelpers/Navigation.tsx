@@ -10,11 +10,7 @@ import StepButton from "../global/StepButton";
 import * as FA from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 
-type InputProps = {
-  children?: any;
-};
-
-const Navigation: React.FC<InputProps> = ({ children }) => {
+const Navigation: React.FC = () => {
   const { accessibleSteps, setUserScript } = useContext(AppContext);
   const [stepIndex, setStepIndex] = useState<number>(-1);
 
@@ -36,10 +32,14 @@ const Navigation: React.FC<InputProps> = ({ children }) => {
     });
   };
 
-  const handleHover = (event: any, id: string, enter: boolean) => {
+  const handleHover = (
+    event: React.MouseEvent<SVGSVGElement, MouseEvent>,
+    id: string,
+    enter: boolean
+  ) => {
     const toolTip = document.getElementById("ToolTip");
     if (!toolTip) return;
-    const rect = event.target.getBoundingClientRect();
+    const rect = (event.target as HTMLElement).getBoundingClientRect();
     const center = rect.left + rect.width / 2;
     toolTip.style.left = center + "px";
     toolTip.innerHTML = id;
@@ -54,7 +54,7 @@ const Navigation: React.FC<InputProps> = ({ children }) => {
   return (
     <div
       id="Navigation"
-      className="relative bottom-0 h-[5%] w-full z-20 p-2 bg-background flex flex-row items-center justify-center px-2"
+      className="relative bottom-0 h-[5%] w-full z-50 p-2 bg-background flex flex-row items-center justify-center px-2"
     >
       <div className="absolute left-5 bottom-1/2 translate-y-1/2">
         <Link href="/">

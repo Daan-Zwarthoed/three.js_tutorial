@@ -7,12 +7,12 @@ import dynamic from "next/dynamic";
 // import ace from "ace-builds";
 const CodeEditor = dynamic(() => import("./CodeEditor"), { ssr: false });
 type Props = {
-  children?: any;
+  children?: string;
 };
 const CodeBlockInline: React.FC<Props> = ({ children }) => {
   return (
     <div className="relative my-2">
-      <CodeEditor inline>{children}</CodeEditor>
+      <CodeEditor inline>{`${children}`}</CodeEditor>
     </div>
   );
 };

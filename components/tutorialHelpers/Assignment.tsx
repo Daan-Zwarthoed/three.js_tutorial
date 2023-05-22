@@ -16,11 +16,10 @@ type Assignment = {
 };
 
 type InputProps = {
-  children?: any;
   assignments?: { [key: string]: Assignment };
 };
 let assignmentsClone: { [key: string]: Assignment };
-const Assignment: React.FC<InputProps> = ({ children, assignments }) => {
+const Assignment: React.FC<InputProps> = ({ assignments }) => {
   const { accessibleSteps, setAccessibleSteps, setShowRobot } =
     useContext(AppContext);
 
@@ -70,7 +69,7 @@ const Assignment: React.FC<InputProps> = ({ children, assignments }) => {
     }
   });
 
-  const handleHintClick = (event: any) => {
+  const handleHintClick = (event: React.MouseEvent<HTMLElement>) => {
     const styleSibling = (
       (event.target as HTMLButtonElement)
         .nextElementSibling as HTMLParagraphElement
@@ -124,9 +123,11 @@ const Assignment: React.FC<InputProps> = ({ children, assignments }) => {
                   className="w-full text-start my-3 bg-tertary px-5 flex flex-row items-center"
                   onClick={handleHintClick}
                 >
-                  <p>Need some help? Get a hint.</p>
+                  <p className="pointer-events-none">
+                    Need some help? Get a hint.
+                  </p>
                   <FontAwesomeIcon
-                    className="w-4 h-4 ml-auto"
+                    className="w-4 h-4 ml-auto pointer-events-none"
                     style={{ transform: "rotate(0deg)" }}
                     size="sm"
                     icon={FA.faChevronDown}

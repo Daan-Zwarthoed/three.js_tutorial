@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 type InputProps = {
-  children?: any;
+  children?: React.ReactNode;
   resizeTarget: "Canvas" | "Code";
 };
 const ResizableHorizontal: React.FC<InputProps> = ({
@@ -42,18 +42,20 @@ const ResizableHorizontal: React.FC<InputProps> = ({
     window.dispatchEvent(new Event("resize"));
   };
 
-  const handleResizeStart = (event: any) => {
+  const handleResizeStart = (
+    event: MouseEvent | React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
     mouseDown = true;
     initialPos = event.clientX;
     initialSize = resizableElement!.clientWidth;
   };
 
-  const handleResize = (event: any) => {
+  const handleResize = (event: MouseEvent) => {
     if (!mouseDown) return;
     resize(initialSize! - (event.clientX - initialPos!));
   };
 
-  const handleResizeEnd = (event: any) => {
+  const handleResizeEnd = (event: MouseEvent) => {
     mouseDown = false;
     initialPos = event.clientX;
     initialSize = resizableElement!.clientWidth;

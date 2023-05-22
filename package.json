@@ -16,6 +16,7 @@
     "@fortawesome/react-fontawesome": "^0.1.18",
     "ace-builds": "^1.16.0",
     "babel-plugin-macros": "^3.1.0",
+    "console-feed": "^3.5.0",
     "gsap": "^3.11.4",
     "next": "13.0.0",
     "react": "18.2.0",

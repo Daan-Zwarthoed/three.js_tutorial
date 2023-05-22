@@ -133,7 +133,7 @@ const CodeBlock: React.FC<Props> = ({
         onLoad={(ace) => handleLoad(ace)}
       />
       {!inline && (
-        <div className="absolute z-40 h-10 w-full py-0.5 bottom-0 px-4 bg-background">
+        <div className="absolute z-20 h-10 w-full py-0.5 bottom-0 px-4 bg-background">
           <button
             onClick={() => handleSave(editor)}
             className="h-fit border-2 border-primary px-1 py-0.5 rounded-md "

@@ -38,7 +38,6 @@ const returnVarFunction = (returnVar?: string | string[]) => {
 
 const userFunction = (
   userScript: string,
-  setNewError: any,
   paramNames?: string[],
   params?: any[],
   returnVar?: string | string[]
@@ -51,7 +50,7 @@ const userFunction = (
       return Function(script);
     }
   } catch (error) {
-    setNewError((error as any).message);
+    console.error(error);
   }
 };
 

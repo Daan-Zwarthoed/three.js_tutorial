@@ -2,9 +2,11 @@ import React, { useEffect } from "react";
 import { stepList } from "../pages/tutorial";
 const AppContext = React.createContext<any>(null);
 let initialLoad = true;
-export const AppContextProvider = ({ children }: any) => {
+type InputProps = {
+  children?: React.ReactNode;
+};
+export const AppContextProvider: React.FC<InputProps> = ({ children }) => {
   const [userScript, setUserScript] = React.useState<string | null>(null);
-  const [newError, setNewError] = React.useState<string | null>(null);
   const [resetCanvasKey, setResetCanvasKey] = React.useState<number>(
     Math.random()
   );
@@ -43,8 +45,6 @@ export const AppContextProvider = ({ children }: any) => {
       value={{
         userScript,
         setUserScript,
-        newError,
-        setNewError,
         resetCanvasKey,
         setResetCanvasKey,
         showRobot,

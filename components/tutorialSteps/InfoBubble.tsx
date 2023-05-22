@@ -197,13 +197,9 @@ function animate() {
 animate();
 `;
 
-export const infoBubbleSceneFunction = (
-  userScript: string,
-  setErrors: Function
-) => {
+export const infoBubbleSceneFunction = (userScript: string) => {
   userFunction(
     userScript,
-    setErrors,
     ["THREE", "GLTFLoader", "OrbitControls", "gsap"],
     [THREE, GLTFLoader, OrbitControls, gsap]
   );

@@ -11,10 +11,10 @@ type InputProps = {
 };
 let firstLoad = true;
 const Scene: React.FC<InputProps> = ({ threeScript }) => {
-  const { userScript, resetCanvasKey, setNewError } = useContext(AppContext);
+  const { userScript, resetCanvasKey } = useContext(AppContext);
   const [resetKey, setResetKey] = useState(1);
   useEffect(() => {
-    threeScript(userScript, setNewError);
+    threeScript(userScript);
   }, [userScript, resetKey]);
 
   const reset = () => {

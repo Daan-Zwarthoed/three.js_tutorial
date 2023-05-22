@@ -77,13 +77,9 @@ animate();
 `;
 
 let checkInterval: number | NodeJS.Timer | undefined;
-export const loaderSceneFunction = (
-  userScript: string,
-  setErrors: Function
-) => {
+export const loaderSceneFunction = (userScript: string) => {
   const scene = userFunction(
     userScript,
-    setErrors,
     ["THREE", "GLTFLoader", "OrbitControls"],
     [THREE, GLTFLoader, OrbitControls],
     "scene"

@@ -27,11 +27,8 @@ function animate() {
 }
 animate();`;
 
-export const rendererSceneFunction = (
-  userScript: string,
-  setErrors: Function
-) => {
-  userFunction(userScript, setErrors, ["THREE"], [THREE]);
+export const rendererSceneFunction = (userScript: string) => {
+  userFunction(userScript, ["THREE"], [THREE]);
 };
 
 const assignments = {

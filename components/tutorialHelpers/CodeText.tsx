@@ -2,7 +2,7 @@ import Head from "next/head";
 import React, { useContext, useEffect, useState } from "react";
 import NextStepButton from "../global/StepButton";
 type InputProps = {
-  children?: any;
+  children?: React.ReactNode;
 };
 
 const CodeText: React.FC<InputProps> = ({ children }) => {

@@ -198,13 +198,9 @@ const assignmentCheck = (controls: OrbitControls) => {
 
 let renderer: THREE.WebGLRenderer | undefined;
 
-export const addonsSceneFunction = (
-  userScript: string,
-  setErrors: Function
-) => {
+export const addonsSceneFunction = (userScript: string) => {
   const rendererAndControls = userFunction(
     userScript,
-    setErrors,
     [
       "THREE",
       "ArcballControls",

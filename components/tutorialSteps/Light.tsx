@@ -78,11 +78,10 @@ animate();`;
 let savedCameraPosition: THREE.Vector3;
 let renderer: THREE.WebGLRenderer;
 
-export const lightSceneFunction = (userScript: string, setErrors: Function) => {
+export const lightSceneFunction = (userScript: string) => {
   const canvas = document.getElementById("canvas");
   const cameraRendererTextureAndSpotlight = userFunction(
     userScript,
-    setErrors,
     ["THREE", "RectAreaLightHelper", "OrbitControls", "GLTFLoader"],
     [THREE, RectAreaLightHelper, OrbitControls, GLTFLoader],
     ["camera", "renderer", "texture", "spotLight"]

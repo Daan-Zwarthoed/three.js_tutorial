@@ -40,8 +40,8 @@ function animate() {
 }
 
 animate();`;
-export const boxSceneFunction = (userScript: string, setErrors: Function) => {
-  const cube = userFunction(userScript, setErrors, ["THREE"], [THREE], "cube");
+export const boxSceneFunction = (userScript: string) => {
+  const cube = userFunction(userScript, ["THREE"], [THREE], "cube");
   if (cube) assignmentCheck(cube);
 };
 
@@ -72,8 +72,10 @@ const assignmentCheck = (cube: THREE.Mesh) => {
     assignments.cubeIsCone.checked = true;
   if (
     cube.material &&
-    (cube.material as any).color &&
-    (cube.material as any).color.equals(new THREE.Color(0xd25e2f))
+    (cube.material as THREE.MeshBasicMaterial).color &&
+    (cube.material as THREE.MeshBasicMaterial).color.equals(
+      new THREE.Color(0xd25e2f)
+    )
   )
     assignments.cubeIsGreen.checked = true;
 };

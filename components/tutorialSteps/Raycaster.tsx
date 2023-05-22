@@ -82,13 +82,9 @@ let raycaster: THREE.Raycaster;
 let camera: THREE.Camera;
 let scene: THREE.Scene;
 
-export const raycasterSceneFunction = (
-  userScript: string,
-  setErrors: Function
-) => {
+export const raycasterSceneFunction = (userScript: string) => {
   const raycasterCameraAndScene = userFunction(
     userScript,
-    setErrors,
     ["THREE"],
     [THREE],
     ["raycaster", "camera", "scene"]
@@ -119,7 +115,7 @@ const assignments = {
 };
 
 let INTERSECTED: THREE.Object3D | null;
-const assignmentCheck = (event: any) => {
+const assignmentCheck = (event: MouseEvent) => {
   if (!raycaster || !camera || !scene) return;
   const canvas = document.getElementById("canvas");
   if (!canvas) return;

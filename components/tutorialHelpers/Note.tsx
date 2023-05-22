@@ -5,7 +5,7 @@ import * as FA from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type InputProps = {
-  children?: any;
+  children?: string;
 };
 
 const Note: React.FC<InputProps> = ({ children }) => {

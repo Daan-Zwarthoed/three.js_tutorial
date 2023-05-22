@@ -188,13 +188,9 @@ let camera: THREE.Camera;
 let scene: THREE.Scene;
 let renderer: THREE.WebGLRenderer;
 
-export const cameraAnimationSceneFunction = (
-  userScript: string,
-  setErrors: Function
-) => {
+export const cameraAnimationSceneFunction = (userScript: string) => {
   const raycasterCameraSceneAndRenderer = userFunction(
     userScript,
-    setErrors,
     ["THREE", "gsap"],
     [THREE, gsap],
     ["raycaster", "camera", "scene"]
