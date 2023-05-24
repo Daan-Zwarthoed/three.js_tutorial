@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { stepList } from "../../pages/tutorial";
 import Router from "next/router";
-import gsap from "gsap";
+import gsap, { Elastic, Bounce, Power1, Back } from "gsap";
 import AppContext from "../../contexts/AppContextProvider";
 import StepButton from "../global/StepButton";
 type InputProps = {
@@ -23,11 +23,18 @@ const complimentOptions = [
   "Good!",
   "Doing great :)",
 ];
+
 const randomCompliment = () =>
   complimentOptions[Math.floor(Math.random() * complimentOptions.length)];
 let robotIsHidden = true;
+
 const Robot: React.FC<InputProps> = ({ next }) => {
-  const { showRobot, setShowRobot } = useContext(AppContext);
+  const {
+    showRobot,
+    setShowRobot,
+    fireConfettiPosition,
+    setFireConfettiPosition,
+  } = useContext(AppContext);
   const [text, setText] = useState<{
     compliment: boolean;
     text: string;
@@ -36,6 +43,7 @@ const Robot: React.FC<InputProps> = ({ next }) => {
     compliment: true,
     text: complimentOptions[0],
   });
+  const [confetti, setConfetti] = useState<boolean>(false);
   const robot = createRef<HTMLDivElement>();
   const robotSelf = createRef<HTMLDivElement>();
   const eyeDisplay = createRef<HTMLDivElement>();
@@ -48,8 +56,7 @@ const Robot: React.FC<InputProps> = ({ next }) => {
       transform: "translate(24.5px, 2px)",
       repeat: -1,
       duration: 2,
-      ease: "bounce",
-      yoyoEase: "bounce",
+      yoyoEase: Bounce.easeInOut,
     });
     animating.push(robotSelfAnimation);
     [...eyeDisplay.current.children].forEach((element) => {
@@ -59,7 +66,7 @@ const Robot: React.FC<InputProps> = ({ next }) => {
         repeat: -1,
         repeatDelay: 2,
         duration: 0.4,
-        yoyoEase: "power1",
+        yoyoEase: Power1.easeInOut,
       });
       animating.push(eyeAnimation);
     });
@@ -69,13 +76,13 @@ const Robot: React.FC<InputProps> = ({ next }) => {
         transform: "scaleY(1)",
         repeat: -1,
         duration: 0.2,
-        yoyoEase: "back",
+        yoyoEase: Back.easeInOut,
       },
       {
         transform: "scaleY(1.1)",
         repeat: -1,
         duration: 0.2,
-        yoyoEase: "back",
+        yoyoEase: Back.easeInOut,
       }
     );
     animating.push(thrusterAnimation);
@@ -90,16 +97,18 @@ const Robot: React.FC<InputProps> = ({ next }) => {
     const topOrLeftAmount = topOrLeft ? "0%" : "100%";
     const translateAmount = topOrLeft ? "-120%" : "0%";
 
+    setFireConfettiPosition(null);
     gsap
       .to(robot.current.style, {
         left: dissappearXSide ? topOrLeftAmount : Math.random() * 100 + "%",
         top: !dissappearXSide ? topOrLeftAmount : Math.random() * 100 + "%",
         transform: `translate(${translateAmount}, ${translateAmount})`,
         duration: 1.5,
-        ease: "power1",
+        ease: Power1.easeIn,
       })
       .eventCallback("onComplete", () => {
         animating.forEach((animation) => animation.pause());
+        setConfetti(false);
         robotIsHidden = true;
       });
   };
@@ -109,32 +118,49 @@ const Robot: React.FC<InputProps> = ({ next }) => {
     if (!robot.current) return;
 
     robotIsHidden = false;
+    if (showRobot.confetti) {
+      setConfetti(true);
+    } else {
+      setText({
+        compliment: !showRobot.text,
+        text: showRobot.text || randomCompliment(),
+        nextButton: showRobot.nextButton,
+      });
+    }
 
-    setText({
-      compliment: !showRobot.text,
-      text: showRobot.text || randomCompliment(),
-      nextButton: showRobot.nextButton,
-    });
     animating.forEach((animation) => animation.play());
-
-    const runningTweens = gsap.getTweensOf(robot.current.style);
-    if (runningTweens.length > 0) runningTweens[0].kill();
 
     gsap
       .to(robot.current.style, {
-        left: "50%",
-        top: "50%",
+        left: showRobot.confetti ? "10%" : "50%",
+        top: showRobot.confetti ? "75%" : "50%",
         transform: "translate(-50%, -50%)",
         duration: 3,
-        ease: "elastic",
+        ease: Elastic.easeOut,
       })
       .eventCallback("onComplete", () => {
-        if (!showRobot.text && !showRobot.nextButton) setShowRobot(null);
+        const robotById = document.getElementById("robot");
+        const confettiCannon = document.getElementById("ConfettiCannon");
+
+        if (showRobot.confetti && confettiCannon && robotById) {
+          const clientRect = confettiCannon.getBoundingClientRect();
+          setFireConfettiPosition({
+            x: clientRect.left * 2,
+            y: clientRect.top / 2,
+          });
+        }
+        if (!showRobot.confetti && !showRobot.text && !showRobot.nextButton)
+          setShowRobot(null);
       });
   };
 
   // Show or hide the robot
   useEffect(() => {
+    if (robot.current) {
+      const runningTweens = gsap.getTweensOf(robot.current.style);
+      runningTweens.forEach((tween) => tween.kill());
+    }
+
     if (!showRobot || !robot.current) {
       if (!robotIsHidden) hideRobot();
       return;
@@ -146,45 +172,71 @@ const Robot: React.FC<InputProps> = ({ next }) => {
     <div
       ref={robot}
       id="robot"
-      className="robot absolute z-40 flex flex-col max-w-full"
+      className="robot absolute z-50 flex flex-col max-w-full"
       style={{
         left: "0%",
         top: "0%",
         transform: "translate(-100%, -100%)",
       }}
     >
-      <div className="relative w-max max-w-[800px] p-3 text-center min-w-[150px] rounded-xl border-2 border-accent bg-background mb-3">
-        {text.compliment && (
-          <h2 className={text.nextButton ? "mb-8" : ""}>{text.text}</h2>
-        )}
-        {!text.compliment && <p className="mb-8">{text.text}</p>}
-
-        <div className="absolute -bottom-0.5 -right-0.5 rounded-xl">
-          {(!text.compliment || text.nextButton) && (
-            <button
-              className={`p-1 border-2 border-solid border-accent ${
-                text.nextButton ? "rounded-l-xl" : "rounded-xl"
-              }`}
-              onClick={() => setShowRobot(null)}
-            >
-              {text.nextButton ? "Stay here" : "Got it"}
-            </button>
-          )}
-          {text.nextButton && (
-            <StepButton
-              classes={"p-1 rounded-r-xl border-2 border-solid border-primary"}
-              next
-            ></StepButton>
-          )}
+      {/* Confetti cannon */}
+      {confetti && (
+        <div
+          id="ConfettiCannon"
+          className="relative w-[150px] h-[150px] rounded-xl bg-accent mb-3 rotate-[20deg] origin-bottom-left"
+          style={{ clipPath: "polygon(50% 0, 0% 100%, 100% 50%)" }}
+        >
+          <div
+            className="absolute w-full h-full bg-primary -rotate-[20deg]"
+            style={{ clipPath: "polygon(40% 0, 20% 0, 70% 100%, 90% 100%)" }}
+          ></div>
+          <div
+            className="asbolute w-full h-full bg-primary -rotate-[20deg]"
+            style={{ clipPath: "polygon(0% 0, -20% 0, 30% 100%, 50% 100%)" }}
+          ></div>
         </div>
-      </div>
+      )}
+      {/* Text box */}
+      {!confetti && (
+        <div className="relative w-max max-w-[800px] p-3 text-center min-w-[150px] rounded-xl border-2 border-accent bg-background mb-3">
+          {text.compliment && (
+            <h2 className={text.nextButton ? "mb-8" : ""}>{text.text}</h2>
+          )}
+          {!text.compliment && <p className="mb-8">{text.text}</p>}
+
+          <div className="absolute -bottom-0.5 -right-0.5 rounded-xl">
+            {(!text.compliment || text.nextButton) && (
+              <button
+                className={`p-1 border-2 border-solid border-accent ${
+                  text.nextButton ? "rounded-l-xl" : "rounded-xl"
+                }`}
+                onClick={() => setShowRobot(null)}
+              >
+                {text.nextButton ? "Stay here" : "Got it"}
+              </button>
+            )}
+            {text.nextButton && (
+              <StepButton
+                classes={
+                  "p-1 rounded-r-xl border-2 border-solid border-primary"
+                }
+                next
+              ></StepButton>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Robot self */}
       <div
         ref={robotSelf}
         className="flex flex-col"
         style={{ transform: "translate(25px, 0px)" }}
       >
         <div className="relative z-10 w-32 h-20 p-3 rounded-xl bg-[#D9D9D9] mx-auto">
+          {/* Arm left */}
           <div className="absolute bottom-[50%] left-0 z-50 w-4 h-16 rounded-xl origin-bottom -rotate-[30deg] bg-[#D9D9D9]"></div>
+          {/* Eyes */}
           <div
             className="relative w-full h-full rounded-xl bg-background"
             ref={eyeDisplay}
@@ -206,8 +258,14 @@ const Robot: React.FC<InputProps> = ({ next }) => {
               }}
             ></div>
           </div>
-          <div className="absolute bottom-[50%] right-0 z-50 w-4 h-16 rounded-xl origin-bottom -rotate-[30deg] bg-[#D9D9D9]"></div>
+          {/* Arm right */}
+          <div
+            className={`absolute bottom-[50%] right-0 z-50 w-4 rounded-xl origin-bottom -rotate-[30deg] bg-[#D9D9D9] ${
+              confetti ? "h-20" : "h-16"
+            }`}
+          ></div>
         </div>
+        {/* Thruster */}
         <div
           className="relative -top-[1px] z-0 w-32 bg-accent mx-auto flex justify-center origin-top"
           style={{

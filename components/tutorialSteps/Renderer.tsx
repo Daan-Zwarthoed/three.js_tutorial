@@ -6,6 +6,7 @@ import CodeText from "../tutorialHelpers/CodeText";
 import Assignment from "../tutorialHelpers/Assignment";
 import CodeBlockInline from "../code/CodeBlockInline";
 import Image from "next/image";
+import StepTitle from "../tutorialHelpers/StepTitle";
 const code = `// Basic setup
 const canvas = document.getElementById("canvas");
 const scene = new THREE.Scene();
@@ -90,8 +91,8 @@ const Renderer: React.FC = () => {
   return (
     <>
       <CodeText>
-        <h2>Creating a scene</h2>
-        <h4 className="mt-4">Basic setup</h4>
+        <StepTitle>Creating a scene</StepTitle>
+        <h3 className="mt-8">Basic setup</h3>
         <p>
           First thing we need to do before the fun stuff is creating a scene and
           adding a few things to it.
@@ -115,7 +116,7 @@ renderer.setClearColor(0x01e3d59, 1);`}
           Let's take a moment to explain what's going on here. We have now set
           up the scene, our camera and the renderer.
         </p>
-        <h4 className="mt-4">Camera's</h4>
+        <h3 className="mt-8">Camera's</h3>
         <p>
           There are different types of cameras in Three.js for most cases you
           will use the Perspective camera.{" "}
@@ -138,13 +139,13 @@ renderer.setClearColor(0x01e3d59, 1);`}
             alt="back button"
           ></Image>
         </div>
-        <h4 className="mt-4">Renderer</h4>
+        <h3 className="mt-8">Renderer</h3>
         <p>
           Next up is the renderer. When setting the renderer size you will also
           almost always want to set it to the width and height of your canvas.
           We also set the background color to blue.
         </p>
-        <h4 className="mt-4">Animation loop</h4>
+        <h3 className="mt-8">Animation loop</h3>
         <p>
           Now for actually rendering our scene we use an animation or render
           loop

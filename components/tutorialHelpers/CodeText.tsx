@@ -8,7 +8,9 @@ type InputProps = {
 const CodeText: React.FC<InputProps> = ({ children }) => {
   return (
     <div className="w-full h-full overflow-auto px-5 pb-5">
-      <h2 className="w-full bg-background top-0 z-30 mb-5">Explanation</h2>
+      <h3 className="w-full bg-background top-0 z-30 mb-5 text-quartery hover:text-white">
+        Explanation
+      </h3>
 
       {children}
     </div>

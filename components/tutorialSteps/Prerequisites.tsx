@@ -1,14 +1,15 @@
 import Link from "next/link";
 import React from "react";
 import NextStepButton from "../global/StepButton";
+import StepTitle from "../tutorialHelpers/StepTitle";
 
 const Prerequisites: React.FC = () => {
   return (
     <div className="flex flex-col w-full p-5 max-w-[900px]">
-      <h2>
+      <StepTitle>
         What do you need (to know) before starting this three.js adventure?
-      </h2>
-      <h3 className="mt-3">What is Three.js?</h3>
+      </StepTitle>
+      <h3 className="mt-8">What is Three.js?</h3>
       <p>Okay first things first. What actually is Three.js?</p>
       <p>
         To understand what Three.js is we first need to understand what WebGl
@@ -19,14 +20,14 @@ const Prerequisites: React.FC = () => {
         shadows, materials, textures, 3d math , all things that you'd have to
         write yourself if you were to use WebGL directly.
       </p>
-      <h3 className="mt-3">What will you learn in this tutorial?</h3>
+      <h3 className="mt-8">What will you learn in this tutorial?</h3>
       <p>
         This tutorial sets out to give you a basic understanding of what
         Three.js has to offer and give you the building blocks to make your own
         creations. We will do this by showing you how to create your own scene,
         lights and objects and make the user able to interact with them.
       </p>
-      <h3 className="mt-3">What will you need to complete this tutorial?</h3>
+      <h3 className="mt-8">What will you need to complete this tutorial?</h3>
       <p>
         To complete this tutorial you will only need a basic understanding of
         Javascript. If you need to get started with javascript first you can

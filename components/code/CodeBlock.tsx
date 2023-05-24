@@ -51,7 +51,9 @@ const CodeBlock: React.FC<Props> = ({
 
   return (
     <ResizableHorizontal resizeTarget="Code">
-      <h2 className="w-full bg-background top-0 z-30 pl-3">Input</h2>
+      <h3 className="w-full bg-background top-0 z-30 pl-3 text-quartery hover:text-white">
+        Input
+      </h3>
       <CodeEditor
         inputHeight={beforeHeight + inputHeight}
         beforeHeight={beforeHeight}
@@ -61,7 +63,7 @@ const CodeBlock: React.FC<Props> = ({
         {allImports + ("\n" + code + "\n")}
       </CodeEditor>
       <ResizableVertical resizeTarget="Console">
-        <div className="w-full h-full pl-3 bg-black pb-10 pt-[10px]">
+        <div className="w-full h-full pl-3 bg-black pb-10 pt-[10px] overflow-scroll">
           <Console filter={["log", "error"]} logs={logs} variant="dark" />
         </div>
       </ResizableVertical>

@@ -2,7 +2,7 @@ import Head from "next/head";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import Router from "next/router";
-import gsap from "gsap";
+import gsap, { Power1 } from "gsap";
 import AppContext from "../../contexts/AppContextProvider";
 import { stepList } from "../../pages/tutorial";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -47,7 +47,7 @@ const Navigation: React.FC = () => {
     gsap.to(toolTip!.style, {
       opacity: enter ? 1 : 0,
       duration: 0.5,
-      ease: "power1.out",
+      ease: Power1.easeInOut,
     });
   };
 
@@ -59,6 +59,8 @@ const Navigation: React.FC = () => {
       <div className="absolute left-5 bottom-1/2 translate-y-1/2">
         <Link href="/">
           <FontAwesomeIcon
+            onMouseEnter={(event) => handleHover(event, "Home", true)}
+            onMouseLeave={(event) => handleHover(event, "Home", false)}
             className="h-5 w-5"
             size="sm"
             icon={FA.faHome}

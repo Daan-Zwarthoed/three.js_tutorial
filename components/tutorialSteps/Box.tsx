@@ -7,6 +7,7 @@ import CodeText from "../tutorialHelpers/CodeText";
 import AppContext from "../../contexts/AppContextProvider";
 import Assignment from "../tutorialHelpers/Assignment";
 import Note from "../tutorialHelpers/Note";
+import StepTitle from "../tutorialHelpers/StepTitle";
 
 const code = `// Basic setup
 const canvas = document.getElementById("canvas");
@@ -47,7 +48,8 @@ export const boxSceneFunction = (userScript: string) => {
 
 const assignments = {
   cubeExists: {
-    title: "Add your own cube to the scene!",
+    title:
+      "Add your own cube to the scene! You can apply your code with the save button, ctrl + s or cmd + s.",
     hint: "You can copy the code in the codeblock above and paste it somewhere in the code on the right",
     checked: false,
   },
@@ -84,13 +86,13 @@ const Box: React.FC = () => {
   return (
     <>
       <CodeText>
-        <h2>Add your own cube/box to the scene</h2>
+        <StepTitle>Adding a cube</StepTitle>
         <p>
           There are alot of things you can add to a scene but lets start simple
           by creating and adding a cube.
         </p>
         <p>To create a cube, we need three things:</p>
-        <ol>
+        <ol className="my-5">
           <li className="my-3">
             First we need a <strong>BoxGeometry</strong>. This is an object that
             contains all the points and sides of the cube.

@@ -26,14 +26,12 @@ const StepButton: React.FC<InputProps> = ({ next, classes }) => {
   });
   const changeStep = (id: string | string[] | undefined) => {
     if (typeof id !== "string" || !accessibleSteps.includes(id)) return;
-    setShowRobot(null);
     setUserScript(null);
     Router.push({
       pathname: "/tutorial",
       query: { ...Router.query, step: id },
     });
   };
-  // console.log(goalStepId);
 
   if (!goalStepId) return <></>;
   return (

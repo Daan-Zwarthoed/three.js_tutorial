@@ -1,19 +1,28 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+  LegacyRef,
+  RefObject,
+  createRef,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import CodeBlock from "../code/CodeBlock";
-import gsap from "gsap";
+import gsap, { Power1 } from "gsap";
 import CodeText from "../tutorialHelpers/CodeText";
 import userFunction from "../../helpers/userFunction";
 import AppContext from "../../contexts/AppContextProvider";
+import StepTitle from "../tutorialHelpers/StepTitle";
 const SubStepTypes = [
-  "loader",
-  "toggle info",
-  "info click",
-  "back click",
-  "hide info behind car",
-  "info button position",
+  "Loader",
+  "Toggle info",
+  "Info click",
+  "Back click",
+  "Hide info behind car",
+  "Info button position",
 ] as const;
 type SubStep = (typeof SubStepTypes)[number];
 const showImports = `import { GLTFLoader } from "three/addons/loaders/GLTFLoader";
@@ -206,28 +215,63 @@ export const infoBubbleSceneFunction = (userScript: string) => {
 };
 
 const InfoBubble: React.FC = () => {
-  const [subStep, setSubStep] = useState<SubStep>("loader");
+  const { accessibleSteps, setAccessibleSteps } = useContext(AppContext);
+  const [subStep, setSubStep] = useState<SubStep>("Loader");
+  const bgActiveButton = createRef<HTMLDivElement>();
+
   let highlightArea = { startRow: 34, endRow: 57 }; // Default when loader
-  if (subStep === "toggle info") highlightArea = { startRow: 68, endRow: 83 };
-  if (subStep === "info click") highlightArea = { startRow: 85, endRow: 129 };
-  if (subStep === "back click") highlightArea = { startRow: 131, endRow: 147 };
-  if (subStep === "hide info behind car")
+  if (subStep === "Toggle info") highlightArea = { startRow: 68, endRow: 83 };
+  if (subStep === "Info click") highlightArea = { startRow: 85, endRow: 129 };
+  if (subStep === "Back click") highlightArea = { startRow: 131, endRow: 147 };
+  if (subStep === "Hide info behind car")
     highlightArea = { startRow: 149, endRow: 155 };
-  if (subStep === "info button position")
+  if (subStep === "Info button position")
     highlightArea = { startRow: 157, endRow: 172 };
-  const subStepIndex = SubStepTypes.findIndex((step) => step === subStep);
+
+  const setOrAnimateBgPosition = (set: boolean) => {
+    const activeButton = document.getElementById(subStep + "Button");
+    if (!bgActiveButton.current || !activeButton) return;
+
+    gsap[set ? "set" : "to"](bgActiveButton.current.style, {
+      height: activeButton.clientHeight + "px",
+      width: activeButton.offsetWidth + "px",
+      left: activeButton.offsetLeft + "px",
+      top: activeButton.offsetTop + "px",
+
+      duration: 1,
+      ease: Power1.easeIn,
+    });
+  };
+
+  const setBgPosition = () => {
+    setOrAnimateBgPosition(true);
+  };
+
+  useEffect(() => {
+    window.removeEventListener("resize", setBgPosition);
+    window.addEventListener("resize", setBgPosition);
+
+    setTimeout(() => {
+      setOrAnimateBgPosition(false);
+    });
+  }, [subStep]);
+
+  useEffect(() => {
+    if (!accessibleSteps.includes("Finish"))
+      setAccessibleSteps([...accessibleSteps, "Finish"]);
+  }, []);
 
   return (
     <>
       <CodeText>
-        <h2>Now for the finale</h2>
-        <p className="mb-10">
+        <StepTitle>Now for the finale</StepTitle>
+        <p className="mb-8">
           Well done! You made it to the final step!! Its a big one but we will
           get you through this.
         </p>
-        {subStep === "loader" && (
+        {subStep === "Loader" && (
           <>
-            <h4>Loading</h4>
+            <h3>Loading</h3>
             <p>
               The GLTF file we are loading is made up of 2 scenes. The first one
               is the car the second one is the Info button. On load we get the
@@ -237,9 +281,9 @@ const InfoBubble: React.FC = () => {
             </p>
           </>
         )}
-        {subStep === "toggle info" && (
+        {subStep === "Toggle info" && (
           <>
-            <h4>Toggle info</h4>
+            <h3>Toggle info</h3>
             <p>
               First up we check that we dont hide the info button if its already
               hidden or try to show it if its already shown. If we want to show
@@ -250,9 +294,9 @@ const InfoBubble: React.FC = () => {
             </p>
           </>
         )}
-        {subStep === "info click" && (
+        {subStep === "Info click" && (
           <>
-            <h4>Info click</h4>
+            <h3>Info click</h3>
             <p>
               First up we check if we have wheel1 and info loaded correctly, we
               also check if we are intersecting with info and if infoIsShown is
@@ -273,9 +317,9 @@ const InfoBubble: React.FC = () => {
             </p>
           </>
         )}
-        {subStep === "back click" && (
+        {subStep === "Back click" && (
           <>
-            <h4>Back click</h4>
+            <h3>Back click</h3>
             <p>
               The back click button is pretty simple. We just animate the camera
               back to its original position and quaternion, remove the
@@ -284,9 +328,9 @@ const InfoBubble: React.FC = () => {
             </p>
           </>
         )}
-        {subStep === "hide info behind car" && (
+        {subStep === "Hide info behind car" && (
           <>
-            <h4>Hide info behind car</h4>
+            <h3>Hide info behind car</h3>
             <p>
               This bit of code takes the horizontal and vertical angle of the
               camera converted to a number between -3 and 3 and hides or shows
@@ -296,9 +340,9 @@ const InfoBubble: React.FC = () => {
             </p>
           </>
         )}
-        {subStep === "info button position" && (
+        {subStep === "Info button position" && (
           <>
-            <h4>Info button position</h4>
+            <h3>Info button position</h3>
             <p>
               Even though it looks like it the info button isn't actually at the
               same location as the wheel is. It is actually inbetween the the
@@ -312,21 +356,25 @@ const InfoBubble: React.FC = () => {
           </>
         )}
 
-        <div className="grid grid-cols-3 mt-5 relative">
+        <div className="grid grid-cols-3 mt-5 relative border-t-2 border-l-2 border-solid border-white">
           {SubStepTypes.map((type) => (
             <button
+              id={type + "Button"}
               key={type}
-              className="relative z-10 flex items-center justify-center w-full text-center p-2"
+              className={`relative z-10 flex items-center justify-center w-full text-center p-2 border-r-2 border-b-2 border-solid border-white`}
               onClick={() => setSubStep(type)}
             >
               {type}
             </button>
           ))}
           <div
-            className="absolute z-0 h-1/2 w-1/3 top-0 left-0 bg-tertary transition-all"
+            ref={bgActiveButton}
+            className="absolute z-0 bg-tertary transition-all"
             style={{
-              top: subStepIndex > 2 ? "50%" : "0",
-              left: subStepIndex * 33 - (subStepIndex > 2 ? 100 : 0) + "%",
+              height: "0px",
+              width: "0px",
+              top: "0px",
+              left: "0px",
             }}
           ></div>
         </div>

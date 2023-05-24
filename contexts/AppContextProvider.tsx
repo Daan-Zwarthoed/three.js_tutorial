@@ -11,8 +11,13 @@ export const AppContextProvider: React.FC<InputProps> = ({ children }) => {
     Math.random()
   );
   const [showRobot, setShowRobot] = React.useState<{
+    confetti?: true;
     text?: string;
     nextButton?: boolean;
+  } | null>(null);
+  const [fireConfettiPosition, setFireConfettiPosition] = React.useState<{
+    x: number;
+    y: number;
   } | null>(null);
   const [accessibleSteps, setAccessibleSteps] = React.useState<string[]>([]);
 
@@ -51,6 +56,8 @@ export const AppContextProvider: React.FC<InputProps> = ({ children }) => {
         setShowRobot,
         accessibleSteps,
         setAccessibleSteps,
+        fireConfettiPosition,
+        setFireConfettiPosition,
       }}
     >
       {children}

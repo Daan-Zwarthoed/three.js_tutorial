@@ -6,6 +6,7 @@ import userFunction from "../../helpers/userFunction";
 import AppContext from "../../contexts/AppContextProvider";
 import CodeBlock from "../code/CodeBlock";
 import Assignment from "../tutorialHelpers/Assignment";
+import StepTitle from "../tutorialHelpers/StepTitle";
 
 const code = `// Basic setup
 const canvas = document.getElementById("canvas");
@@ -178,8 +179,8 @@ const Raycaster: React.FC = () => {
   return (
     <>
       <CodeText>
-        <h2>Code block for raycasters</h2>
-        <p>
+        <StepTitle>Raycasters</StepTitle>
+        <p className="mt-8">
           To make objects react to the users cursor you will need to use a
           raycaster
         </p>
@@ -193,7 +194,7 @@ function onPointerMove(event) {
 }
 
 canvas.addEventListener("mousemove", onPointerMove);`}</CodeBlockInline>
-        <p>
+        <p className="mt-8">
           This code will keep track of the x and y value of the cursor on the
           canvas in normalized device coordinates. Now for using this to change
           the color of the cube:
@@ -214,11 +215,11 @@ if (intersect) {
   INTERSECTED.material.color.set(INTERSECTEDCOLOR);
   INTERSECTED = null;
 }`}</CodeBlockInline>
-        <p>
+        <p className="mt-8">
           This looks very overwhelming at first glance but dont worry. I'll take
           you through it step by step.
         </p>
-        <ol>
+        <ol className="my-5">
           <li className="my-3">
             First we <strong>raycast</strong> with all the objects in the scene.
             We get the first intersection and save its object.
@@ -235,7 +236,6 @@ if (intersect) {
             INTERSECTED exists and reset it if it does.
           </li>
         </ol>
-        <p>To make sure you actually understand it. Do it yourself!</p>
         <Assignment assignments={assignments}></Assignment>{" "}
       </CodeText>
       <CodeBlock code={code} scrollToLine={33}></CodeBlock>

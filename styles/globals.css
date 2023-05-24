@@ -32,6 +32,7 @@ a,
 label,
 button {
   color: white;
+  font-weight: 300;
   font-family: Anuphan;
 }
 
@@ -87,12 +88,6 @@ blockquote {
   position: absolute;
   background: rgba(50, 50, 50, 0.5);
 }
-
-/* .editArea {
-  position: absolute;
-  background: rgba(43, 26, 60, 0.5);
-  z-index: 30;
-} */
 
 .highlightArea {
   position: absolute;

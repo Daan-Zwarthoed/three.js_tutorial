@@ -8,6 +8,7 @@ import CodeText from "../tutorialHelpers/CodeText";
 import userFunction from "../../helpers/userFunction";
 import AppContext from "../../contexts/AppContextProvider";
 import Assignment from "../tutorialHelpers/Assignment";
+import StepTitle from "../tutorialHelpers/StepTitle";
 
 const beforeGsapCode = `import gsap from "gsap";
 `;
@@ -252,12 +253,12 @@ const CameraAnimation: React.FC = () => {
   return (
     <>
       <CodeText>
-        <h2>Code block for camera animation</h2>
-        <p>
+        <StepTitle>(Gsap) animations</StepTitle>
+        <p className="my-8">
           For simple animations like moving the camera from its current position
           to another we will use gsap. Here is a link to the{" "}
           <a
-            className="text-blue-500 underline"
+            className="text-primary underline"
             target="_blank"
             href="https://greensock.com/get-started/"
           >
@@ -265,7 +266,7 @@ const CameraAnimation: React.FC = () => {
           </a>{" "}
           page and its{" "}
           <a
-            className="text-blue-500 underline"
+            className="text-primary underline"
             target="_blank"
             href="https://greensock.com/docs/v3/Installation"
           >
@@ -280,7 +281,7 @@ const CameraAnimation: React.FC = () => {
   duration: 1,
   ease: "power1.out",
 });`}</CodeBlockInline>
-        <p>
+        <p className="mt-8">
           Just this code will animate your camera from its current position to
           one you selected
         </p>
@@ -293,9 +294,9 @@ const CameraAnimation: React.FC = () => {
           animations I made the same functionality as in the last step but
           without gsap.
         </p>
-        <div className="relative w-fit my-2">
+        <div className="relative w-fit my-5">
           <button
-            className="py-2 w-10 relative z-10"
+            className="py-2 w-14 relative z-10"
             onClick={() => {
               setResetCanvasKey(Math.random());
               if (renderer) {
@@ -308,7 +309,7 @@ const CameraAnimation: React.FC = () => {
             New
           </button>
           <button
-            className="py-2 w-10 relative z-10"
+            className="py-2 w-14 relative z-10"
             onClick={() => {
               setResetCanvasKey(Math.random());
               if (renderer) {
@@ -321,7 +322,7 @@ const CameraAnimation: React.FC = () => {
             Old
           </button>
           <div
-            className="absolute transition-all duration-700 bg-tertary w-1/2 h-full top-0"
+            className="absolute transition-all duration-700 bg-tertary w-1/2 h-full top-0 rounded-md"
             style={{
               left:
                 userScript === gsapCode

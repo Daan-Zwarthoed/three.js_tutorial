@@ -15,15 +15,20 @@ import { TransformControls } from "three/examples/jsm/controls/TransformControls
 import CodeText from "../tutorialHelpers/CodeText";
 import AppContext from "../../contexts/AppContextProvider";
 import Assignment from "../tutorialHelpers/Assignment";
+import * as FA from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import Note from "../tutorialHelpers/Note";
+import StepTitle from "../tutorialHelpers/StepTitle";
 
 const ControlsTypes = [
   "Arcball",
-  "Drag",
-  "FirstPerson",
-  "Fly",
-  "Orbit",
-  "PointerLock",
   "Trackball",
+  "Orbit",
+  "Fly",
+  "FirstPerson",
+  "PointerLock",
+  "Drag",
   "Transform",
 ] as const;
 type ControlsMode = (typeof ControlsTypes)[number];
@@ -65,25 +70,22 @@ scene.add(cube);
 // Controls
 `;
 
-const afterCodeArcball = `const controls = new ArcballControls(camera, renderer.domElement);
+const afterCodeArcball = `new ArcballControls(camera, renderer.domElement);
 
 // Animation loop
 function animate() {
-  id = requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
   renderer.render(scene, camera);
-  controls.update();
 }
-
 animate();`;
 
 const afterCodeDrag = `new DragControls(scene.children, camera, renderer.domElement);
 
 // Animation loop
 function animate() {
-  id = requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
   renderer.render(scene, camera);
 }
-
 animate();`;
 
 const afterCodeFirstPerson = `const controls = new FirstPersonControls(camera, renderer.domElement);
@@ -230,6 +232,18 @@ export const addonsSceneFunction = (userScript: string) => {
   assignmentCheck(rendererAndControls[1]);
 };
 
+const returnControlsIcon = (controlsMode: ControlsMode): FA.IconDefinition => {
+  if (controlsMode === "Arcball") return FA.faSatellite;
+  if (controlsMode === "Drag") return FA.faUpDownLeftRight;
+  if (controlsMode === "FirstPerson") return FA.faVrCardboard;
+  if (controlsMode === "Fly") return FA.faPlane;
+  if (controlsMode === "Orbit") return FA.faSatellite;
+  if (controlsMode === "PointerLock") return FA.faLock;
+  if (controlsMode === "Trackball") return FA.faSatellite;
+  if (controlsMode === "Transform") return FA.faUpRightAndDownLeftFromCenter;
+  return FA.faQuestion;
+};
+
 const Addons: React.FC = () => {
   const { setErrors, setResetCanvasKey } = useContext(AppContext);
   const [controlsMode, setControlsMode] = useState<ControlsMode>("Arcball");
@@ -238,7 +252,7 @@ const Addons: React.FC = () => {
   return (
     <>
       <CodeText>
-        <h2>Add your own Addons to the scene</h2>
+        <StepTitle>Addons and controls</StepTitle>
         <p>
           Three.js by itself contains all the fundementals of a 3D engine. Other
           Three.js components like controls, loaders and post-processing need to
@@ -248,33 +262,32 @@ const Addons: React.FC = () => {
         <p>
           Try dragging the cube and you will see that you can now control it!
         </p>
-        <p className="mt-2">
-          Importing controls will in most cases look like this:
+        <p className="mt-8">
+          Adding controls will in most cases look something like this.
         </p>
-        <CodeBlockInline>
-          {`import { OrbitControls } from 'three/addons/controls/OrbitControls.js';`}
-        </CodeBlockInline>
-        <p>Using typescript it will look like this:</p>
         <CodeBlockInline>
           {`import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";`}
         </CodeBlockInline>
-        <p>
+        <Note>
           If you installed Three.js with a CDN you will need to add an importmap
           to the head element of your html. You can read more about import maps
           in the{" "}
           <a
-            className="text-blue-500 underline"
+            className="text-primary underline"
             target="_blank"
             href="https://threejs.org/docs/#manual/en/introduction/Installation"
           >
             installation guide.
           </a>
-        </p>
-        <div className="flex flex-col w-full my-5">
-          {ControlsTypes.map((type) => (
+        </Note>
+        <h3 className="mt-8">Controls</h3>
+        <div className="grid grid-cols-6 w-full my-5 border-secondary border-t-2 border-l-2">
+          {ControlsTypes.map((type, index) => (
             <button
               key={type}
-              className={`relative w-full text-center py-4 border-secondary border-2 first:border-t-2 border-t-0`}
+              className={`relative w-full text-center flex flex-row justify-center py-4 border-secondary border-r-2 border-b-2 ${
+                index > 5 ? "col-span-3" : "col-span-2"
+              }`}
               onClick={() => {
                 setResetCanvasKey(Math.random());
                 if (renderer) {
@@ -284,7 +297,13 @@ const Addons: React.FC = () => {
                 setControlsMode(type);
               }}
             >
-              <p className="relative z-10">{type}</p>
+              <p className="relative z-10 mr-2">{type}</p>
+              <FontAwesomeIcon
+                className="relative z-10 h-5 w-5"
+                size="sm"
+                icon={returnControlsIcon(type)}
+                color={"white"}
+              />
               <div
                 className={`absolute transition-all duration-700 bg-tertary left-0 h-full top-0`}
                 style={{
@@ -294,6 +313,31 @@ const Addons: React.FC = () => {
             </button>
           ))}
         </div>
+        <p>
+          {controlsMode === "Arcball" &&
+            "The arcball controls simulate a virtual sphere that surrounds the 3D scene. It allows users to rotate the camera by clicking and dragging on the surface of the sphere."}
+          {controlsMode === "Trackball" &&
+            "The trackball controls simulate a virtual trackball that allows users to rotate the camera around a target point. It offers intuitive navigation similar to how a physical trackball works."}
+          {controlsMode === "Orbit" &&
+            "The orbit controls provide a simplified way to control the camera by orbiting it around a target point. This control scheme is similar to how a planet orbits around the sun and is also by far the most popular implementation of controls in Three.js."}
+          {controlsMode === "Fly" &&
+            "FlyControls enables a navigation similar to fly modes in DCC (Digital Content Creation) tools like Blender. You can arbitrarily transform the camera in 3D space by using your wasd or arrow keys."}
+          {controlsMode === "FirstPerson" &&
+            "First person controls is an alternative implementation of fly controls making it feel more like you are person walking around a scene then fly controls."}
+          {controlsMode === "PointerLock" &&
+            "Pointer lock controls locks the users mouse and uses its movement to calculate where to look. This is perfect for first-person games."}
+          {controlsMode === "Drag" &&
+            "This is used for drag and drop interactions. It does not include control of the camera but control of objects in the scene."}
+          {controlsMode === "Transform" &&
+            "This is used to transform 3D objects in a similair way to DCC tools like Blender. Just like drag controls this does not include control of the camera but just the objects in the scene."}
+        </p>
+        {(controlsMode === "Fly" || controlsMode === "FirstPerson") && (
+          <Note>
+            Both first person and fly controls are not made for anything but a
+            fullscreen. This results in the camera panning to the right
+            permanently when hovering over the canvas in this example
+          </Note>
+        )}
         <Assignment assignments={assignments}></Assignment>
       </CodeText>
 

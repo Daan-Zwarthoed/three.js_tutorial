@@ -28,14 +28,14 @@ import Addons, {
 } from "../components/tutorialSteps/Addons";
 import ResizableCanvas from "../components/global/ResizableHorizontal";
 import Navigation from "../components/tutorialHelpers/Navigation";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import * as FA from "@fortawesome/free-solid-svg-icons";
 import Robot from "../components/robot/Robot";
+import Finish from "../components/tutorialSteps/Finish";
 
 type StepList = Array<{
   id: string;
   element: any;
-  icon: IconProp;
+  icon: FA.IconDefinition;
   pageFunction?: any;
 }>;
 export const stepList: StepList = [
@@ -89,13 +89,19 @@ export const stepList: StepList = [
   {
     id: "Info bubble",
     element: <InfoBubble></InfoBubble>,
-    icon: FA.faFlagCheckered,
+    icon: FA.faInfo,
     pageFunction: infoBubbleSceneFunction,
+  },
+  {
+    id: "Finish",
+    element: <Finish></Finish>,
+    icon: FA.faFlagCheckered,
   },
 ];
 let initialLoad = true;
 const Tutorial = () => {
-  const { accessibleSteps } = useContext(AppContext);
+  const { accessibleSteps, setShowRobot, setUserScript } =
+    useContext(AppContext);
   const [tutorialStep, setTutorialStep] = React.useState<number>(-1);
 
   const startSetup = () => {
@@ -118,6 +124,10 @@ const Tutorial = () => {
 
     if (routerStepIndex !== tutorialStep) setTutorialStep(routerStepIndex);
   });
+
+  useEffect(() => {
+    setShowRobot(null);
+  }, [tutorialStep]);
 
   return (
     <>

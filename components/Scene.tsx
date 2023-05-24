@@ -27,7 +27,9 @@ const Scene: React.FC<InputProps> = ({ threeScript }) => {
   }, [Router.query.step, resetCanvasKey]);
   return (
     <ResizableHorizontal resizeTarget="Canvas">
-      <h2 className="w-full bg-background top-0 z-30 pl-3">Result</h2>
+      <h3 className="w-full bg-background top-0 z-30 pl-3 text-quartery hover:text-white">
+        Result
+      </h3>
       <div className="flex flex-col h-full bg-[#1e3d59]">
         <div
           style={{ opacity: 0, display: "none" }}

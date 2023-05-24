@@ -4,7 +4,7 @@ import NextStepButton from "../global/StepButton";
 import AppContext from "../../contexts/AppContextProvider";
 import * as FA from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import gsap from "gsap";
+import gsap, { Power1 } from "gsap";
 import { stepList } from "../../pages/tutorial";
 import Router from "next/router";
 
@@ -56,6 +56,7 @@ const Assignment: React.FC<InputProps> = ({ assignments }) => {
               nextButton: completedFinalAssignment,
             });
 
+            // If you completed all assignments the next step will be unlocked
             if (
               nextStepId &&
               !accessibleSteps.includes(nextStepId) &&
@@ -85,12 +86,12 @@ const Assignment: React.FC<InputProps> = ({ assignments }) => {
         styleChevron.transform === "rotate(0deg)"
           ? "rotate(180deg)"
           : "rotate(0deg)",
-      ease: "power.1",
+      duration: 0.5,
     });
   };
   return (
     <div className="-mx-5 mt-10">
-      <h2 className="w-full p-2 mb-4 px-5">Assignments</h2>
+      <h2 className="w-full pb-1 pt-2 px-5">Assignments</h2>
       <div className="">
         {assignments &&
           Object.keys(assignments).map((key, index) => {
@@ -106,7 +107,7 @@ const Assignment: React.FC<InputProps> = ({ assignments }) => {
                     checked={assignment.checked}
                     readOnly
                   />
-                  <div className="shrink-0 bg-secondary peer-checked:bg-primary h-4 w-4 mr-3 flex justify-center items-center rounded-sm">
+                  <div className="shrink-0 border-2 border-solid border-primary peer-checked:bg-primary h-4 w-4 mr-3 flex justify-center items-center rounded-sm">
                     <FontAwesomeIcon
                       className="w-3/4 h-3/4"
                       style={{ display: assignment.checked ? "flex" : "none" }}
@@ -116,11 +117,12 @@ const Assignment: React.FC<InputProps> = ({ assignments }) => {
                     />
                   </div>
                   <label htmlFor="assignment">
-                    <strong className="">{index}.</strong> {assignment.title}
+                    <strong className="">{index + 1}.</strong>{" "}
+                    {assignment.title}
                   </label>
                 </div>
                 <button
-                  className="w-full text-start my-3 bg-tertary px-5 flex flex-row items-center"
+                  className="w-full text-start my-3 bg-quartery px-5 flex flex-row items-center"
                   onClick={handleHintClick}
                 >
                   <p className="pointer-events-none">

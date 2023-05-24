@@ -11,6 +11,12 @@ import AppContext from "../../contexts/AppContextProvider";
 import CodeText from "../tutorialHelpers/CodeText";
 import Note from "../tutorialHelpers/Note";
 import Assignment from "../tutorialHelpers/Assignment";
+import StepTitle from "../tutorialHelpers/StepTitle";
+import * as FA from "@fortawesome/free-solid-svg-icons";
+import * as FAregular from "@fortawesome/free-brands-svg-icons";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconProp, icon } from "@fortawesome/fontawesome-svg-core";
 const LightModeTypes = [
   "Ambient",
   "Directional",
@@ -224,6 +230,16 @@ const pointLightHelper = new THREE.PointLightHelper(pointLight, sphereSize);
 scene.add(pointLightHelper);
 `;
 
+const returnLightIcon = (lightMode: Lightmode): IconProp => {
+  if (lightMode === "Ambient") return FA.faSatellite;
+  if (lightMode === "Directional") return FA.faSun;
+  if (lightMode === "Hemisphere") return FA.faSun;
+  if (lightMode === "Spot") return FA.faSun;
+  if (lightMode === "Point") return FA.faSatellite;
+  if (lightMode === "Rect") return FA.faLock;
+  return FA.faQuestion;
+};
+
 let update: () => void;
 
 const Light: React.FC = () => {
@@ -274,12 +290,12 @@ const Light: React.FC = () => {
   return (
     <>
       <CodeText>
-        <h2>Lights</h2>
+        <StepTitle>Lights</StepTitle>
         <p>
           Three js offers multiple types of lights. Adding an ambient light and
           a directional light will be enough for most projects:
         </p>
-        <ul>
+        <ul className="my-5">
           <li className="my-3">
             <strong>Ambient lights</strong> are the simpelest of the bunch. This
             will add an even light to everything in the scene.
@@ -307,16 +323,20 @@ const Light: React.FC = () => {
             originates from a square instead of a spotlight.
           </li>
         </ul>
-        <Note>
-          A Rectangle light does not support shadows and is only visible on
-          MeshStandardMaterial and MeshPhysicalMaterial
-        </Note>
-        <Note>Note that ambient and hemisphere lights don't cast shadows.</Note>
+        <div className="mb-8">
+          <Note>
+            A Rectangle light does not support shadows and is only visible on
+            MeshStandardMaterial and MeshPhysicalMaterial
+          </Note>
+          <Note>
+            Note that ambient and hemisphere lights don't cast shadows.
+          </Note>
+        </div>
         <p>
           You can try out the different lights and their helpers with the button
           below:
         </p>
-        <div className="grid grid-cols-2 columns-2 w-full my-5 border-secondary border-2">
+        <div className="grid grid-cols-2 columns-2 w-full mb-8 mt-3 border-secondary border-2">
           {LightModeTypes.map((type) => (
             <button
               key={type}

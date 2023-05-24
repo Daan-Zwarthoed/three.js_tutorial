@@ -5,6 +5,7 @@ const allColors = {
     primary: "#D25E2F",
     secondary: "#fce2ce",
     tertary: "#334155",
+    quartery: "#063857",
     background: "#021622",
     accent: "#46A0A0",
   },
