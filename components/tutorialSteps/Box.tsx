@@ -1,10 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
 import * as THREE from "three";
 import userFunction from "../../helpers/userFunction";
 import CodeBlock from "../code/CodeBlock";
 import CodeBlockInline from "../code/CodeBlockInline";
 import CodeText from "../tutorialHelpers/CodeText";
-import AppContext from "../../contexts/AppContextProvider";
 import Assignment from "../tutorialHelpers/Assignment";
 import Note from "../tutorialHelpers/Note";
 import StepTitle from "../tutorialHelpers/StepTitle";
@@ -41,6 +40,7 @@ function animate() {
 }
 
 animate();`;
+
 export const boxSceneFunction = (userScript: string) => {
   const cube = userFunction(userScript, ["THREE"], [THREE], "cube");
   if (cube) assignmentCheck(cube);
@@ -60,7 +60,7 @@ const assignments = {
       "Okay good! There are alot of geometries like circle, cone, cylinder and a bunch of others.",
     checked: false,
   },
-  cubeIsGreen: {
+  cubeIsOrange: {
     title: "Change the color to: 0xd25e2f",
     hint: "Its the same principle as with the last assignment.",
     checked: false,
@@ -69,9 +69,12 @@ const assignments = {
 
 const assignmentCheck = (cube: THREE.Mesh) => {
   if (!cube) return;
+
   if (cube) assignments.cubeExists.checked = true;
+
   if (cube.geometry && cube.geometry.type === "ConeGeometry")
     assignments.cubeIsCone.checked = true;
+
   if (
     cube.material &&
     (cube.material as THREE.MeshBasicMaterial).color &&
@@ -79,7 +82,7 @@ const assignmentCheck = (cube: THREE.Mesh) => {
       new THREE.Color(0xd25e2f)
     )
   )
-    assignments.cubeIsGreen.checked = true;
+    assignments.cubeIsOrange.checked = true;
 };
 
 const Box: React.FC = () => {
@@ -87,7 +90,7 @@ const Box: React.FC = () => {
     <>
       <CodeText>
         <StepTitle>Adding a cube</StepTitle>
-        <p>
+        <p className="mt-8">
           There are alot of things you can add to a scene but lets start simple
           by creating and adding a cube.
         </p>

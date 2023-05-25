@@ -1,22 +1,19 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper";
 import CodeBlock from "../code/CodeBlock";
 import userFunction from "../../helpers/userFunction";
-import CodeBlockInline from "../code/CodeBlockInline";
-import Image from "next/image";
 import AppContext from "../../contexts/AppContextProvider";
 import CodeText from "../tutorialHelpers/CodeText";
 import Note from "../tutorialHelpers/Note";
 import Assignment from "../tutorialHelpers/Assignment";
 import StepTitle from "../tutorialHelpers/StepTitle";
+import Image from "next/image";
 import * as FA from "@fortawesome/free-solid-svg-icons";
-import * as FAregular from "@fortawesome/free-brands-svg-icons";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconProp, icon } from "@fortawesome/fontawesome-svg-core";
+
 const LightModeTypes = [
   "Ambient",
   "Directional",
@@ -72,101 +69,6 @@ new OrbitControls(camera, renderer.domElement);
 
 // Lights
 `;
-
-const codeAfter = `
-// Animation loop
-function animate() {
-  requestAnimationFrame(animate);
-  renderer.render(scene, camera);
-}
-animate();`;
-
-let savedCameraPosition: THREE.Vector3;
-let renderer: THREE.WebGLRenderer;
-
-export const lightSceneFunction = (userScript: string) => {
-  const canvas = document.getElementById("canvas");
-  const cameraRendererTextureAndSpotlight = userFunction(
-    userScript,
-    ["THREE", "RectAreaLightHelper", "OrbitControls", "GLTFLoader"],
-    [THREE, RectAreaLightHelper, OrbitControls, GLTFLoader],
-    ["camera", "renderer", "texture", "spotLight"]
-  );
-  if (cameraRendererTextureAndSpotlight) {
-    const camera = cameraRendererTextureAndSpotlight[0];
-    renderer = cameraRendererTextureAndSpotlight[1];
-    const texture = cameraRendererTextureAndSpotlight[2];
-    const spotLight = cameraRendererTextureAndSpotlight[3];
-
-    assignmentCheck(texture, spotLight);
-
-    if (camera) {
-      if (savedCameraPosition) {
-        camera.position.set(
-          savedCameraPosition.x,
-          savedCameraPosition.y,
-          savedCameraPosition.z
-        );
-        camera.lookAt(0, 0, 0);
-      } else {
-        camera.position.set(-75, 40, 75);
-        camera.lookAt(0, 0, 0);
-      }
-      if (canvas)
-        canvas.addEventListener("mouseup", () => {
-          savedCameraPosition = camera.position;
-        });
-    }
-  }
-};
-
-const assignments = {
-  addSpotLight: {
-    title: "Add a spot light to the scene",
-    hint: "You can use the buttons above to select the spot light",
-    checked: false,
-  },
-  textureLoader: {
-    title:
-      "Use the textureLoader to load a doge image gotten from 'image/doge.png' and apply it to a variable called texture",
-    hint: "Use this: THREE.TextureLoader().load('images/doge.png')",
-    checked: false,
-  },
-  spotLightMapIsTexture: {
-    title: "Now apply that texture to the spotlights map.",
-    hint: "the spotLight has a map property you can apply your texture to",
-    subParagraph: "Nice well done. You made a doge themed spotlight!",
-    checked: false,
-  },
-};
-
-const assignmentCheck = (
-  texture: THREE.Texture,
-  spotLight: THREE.SpotLight
-) => {
-  if (spotLight) assignments.addSpotLight.checked = true;
-  if (texture) {
-    const interval = setInterval(() => {
-      if (texture.source.data) {
-        clearInterval(interval as unknown as number);
-
-        const assignmentsClone = JSON.parse(JSON.stringify(assignments));
-
-        assignments.textureLoader.checked = true;
-        if (spotLight.map === texture)
-          assignments.spotLightMapIsTexture.checked = true;
-
-        if (
-          assignmentsClone.textureLoader.checked !==
-            assignments.textureLoader.checked ||
-          assignmentsClone.spotLightMapIsTexture.checked !==
-            assignments.spotLightMapIsTexture.checked
-        )
-          update();
-      }
-    }, 1000);
-  }
-};
 
 const ambientScript = `const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
@@ -230,20 +132,146 @@ const pointLightHelper = new THREE.PointLightHelper(pointLight, sphereSize);
 scene.add(pointLightHelper);
 `;
 
-const returnLightIcon = (lightMode: Lightmode): IconProp => {
-  if (lightMode === "Ambient") return FA.faSatellite;
-  if (lightMode === "Directional") return FA.faSun;
-  if (lightMode === "Hemisphere") return FA.faSun;
-  if (lightMode === "Spot") return FA.faSun;
-  if (lightMode === "Point") return FA.faSatellite;
-  if (lightMode === "Rect") return FA.faLock;
-  return FA.faQuestion;
+const codeAfter = `
+// Animation loop
+function animate() {
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+}
+animate();`;
+
+let savedCameraPosition: THREE.Vector3;
+let renderer: THREE.WebGLRenderer;
+
+export const lightSceneFunction = (userScript: string) => {
+  const canvas = document.getElementById("canvas");
+  const cameraRendererTextureAndSpotlight = userFunction(
+    userScript,
+    ["THREE", "RectAreaLightHelper", "OrbitControls", "GLTFLoader"],
+    [THREE, RectAreaLightHelper, OrbitControls, GLTFLoader],
+    ["camera", "renderer", "texture", "spotLight"]
+  );
+  if (cameraRendererTextureAndSpotlight) {
+    const camera = cameraRendererTextureAndSpotlight[0];
+    renderer = cameraRendererTextureAndSpotlight[1];
+    const texture = cameraRendererTextureAndSpotlight[2];
+    const spotLight = cameraRendererTextureAndSpotlight[3];
+
+    assignmentCheck(texture, spotLight);
+
+    // Save camera position when changing lights
+    if (camera) {
+      if (savedCameraPosition) {
+        camera.position.set(
+          savedCameraPosition.x,
+          savedCameraPosition.y,
+          savedCameraPosition.z
+        );
+        camera.lookAt(0, 0, 0);
+      } else {
+        camera.position.set(-75, 40, 75);
+        camera.lookAt(0, 0, 0);
+      }
+      if (canvas)
+        canvas.addEventListener("mouseup", () => {
+          savedCameraPosition = camera.position;
+        });
+    }
+  }
+};
+
+const assignments = {
+  addSpotLight: {
+    title: "Add a spot light to the scene",
+    hint: "You can use the buttons above to select the spot light",
+    checked: false,
+  },
+  textureLoader: {
+    title:
+      "Use the textureLoader to load a doge image gotten from 'image/doge.png' and apply it to a variable called texture",
+    hint: "Use this: THREE.TextureLoader().load('images/doge.png')",
+    checked: false,
+  },
+  spotLightMapIsTexture: {
+    title: "Now apply that texture to the spotlights map.",
+    hint: "the spotLight has a map property you can apply your texture to",
+    subParagraph: "Nice well done. You made a doge themed spotlight!",
+    checked: false,
+  },
+};
+
+let interval: number | NodeJS.Timer | undefined;
+const assignmentCheck = (
+  texture: THREE.Texture,
+  spotLight: THREE.SpotLight
+) => {
+  if (spotLight) assignments.addSpotLight.checked = true;
+
+  if (texture && spotLight) {
+    // Keep checking if user completed assignment
+    clearInterval(interval as number);
+    interval = setInterval(() => {
+      // If user loaded texture stop interval
+      if (texture.source.data) {
+        clearInterval(interval as number);
+
+        const assignmentsClone = JSON.parse(JSON.stringify(assignments));
+
+        assignments.textureLoader.checked = true;
+        if (spotLight.map === texture)
+          assignments.spotLightMapIsTexture.checked = true;
+
+        if (
+          assignmentsClone.textureLoader.checked !==
+            assignments.textureLoader.checked ||
+          assignmentsClone.spotLightMapIsTexture.checked !==
+            assignments.spotLightMapIsTexture.checked
+        )
+          update();
+      }
+    }, 1000);
+  }
+};
+
+const returnLightIcon = (lightMode: Lightmode) => {
+  if (lightMode === "Ambient") return <></>;
+
+  if (lightMode === "Spot")
+    return (
+      <Image
+        src="/images/flashlight.png"
+        alt={"Flashlight icon"}
+        className="rotate-[90deg]"
+        width={20}
+        height={20}
+      ></Image>
+    );
+
+  let icon = FA.faQuestion;
+  let rotate: number | undefined;
+  if (lightMode === "Directional") icon = FA.faSun;
+  if (lightMode === "Hemisphere") {
+    icon = FA.faAdjust;
+    rotate = 90;
+  }
+  if (lightMode === "Point") icon = FA.faLightbulb;
+  if (lightMode === "Rect") icon = FA.faSquareFull;
+
+  return (
+    <FontAwesomeIcon
+      className="h-5 w-5 relative z-40"
+      style={{ transform: rotate ? `rotate(${rotate}deg)` : undefined }}
+      size="sm"
+      icon={icon}
+      color={"white"}
+    />
+  );
 };
 
 let update: () => void;
 
 const Light: React.FC = () => {
-  const { setUserScript, setResetCanvasKey } = useContext(AppContext);
+  const { setResetCanvasKey } = useContext(AppContext);
   const [lightMode, setLightMode] = useState<Lightmode[]>(["Ambient", "Point"]);
   const [resetKey, setResetKey] = useState(Math.random());
 
@@ -275,12 +303,14 @@ const Light: React.FC = () => {
       renderer.forceContextLoss();
     }
     if (lightMode.includes(type)) {
+      // Remove light mode. Also remove helper
       setLightMode(
         lightMode.filter(
           (value) => value !== type && value !== type + " helper"
         )
       );
     } else {
+      // Add light mode. Add light itself if helper is clicked
       const modes = [...lightMode, type];
       if (type.split(" ")[1] === "helper")
         modes.push(type.split(" ")[0] as Lightmode);
@@ -291,7 +321,7 @@ const Light: React.FC = () => {
     <>
       <CodeText>
         <StepTitle>Lights</StepTitle>
-        <p>
+        <p className="mt-8">
           Three js offers multiple types of lights. Adding an ambient light and
           a directional light will be enough for most projects:
         </p>
@@ -338,6 +368,7 @@ const Light: React.FC = () => {
         </p>
         <div className="grid grid-cols-2 columns-2 w-full mb-8 mt-3 border-secondary border-2">
           {LightModeTypes.map((type) => (
+            // Button
             <button
               key={type}
               className="relative w-full text-center py-4 first:col-span-2 border-secondary border-t-2 first:border-0"
@@ -345,16 +376,23 @@ const Light: React.FC = () => {
             >
               <p className="relative z-10">{type}</p>
               {!type.includes("helper") && (
-                <div
-                  className="absolute transition-all duration-700 bg-tertary left-0 h-full top-0"
-                  style={{
-                    width: lightMode.includes(type)
-                      ? lightMode.includes((type + " helper") as Lightmode)
-                        ? "200%"
-                        : "100%"
-                      : "0",
-                  }}
-                ></div>
+                <>
+                  {/* Icon */}
+                  <div className="absolute left-full z-40 h-5 w-5 top-1/2 -translate-y-1/2 -translate-x-1/2">
+                    {returnLightIcon(type)}
+                  </div>
+                  {/* Background */}
+                  <div
+                    className="absolute transition-all duration-700 bg-tertary left-0 h-full top-0"
+                    style={{
+                      width: lightMode.includes(type)
+                        ? lightMode.includes((type + " helper") as Lightmode)
+                          ? "200%"
+                          : "100%"
+                        : "0",
+                    }}
+                  ></div>
+                </>
               )}
             </button>
           ))}

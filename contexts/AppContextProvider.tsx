@@ -1,49 +1,22 @@
-import React, { useEffect } from "react";
-import { stepList } from "../pages/tutorial";
+import React from "react";
+import { AccesibleStepsContext } from "./AccesibleStepsContext";
+import { ShowRobotContext } from "./ShowRobotContext";
+import { FireConfettiPositionContext } from "./FireConfettiPositionContext";
+
 const AppContext = React.createContext<any>(null);
-let initialLoad = true;
-type InputProps = {
+
+type Props = {
   children?: React.ReactNode;
 };
-export const AppContextProvider: React.FC<InputProps> = ({ children }) => {
+export const AppContextProvider: React.FC<Props> = ({ children }) => {
   const [userScript, setUserScript] = React.useState<string | null>(null);
   const [resetCanvasKey, setResetCanvasKey] = React.useState<number>(
     Math.random()
   );
-  const [showRobot, setShowRobot] = React.useState<{
-    confetti?: true;
-    text?: string;
-    nextButton?: boolean;
-  } | null>(null);
-  const [fireConfettiPosition, setFireConfettiPosition] = React.useState<{
-    x: number;
-    y: number;
-  } | null>(null);
-  const [accessibleSteps, setAccessibleSteps] = React.useState<string[]>([]);
-
-  const getAccessibleSteps = () => {
-    const stringifydAccessibleSteps =
-      window.localStorage.getItem("Accessible_Steps");
-    if (!stringifydAccessibleSteps) return;
-    const parsedAccessibleSteps = JSON.parse(stringifydAccessibleSteps);
-    setAccessibleSteps(parsedAccessibleSteps);
-  };
-
-  useEffect(() => {
-    getAccessibleSteps();
-  }, []);
-
-  const saveAccessibleSteps = () => {
-    if (initialLoad) return (initialLoad = false);
-    window.localStorage.setItem(
-      "Accessible_Steps",
-      JSON.stringify(accessibleSteps)
-    );
-  };
-
-  useEffect(() => {
-    saveAccessibleSteps();
-  }, [accessibleSteps]);
+  const { accessibleSteps, setAccessibleSteps } = AccesibleStepsContext();
+  const { showRobot, setShowRobot } = ShowRobotContext();
+  const { fireConfettiPosition, setFireConfettiPosition } =
+    FireConfettiPositionContext();
 
   return (
     <AppContext.Provider

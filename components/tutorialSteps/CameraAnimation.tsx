@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import * as THREE from "three";
 import gsap from "gsap";
 import CodeBlock from "../code/CodeBlock";
 import CodeBlockInline from "../code/CodeBlockInline";
-import Link from "next/link";
 import CodeText from "../tutorialHelpers/CodeText";
 import userFunction from "../../helpers/userFunction";
 import AppContext from "../../contexts/AppContextProvider";
@@ -184,6 +183,7 @@ function animate() {
 }
 animate();
 `;
+
 let raycaster: THREE.Raycaster;
 let camera: THREE.Camera;
 let scene: THREE.Scene;
@@ -224,19 +224,20 @@ const assignmentCheck = async (event: { clientX: number; clientY: number }) => {
   const canvasLeft = canvas.getBoundingClientRect().left;
   const canvasTop = canvas.getBoundingClientRect().top;
   const pointer = new THREE.Vector2();
+
   pointer.x = ((event.clientX - canvasLeft) / canvas.clientWidth) * 2 - 1;
   pointer.y = -((event.clientY - canvasTop) / canvas.clientHeight) * 2 + 1;
+
   raycaster.setFromCamera(pointer, camera);
   const intersects = raycaster.intersectObjects(scene.children, false);
   const intersect = intersects[0] && intersects[0].object;
+
   if (!intersect) return;
+
   const assignmentsClone = JSON.parse(JSON.stringify(assignments));
   const scaleTween = gsap.getTweensOf(intersect.scale)[0];
   if (await scaleTween) assignments.loadGLTF.checked = true;
-  if (
-    assignmentsClone.loadGLTF.checked !== assignments.loadGLTF.checked &&
-    update
-  )
+  if (assignmentsClone.loadGLTF.checked !== assignments.loadGLTF.checked)
     update();
 };
 

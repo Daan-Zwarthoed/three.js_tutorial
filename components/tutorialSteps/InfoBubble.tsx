@@ -1,12 +1,4 @@
-import React, {
-  LegacyRef,
-  RefObject,
-  createRef,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { createRef, useContext, useEffect, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -16,6 +8,7 @@ import CodeText from "../tutorialHelpers/CodeText";
 import userFunction from "../../helpers/userFunction";
 import AppContext from "../../contexts/AppContextProvider";
 import StepTitle from "../tutorialHelpers/StepTitle";
+
 const SubStepTypes = [
   "Loader",
   "Toggle info",
@@ -25,6 +18,7 @@ const SubStepTypes = [
   "Info button position",
 ] as const;
 type SubStep = (typeof SubStepTypes)[number];
+
 const showImports = `import { GLTFLoader } from "three/addons/loaders/GLTFLoader";
 import { OrbitControls } from "three/addons/controls/OrbitControls";
 import gsap from "gsap";`;
@@ -65,7 +59,7 @@ let info = null;
 loader.load(
   "scenes/Car.glb",
   // called when the resource is loaded
-  async function (gltf) {
+  function (gltf) {
     console.log("loaded");
     scene.add(gltf.scenes[0]);
     scene.add(gltf.scenes[1]);
@@ -228,6 +222,7 @@ const InfoBubble: React.FC = () => {
   if (subStep === "Info button position")
     highlightArea = { startRow: 157, endRow: 172 };
 
+  // Background of buttons position
   const setOrAnimateBgPosition = (set: boolean) => {
     const activeButton = document.getElementById(subStep + "Button");
     if (!bgActiveButton.current || !activeButton) return;
@@ -265,7 +260,7 @@ const InfoBubble: React.FC = () => {
     <>
       <CodeText>
         <StepTitle>Now for the finale</StepTitle>
-        <p className="mb-8">
+        <p className="my-8">
           Well done! You made it to the final step!! Its a big one but we will
           get you through this.
         </p>

@@ -1,29 +1,23 @@
-import Link from "next/link";
 import React, { useContext, useEffect, useState } from "react";
-import { stepList } from "../../pages/tutorial";
 import Router from "next/router";
 import AppContext from "../../contexts/AppContextProvider";
-type InputProps = {
+import { getStepFromCurrent } from "../../helpers/getStep";
+
+type Props = {
   next?: true;
   classes?: string;
 };
 
-const StepButton: React.FC<InputProps> = ({ next, classes }) => {
-  const { accessibleSteps, setUserScript, setShowRobot } =
-    useContext(AppContext);
+const StepButton: React.FC<Props> = ({ next, classes }) => {
+  const { accessibleSteps, setUserScript } = useContext(AppContext);
   const [goalStepId, setGoalStepId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    const routerStepIndex = stepList.findIndex(
-      (item) => item.id === Router.query.step
-    );
+    const goalStep = getStepFromCurrent(next ? 1 : -1);
 
-    const goalStep = next
-      ? stepList[routerStepIndex + 1]
-      : stepList[routerStepIndex - 1];
-
-    setGoalStepId(goalStep ? goalStep.id : undefined);
+    setGoalStepId(goalStep && goalStep.id);
   });
+
   const changeStep = (id: string | string[] | undefined) => {
     if (typeof id !== "string" || !accessibleSteps.includes(id)) return;
     setUserScript(null);
@@ -38,12 +32,10 @@ const StepButton: React.FC<InputProps> = ({ next, classes }) => {
     <button
       className={
         classes ||
-        `px-1 rounded-md w-fit ml-4 ${
-          next
-            ? accessibleSteps.includes(goalStepId)
-              ? "bg-primary"
-              : "border-2 border-slate-700 cursor-default"
-            : ""
+        `px-1 py-0.5 rounded-md w-fit ml-4 border-2 ${
+          accessibleSteps.includes(goalStepId)
+            ? "border-primary"
+            : "border-inactive bg-inactive text-background font-medium cursor-default"
         }`
       }
       onClick={() => changeStep(goalStepId)}

@@ -1,12 +1,11 @@
-import React, { useContext, useEffect } from "react";
-type InputProps = {
-  children?: React.ReactNode;
+import React, { useEffect } from "react";
+
+type Props = {
+  children: React.ReactNode;
   resizeTarget: "Console";
 };
-const ResizableVertical: React.FC<InputProps> = ({
-  children,
-  resizeTarget,
-}) => {
+
+const ResizableVertical: React.FC<Props> = ({ children, resizeTarget }) => {
   let initialPos: number | null = null;
   let initialSize: number | null = null;
   let mouseDown = false;
@@ -23,10 +22,10 @@ const ResizableVertical: React.FC<InputProps> = ({
     window.addEventListener("mouseup", handleResizeEnd);
     window.addEventListener("mouseleave", handleResizeEnd);
 
+    // Get saved width and apply or apply default
     const resizableHeight = Number(
       window.localStorage.getItem(`Resizable_${resizeTarget}_Width`)
     );
-
     if (resizableHeight && resizableElement)
       resizableElement.style.height = `${resizableHeight}px`;
     if (!resizableHeight && resizableElement && resizeTarget === "Console")
@@ -43,6 +42,8 @@ const ResizableVertical: React.FC<InputProps> = ({
   const handleResizeStart = (
     event: MouseEvent | React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
+    const html = document.querySelector("html");
+    if (html) html.style.userSelect = "none";
     mouseDown = true;
     initialPos = event.clientY;
     initialSize = resizableElement!.clientHeight;
@@ -54,6 +55,8 @@ const ResizableVertical: React.FC<InputProps> = ({
   };
 
   const handleResizeEnd = (event: MouseEvent) => {
+    const html = document.querySelector("html");
+    if (html) html.style.userSelect = "auto";
     mouseDown = false;
     initialPos = event.clientY;
     initialSize = resizableElement!.clientHeight;

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import * as THREE from "three";
 import userFunction from "../../helpers/userFunction";
 import CodeBlock from "../code/CodeBlock";
@@ -33,16 +33,17 @@ const ControlsTypes = [
 ] as const;
 type ControlsMode = (typeof ControlsTypes)[number];
 
-const beforeCodeArcball = `import { ArcballControls } from 'three/addons/controls/ArcballControls.js';`;
-const beforeCodeDrag = `import { DragControls } from 'three/addons/controls/DragControls.js';`;
-const beforeCodeFirstPerson = `import { FirstPersonControls } from 'three/addons/controls/FirstPersonControls.js';`;
-const beforeCodeFly = `import { FlyControls } from 'three/addons/controls/FlyControls.js';`;
-const beforeCodeOrbit = `import { OrbitControls } from 'three/addons/controls/OrbitControls.js';`;
-const beforeCodePointerLock = `import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';`;
-const beforeCodeTrackball = `import { TrackballControls } from 'three/addons/controls/TrackballControls.js';`;
-const beforeCodeTransform = `import { TransformControls } from 'three/addons/controls/TransformControls.js';`;
+// We use an eval to use these
+const importArcball = `import { ArcballControls } from 'three/addons/controls/ArcballControls.js';`;
+const importDrag = `import { DragControls } from 'three/addons/controls/DragControls.js';`;
+const importFirstPerson = `import { FirstPersonControls } from 'three/addons/controls/FirstPersonControls.js';`;
+const importFly = `import { FlyControls } from 'three/addons/controls/FlyControls.js';`;
+const importOrbit = `import { OrbitControls } from 'three/addons/controls/OrbitControls.js';`;
+const importPointerLock = `import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';`;
+const importTrackball = `import { TrackballControls } from 'three/addons/controls/TrackballControls.js';`;
+const importTransform = `import { TransformControls } from 'three/addons/controls/TransformControls.js';`;
 
-const code = `
+const defaultCodeBefore = `
 // Basic setup
 const canvas = document.getElementById("canvas");
 const scene = new THREE.Scene();
@@ -70,6 +71,7 @@ scene.add(cube);
 // Controls
 `;
 
+// We use an eval to use these
 const afterCodeArcball = `new ArcballControls(camera, renderer.domElement);
 
 // Animation loop
@@ -163,41 +165,6 @@ function animate() {
 }
 animate();`;
 
-const assignments = {
-  addOrbitControls: {
-    title: "Add orbit controls to the scene",
-    hint: "You can use the buttons above to select orbit controls",
-    checked: false,
-  },
-  autoRotate: {
-    title: "Set the controls to autoRotate",
-    hint: "autoRotate is a value of controls you can set to true",
-    subParagraph:
-      "Okay well done! But as you might see the cube is not rotating on its own yet. For that you will need to update the controls on every animation loop.",
-    checked: false,
-  },
-  updateControls: {
-    title: "Update the controls on every animation loop",
-    hint: "Update is a function you can call on controls",
-    subParagraph:
-      "Well done as you can see the cube is rotating on its own now!",
-    checked: false,
-  },
-};
-
-const assignmentCheck = (controls: OrbitControls) => {
-  if (!controls) return;
-  if (controls instanceof OrbitControls) {
-    assignments.addOrbitControls.checked = true;
-  } else return;
-  if (controls.autoRotate) assignments.autoRotate.checked = true;
-  const initialAzimuthalAngle = controls.getAzimuthalAngle();
-  setTimeout(() => {
-    if (initialAzimuthalAngle !== controls.getAzimuthalAngle())
-      assignments.updateControls.checked = true;
-  });
-};
-
 let renderer: THREE.WebGLRenderer | undefined;
 
 export const addonsSceneFunction = (userScript: string) => {
@@ -232,6 +199,47 @@ export const addonsSceneFunction = (userScript: string) => {
   assignmentCheck(rendererAndControls[1]);
 };
 
+const assignments = {
+  addOrbitControls: {
+    title: "Add orbit controls to the scene",
+    hint: "You can use the buttons above to select orbit controls",
+    checked: false,
+  },
+  autoRotate: {
+    title: "Set the controls to autoRotate",
+    hint: "autoRotate is a value of controls you can set to true",
+    subParagraph:
+      "Okay well done! But as you might see the cube is not rotating on its own yet. For that you will need to update the controls on every animation loop.",
+    checked: false,
+  },
+  updateControls: {
+    title: "Update the controls on every animation loop",
+    hint: "Update is a function you can call on controls",
+    subParagraph:
+      "Well done as you can see the cube is rotating on its own now!",
+    checked: false,
+  },
+};
+
+const assignmentCheck = (controls: OrbitControls) => {
+  if (!controls) return;
+
+  if (controls instanceof OrbitControls) {
+    assignments.addOrbitControls.checked = true;
+  } else return;
+
+  if (controls.autoRotate) assignments.autoRotate.checked = true;
+
+  const initialAzimuthalAngle = controls.getAzimuthalAngle();
+  setTimeout(() => {
+    if (initialAzimuthalAngle !== controls.getAzimuthalAngle()) {
+      const needsUpdate = !assignments.updateControls.checked;
+      assignments.updateControls.checked = true;
+      if (needsUpdate) update();
+    }
+  });
+};
+
 const returnControlsIcon = (controlsMode: ControlsMode): FA.IconDefinition => {
   if (controlsMode === "Arcball") return FA.faSatellite;
   if (controlsMode === "Drag") return FA.faUpDownLeftRight;
@@ -244,16 +252,22 @@ const returnControlsIcon = (controlsMode: ControlsMode): FA.IconDefinition => {
   return FA.faQuestion;
 };
 
-const Addons: React.FC = () => {
-  const { setErrors, setResetCanvasKey } = useContext(AppContext);
-  const [controlsMode, setControlsMode] = useState<ControlsMode>("Arcball");
-  let lightScript = code + eval("afterCode" + controlsMode);
+let update: () => void;
 
+const Addons: React.FC = () => {
+  const { setResetCanvasKey } = useContext(AppContext);
+  const [resetKey, setResetKey] = useState(Math.random());
+  const [controlsMode, setControlsMode] = useState<ControlsMode>("Arcball");
+  let lightScript = defaultCodeBefore + eval("afterCode" + controlsMode);
+
+  update = () => {
+    setResetKey(Math.random());
+  };
   return (
     <>
       <CodeText>
         <StepTitle>Addons and controls</StepTitle>
-        <p>
+        <p className="mt-8">
           Three.js by itself contains all the fundementals of a 3D engine. Other
           Three.js components like controls, loaders and post-processing need to
           be imported seperatly from the addons/ directory. Note that you don't
@@ -342,7 +356,7 @@ const Addons: React.FC = () => {
       </CodeText>
 
       <CodeBlock
-        showImports={eval("beforeCode" + controlsMode)}
+        showImports={eval("import" + controlsMode)}
         code={lightScript}
         scrollToLine={29}
       ></CodeBlock>

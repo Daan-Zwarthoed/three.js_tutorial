@@ -8,6 +8,7 @@ const allColors = {
     quartery: "#063857",
     background: "#021622",
     accent: "#46A0A0",
+    inactive: "#808080",
   },
 };
 

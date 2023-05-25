@@ -1,14 +1,13 @@
-import Head from "next/head";
-import React, { useContext, useEffect, useRef, useState } from "react";
-import * as THREE from "three";
+import React, { useContext, useEffect, useState } from "react";
 import Router from "next/router";
 import gsap, { Power1 } from "gsap";
 import AppContext from "../../contexts/AppContextProvider";
 import { stepList } from "../../pages/tutorial";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import StepButton from "../global/StepButton";
+import StepButton from "./StepButton";
 import * as FA from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import { getStepIndex } from "../../helpers/getStep";
 
 const Navigation: React.FC = () => {
   const { accessibleSteps, setUserScript } = useContext(AppContext);
@@ -16,9 +15,7 @@ const Navigation: React.FC = () => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    const routerStepIndex = stepList.findIndex(
-      (item) => item.id === Router.query.step
-    );
+    const routerStepIndex = getStepIndex();
 
     if (routerStepIndex !== stepIndex) setStepIndex(routerStepIndex);
   });
@@ -43,7 +40,6 @@ const Navigation: React.FC = () => {
     const center = rect.left + rect.width / 2;
     toolTip.style.left = center + "px";
     toolTip.innerHTML = id;
-    // toolTip.left = center;
     gsap.to(toolTip!.style, {
       opacity: enter ? 1 : 0,
       duration: 0.5,
@@ -56,6 +52,7 @@ const Navigation: React.FC = () => {
       id="Navigation"
       className="relative bottom-0 h-[5%] w-full z-50 p-2 bg-background flex flex-row items-center justify-center px-2"
     >
+      {/* Home button */}
       <div className="absolute left-5 bottom-1/2 translate-y-1/2">
         <Link href="/">
           <FontAwesomeIcon
@@ -68,6 +65,8 @@ const Navigation: React.FC = () => {
           />
         </Link>
       </div>
+
+      {/* Main navigation */}
       <div className="flex flex-row items-center">
         {stepList.map((step, index) => (
           <FontAwesomeIcon
@@ -94,6 +93,8 @@ const Navigation: React.FC = () => {
           className="absolute -top-full -translate-x-1/2 opacity-0 bg-background py-1 px-3 text-white"
         ></div>
       </div>
+
+      {/* Next and back button */}
       <div className="absolute right-5 bottom-1/2 translate-y-1/2">
         <StepButton></StepButton>
         <StepButton next></StepButton>

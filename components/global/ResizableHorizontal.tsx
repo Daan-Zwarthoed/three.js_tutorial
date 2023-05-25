@@ -1,12 +1,11 @@
-import React, { useContext, useEffect } from "react";
-type InputProps = {
-  children?: React.ReactNode;
+import React, { useEffect } from "react";
+
+type Props = {
+  children: React.ReactNode;
   resizeTarget: "Canvas" | "Code";
 };
-const ResizableHorizontal: React.FC<InputProps> = ({
-  children,
-  resizeTarget,
-}) => {
+
+const ResizableHorizontal: React.FC<Props> = ({ children, resizeTarget }) => {
   let initialPos: number | null = null;
   let initialSize: number | null = null;
   let mouseDown = false;
@@ -23,10 +22,10 @@ const ResizableHorizontal: React.FC<InputProps> = ({
     window.addEventListener("mouseup", handleResizeEnd);
     window.addEventListener("mouseleave", handleResizeEnd);
 
+    // Get saved width and apply or apply default
     const resizableWidth = Number(
       window.localStorage.getItem(`Resizable_${resizeTarget}_Width`)
     );
-
     if (resizableWidth && resizableElement)
       resizableElement.style.width = `${resizableWidth}px`;
     if (!resizableWidth && resizableElement && resizeTarget === "Code")
@@ -45,6 +44,8 @@ const ResizableHorizontal: React.FC<InputProps> = ({
   const handleResizeStart = (
     event: MouseEvent | React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
+    const html = document.querySelector("html");
+    if (html) html.style.userSelect = "none";
     mouseDown = true;
     initialPos = event.clientX;
     initialSize = resizableElement!.clientWidth;
@@ -56,6 +57,8 @@ const ResizableHorizontal: React.FC<InputProps> = ({
   };
 
   const handleResizeEnd = (event: MouseEvent) => {
+    const html = document.querySelector("html");
+    if (html) html.style.userSelect = "auto";
     mouseDown = false;
     initialPos = event.clientX;
     initialSize = resizableElement!.clientWidth;

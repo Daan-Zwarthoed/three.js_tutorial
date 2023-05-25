@@ -1,12 +1,11 @@
-import Head from "next/head";
-import React, { useContext, useEffect, useState } from "react";
-import NextStepButton from "../global/StepButton";
+import React, { useContext, useEffect } from "react";
 import AppContext from "../../contexts/AppContextProvider";
 import * as FA from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import gsap, { Power1 } from "gsap";
+import gsap from "gsap";
 import { stepList } from "../../pages/tutorial";
 import Router from "next/router";
+import { getStepFromCurrent } from "../../helpers/getStep";
 
 type Assignment = {
   title: string;
@@ -15,42 +14,48 @@ type Assignment = {
   checked: boolean;
 };
 
-type InputProps = {
+type Props = {
   assignments?: { [key: string]: Assignment };
 };
+
 let assignmentsClone: { [key: string]: Assignment };
-const Assignment: React.FC<InputProps> = ({ assignments }) => {
+
+const Assignment: React.FC<Props> = ({ assignments }) => {
   const { accessibleSteps, setAccessibleSteps, setShowRobot } =
     useContext(AppContext);
 
   let nextStepId: string;
-  useEffect(() => {
-    const routerStepIndex = stepList.findIndex(
-      (item) => item.id === Router.query.step
-    );
 
-    if (stepList[routerStepIndex + 1])
-      nextStepId = stepList[routerStepIndex + 1].id;
+  useEffect(() => {
+    // Get step
+    const nextStep = getStepFromCurrent(1);
+    if (nextStep) nextStepId = nextStep.id;
+
+    //  Check assignments
     if (assignments) {
       setTimeout(() => {
         const assignmentKeys = Object.keys(assignments);
+        // Check if assignemnt en assignmentsclone are the same assignments
         if (
           assignmentsClone &&
           assignmentKeys.every(
             (val, index) => val === Object.keys(assignmentsClone)[index]
           )
         ) {
+          // Find completed assignment
           const completedAssignment = assignmentKeys.find(
             (key) =>
               assignmentsClone[key].checked !== assignments[key].checked &&
               assignments[key].checked
           );
 
+          // See if completed assignment is also the final one
           const completedFinalAssignment =
             assignments[assignmentKeys[assignmentKeys.length - 1]] &&
             assignments[assignmentKeys[assignmentKeys.length - 1]].checked;
 
           if (completedAssignment) {
+            // Show the robot if you completed an assignment
             setShowRobot({
               text: assignments[completedAssignment].subParagraph,
               nextButton: completedFinalAssignment,
@@ -70,6 +75,7 @@ const Assignment: React.FC<InputProps> = ({ assignments }) => {
     }
   });
 
+  // Open or close hint
   const handleHintClick = (event: React.MouseEvent<HTMLElement>) => {
     const styleSibling = (
       (event.target as HTMLButtonElement)
@@ -92,22 +98,19 @@ const Assignment: React.FC<InputProps> = ({ assignments }) => {
   return (
     <div className="-mx-5 mt-10">
       <h2 className="w-full pb-1 pt-2 px-5">Assignments</h2>
-      <div className="">
+      <div>
         {assignments &&
           Object.keys(assignments).map((key, index) => {
             const assignment = assignments[key];
             return (
               <div key={key} className="mb-5">
                 <div className="flex flex-row items-center px-5">
-                  <input
-                    type="checkbox"
-                    id="assignment"
-                    name="assignment"
-                    className="peer hidden"
-                    checked={assignment.checked}
-                    readOnly
-                  />
-                  <div className="shrink-0 border-2 border-solid border-primary peer-checked:bg-primary h-4 w-4 mr-3 flex justify-center items-center rounded-sm">
+                  {/* Checkbox */}
+                  <div
+                    className={`shrink-0 border-2 border-solid border-primary h-4 w-4 mr-3 flex justify-center items-center rounded-sm ${
+                      assignment.checked ? "bg-primary" : ""
+                    }`}
+                  >
                     <FontAwesomeIcon
                       className="w-3/4 h-3/4"
                       style={{ display: assignment.checked ? "flex" : "none" }}
@@ -116,11 +119,12 @@ const Assignment: React.FC<InputProps> = ({ assignments }) => {
                       color={"white"}
                     />
                   </div>
-                  <label htmlFor="assignment">
-                    <strong className="">{index + 1}.</strong>{" "}
-                    {assignment.title}
-                  </label>
+                  {/* Checkbox title */}
+                  <p>
+                    <strong>{index + 1}.</strong> {assignment.title}
+                  </p>
                 </div>
+                {/* Hint button */}
                 <button
                   className="w-full text-start my-3 bg-quartery px-5 flex flex-row items-center"
                   onClick={handleHintClick}
@@ -136,10 +140,8 @@ const Assignment: React.FC<InputProps> = ({ assignments }) => {
                     color={"white"}
                   />
                 </button>
-                <p
-                  className="peer-checked:bg-primary pr-5 pl-7"
-                  style={{ display: "none" }}
-                >
+                {/* Hint itself */}
+                <p className=" pr-5 pl-7" style={{ display: "none" }}>
                   {assignment.hint}
                 </p>
               </div>

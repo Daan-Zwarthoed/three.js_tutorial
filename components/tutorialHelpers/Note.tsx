@@ -1,14 +1,12 @@
-import Head from "next/head";
-import React, { useContext, useEffect, useState } from "react";
-import NextStepButton from "../global/StepButton";
+import React from "react";
 import * as FA from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-type InputProps = {
-  children?: React.ReactNode;
+type Props = {
+  children: React.ReactNode;
 };
 
-const Note: React.FC<InputProps> = ({ children }) => {
+const Note: React.FC<Props> = ({ children }) => {
   return (
     <div className="flex flex-row my-3">
       <FontAwesomeIcon

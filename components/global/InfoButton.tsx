@@ -1,16 +1,12 @@
-import Link from "next/link";
-import React, { useContext, useEffect, useState } from "react";
-import { stepList } from "../../pages/tutorial";
-import Router from "next/router";
-import AppContext from "../../contexts/AppContextProvider";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as FA from "@fortawesome/free-solid-svg-icons";
 
-type InputProps = {
+type Props = {
   children: string;
 };
 
-const InfoButton: React.FC<InputProps> = ({ children }) => {
+const InfoButton: React.FC<Props> = ({ children }) => {
   const [open, setOpen] = useState<boolean>(false);
 
   return (

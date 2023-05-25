@@ -1,9 +1,7 @@
 import Head from "next/head";
-import * as THREE from "three";
 import Router from "next/router";
-import React, { useContext, useEffect, useRef, useState } from "react";
-import Scene from "../components/Scene";
-import Resizable from "../components/global/ResizableHorizontal";
+import React, { useContext, useEffect } from "react";
+import Scene from "../components/scene/Scene";
 import Prerequisites from "../components/tutorialSteps/Prerequisites";
 import AppContext from "../contexts/AppContextProvider";
 import Box, { boxSceneFunction } from "../components/tutorialSteps/Box";
@@ -26,18 +24,19 @@ import Light, { lightSceneFunction } from "../components/tutorialSteps/Light";
 import Addons, {
   addonsSceneFunction,
 } from "../components/tutorialSteps/Addons";
-import ResizableCanvas from "../components/global/ResizableHorizontal";
-import Navigation from "../components/tutorialHelpers/Navigation";
+import Navigation from "../components/global/Navigation";
 import * as FA from "@fortawesome/free-solid-svg-icons";
 import Robot from "../components/robot/Robot";
 import Finish from "../components/tutorialSteps/Finish";
+import { getStepIndex } from "../helpers/getStep";
 
 type StepList = Array<{
   id: string;
-  element: any;
+  element: React.ReactNode;
   icon: FA.IconDefinition;
-  pageFunction?: any;
+  pageFunction?: Function;
 }>;
+
 export const stepList: StepList = [
   {
     id: "Prerequisites",
@@ -98,12 +97,14 @@ export const stepList: StepList = [
     icon: FA.faFlagCheckered,
   },
 ];
+
 let initialLoad = true;
+
 const Tutorial = () => {
-  const { accessibleSteps, setShowRobot, setUserScript } =
-    useContext(AppContext);
+  const { accessibleSteps, setShowRobot } = useContext(AppContext);
   const [tutorialStep, setTutorialStep] = React.useState<number>(-1);
 
+  // If user goes to step they are not allowed send them back
   const startSetup = () => {
     if (initialLoad) return (initialLoad = false);
     if (
@@ -118,10 +119,8 @@ const Tutorial = () => {
 
   useEffect(() => {
     startSetup();
-    const routerStepIndex = stepList.findIndex(
-      (item) => item.id === Router.query.step
-    );
 
+    const routerStepIndex = getStepIndex();
     if (routerStepIndex !== tutorialStep) setTutorialStep(routerStepIndex);
   });
 
@@ -145,7 +144,9 @@ const Tutorial = () => {
             {stepList[tutorialStep] && stepList[tutorialStep].element}
           </div>
           {stepList[tutorialStep] && stepList[tutorialStep].pageFunction && (
-            <Scene threeScript={stepList[tutorialStep].pageFunction}></Scene>
+            <Scene
+              threeScript={stepList[tutorialStep].pageFunction as Function}
+            ></Scene>
           )}
         </div>
         <Navigation></Navigation>

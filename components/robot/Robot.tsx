@@ -1,19 +1,14 @@
-import Link from "next/link";
-import React, {
-  createRef,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { stepList } from "../../pages/tutorial";
-import Router from "next/router";
+import React, { createRef, useContext, useEffect, useState } from "react";
 import gsap, { Elastic, Bounce, Power1, Back } from "gsap";
 import AppContext from "../../contexts/AppContextProvider";
 import StepButton from "../global/StepButton";
-type InputProps = {
-  next?: true;
+
+type text = {
+  compliment: boolean;
+  text: string;
+  nextButton?: boolean;
 };
+
 const animating: gsap.core.Tween[] = [];
 const complimentOptions = [
   "Well done!",
@@ -28,18 +23,10 @@ const randomCompliment = () =>
   complimentOptions[Math.floor(Math.random() * complimentOptions.length)];
 let robotIsHidden = true;
 
-const Robot: React.FC<InputProps> = ({ next }) => {
-  const {
-    showRobot,
-    setShowRobot,
-    fireConfettiPosition,
-    setFireConfettiPosition,
-  } = useContext(AppContext);
-  const [text, setText] = useState<{
-    compliment: boolean;
-    text: string;
-    nextButton?: boolean;
-  }>({
+const Robot: React.FC = () => {
+  const { showRobot, setShowRobot, setFireConfettiPosition } =
+    useContext(AppContext);
+  const [text, setText] = useState<text>({
     compliment: true,
     text: complimentOptions[0],
   });

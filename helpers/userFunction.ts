@@ -1,5 +1,6 @@
+// Add a window resize listener to the working code
 const windowResize = `
-window.addEventListener("resize", function () {
+const handleResizeWindowBehindTheScreens = () => {
   if (!canvas.parentElement || !renderer || !camera) return;
   renderer.setSize(
     canvas.parentElement.clientWidth,
@@ -8,19 +9,22 @@ window.addEventListener("resize", function () {
   );
   camera.aspect = canvas.clientWidth / canvas.clientHeight;
   camera.updateProjectionMatrix();
-});`;
+}
+window.removeEventListener("resize", handleResizeWindowBehindTheScreens);
+window.addEventListener("resize", handleResizeWindowBehindTheScreens);`;
 
+// Return necessary things to check assignments
 const returnVarFunction = (returnVar?: string | string[]) => {
   if (!returnVar) return "";
-  if (typeof returnVar === "string") {
+  if (typeof returnVar === "string")
     return `try {
       return ${returnVar}; 
     } catch (error) {
       error;
     }`;
-  } else {
-    const returnVars = JSON.stringify(returnVar);
-    return `try {
+
+  const returnVars = JSON.stringify(returnVar);
+  return `try {
       const returnThis = [];
       ${returnVars}.forEach(variable => {
         try { 
@@ -33,9 +37,9 @@ const returnVarFunction = (returnVar?: string | string[]) => {
     } catch (error) {
       error;
     }`;
-  }
 };
 
+// Fire function
 const userFunction = (
   userScript: string,
   paramNames?: string[],

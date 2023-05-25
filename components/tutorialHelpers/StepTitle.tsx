@@ -1,20 +1,20 @@
-import Head from "next/head";
-import React, { useContext, useEffect, useState } from "react";
-import NextStepButton from "../global/StepButton";
+import React, { useEffect } from "react";
 import * as FA from "@fortawesome/free-solid-svg-icons";
 import Router from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { stepList } from "../../pages/tutorial";
-type InputProps = {
-  children?: React.ReactNode;
+import { getStepCurrent } from "../../helpers/getStep";
+
+type Props = {
+  children: React.ReactNode;
 };
-const StepTitle: React.FC<InputProps> = ({ children }) => {
+
+const StepTitle: React.FC<Props> = ({ children }) => {
   const [stepIcon, setStepIcon] = React.useState<FA.IconDefinition | null>(
     null
   );
 
   useEffect(() => {
-    const routerStep = stepList.find((item) => item.id === Router.query.step);
+    const routerStep = getStepCurrent();
     if (routerStep) setStepIcon(routerStep.icon);
   }, [Router.query.step]);
 
@@ -28,7 +28,7 @@ const StepTitle: React.FC<InputProps> = ({ children }) => {
           color={"white"}
         />
       )}
-      <h2> {children}</h2>
+      <h2>{children}</h2>
     </div>
   );
 };

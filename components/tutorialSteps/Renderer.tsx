@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as THREE from "three";
 import userFunction from "../../helpers/userFunction";
 import CodeBlock from "../code/CodeBlock";
@@ -7,6 +7,7 @@ import Assignment from "../tutorialHelpers/Assignment";
 import CodeBlockInline from "../code/CodeBlockInline";
 import Image from "next/image";
 import StepTitle from "../tutorialHelpers/StepTitle";
+
 const code = `// Basic setup
 const canvas = document.getElementById("canvas");
 const scene = new THREE.Scene();

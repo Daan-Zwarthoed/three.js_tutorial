@@ -8,7 +8,7 @@ import Router from "next/router";
 import AppContext from "../contexts/AppContextProvider";
 import { stepList } from "./tutorial";
 import InfoButton from "../components/global/InfoButton";
-
+let id: number;
 const Home = () => {
   const { accessibleSteps, setAccessibleSteps } = useContext(AppContext);
   useEffect(() => {
@@ -53,13 +53,9 @@ const Home = () => {
 
     loader.load(
       // resource URL
-      // "https://raw.githubusercontent.com/Websitebystudents/pim-pom/main/model/pim_pom_clubhuis_8.gltf"
-      // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/AnimatedCube/glTF/AnimatedCube.gltf",
-      // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf",
-      // "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Sponza/glTF/Sponza.gltf",
       "scenes/Car.glb",
       // called when the resource is loaded
-      async function (gltf) {
+      function (gltf) {
         console.log("loaded");
         scene.add(gltf.scenes[0]);
       },
@@ -72,9 +68,9 @@ const Home = () => {
         console.log(error);
       }
     );
-
+    cancelAnimationFrame(id);
     function animate() {
-      requestAnimationFrame(animate);
+      id = requestAnimationFrame(animate);
       renderer.render(scene, camera);
       controls.update();
     }
@@ -84,7 +80,7 @@ const Home = () => {
   return (
     <>
       <Head>
-        <title>Create Next App</title>
+        <title>Three.js tutorial</title>
         <meta name="description" content="Three.js tutorial" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -94,7 +90,8 @@ const Home = () => {
           <article className="max-w-[500px]">
             <h1 className="text-6xl mb-2">The best way too learn three.js</h1>
             <h2>Interactive tutorial to learn three.js</h2>
-            <div className="flex flex-row flex-wrap">
+            <div className="flex flex-row flex-wrap mt-8">
+              {/* Continue tutorial */}
               {accessibleSteps.length > 0 && (
                 <div className="flex flex-row items-center mr-6">
                   <Link
@@ -110,6 +107,7 @@ const Home = () => {
                   </InfoButton>
                 </div>
               )}
+              {/* Restart or start tutorial */}
               <div className="flex flex-row items-center mr-6">
                 <Link
                   href="/tutorial?step=Prerequisites"
@@ -138,6 +136,7 @@ const Home = () => {
                     : "Start the tutorial. You will need to complete a few assignemnts to be able to continue to the next step."}
                 </InfoButton>
               </div>
+              {/* Browse tutorial */}
               <div className="flex flex-row items-center mr-6">
                 <Link
                   href="/tutorial?step=Prerequisites"

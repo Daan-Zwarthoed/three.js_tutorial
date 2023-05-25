@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import * as THREE from "three";
 import CodeText from "../tutorialHelpers/CodeText";
 import CodeBlockInline from "../code/CodeBlockInline";
 import userFunction from "../../helpers/userFunction";
-import AppContext from "../../contexts/AppContextProvider";
 import CodeBlock from "../code/CodeBlock";
 import Assignment from "../tutorialHelpers/Assignment";
 import StepTitle from "../tutorialHelpers/StepTitle";
@@ -79,6 +78,7 @@ function animate() {
 }
 animate();
 `;
+
 let raycaster: THREE.Raycaster;
 let camera: THREE.Camera;
 let scene: THREE.Scene;
@@ -94,6 +94,7 @@ export const raycasterSceneFunction = (userScript: string) => {
   raycaster = raycasterCameraAndScene[0];
   camera = raycasterCameraAndScene[1];
   scene = raycasterCameraAndScene[2];
+
   const canvas = document.getElementById("canvas");
   if (!canvas) return;
   canvas.removeEventListener("mousemove", assignmentCheck);
@@ -146,28 +147,11 @@ const assignmentCheck = (event: MouseEvent) => {
     }
   }
   if (
-    (assignmentsClone.scaleCube.checked !== assignments.scaleCube.checked ||
-      assignmentsClone.scaleCubeDown.checked !==
-        assignments.scaleCubeDown.checked) &&
-    update
+    assignmentsClone.scaleCube.checked !== assignments.scaleCube.checked ||
+    assignmentsClone.scaleCubeDown.checked !== assignments.scaleCubeDown.checked
   )
     update();
 };
-// Correct answer
-`  
-if (intersect) {
-  if (intersect !== INTERSECTED) {
-    if (INTERSECTED)
-    INTERSECTED.scale.set(1, 1, 1);
-    INTERSECTED = intersect;
-    intersect.scale.set(1.1, 1.1, 1.1);
-  }
-} else if (INTERSECTED) {
-  INTERSECTED.scale.set(1, 1, 1);
-  INTERSECTED = null;
-  }
-}
-`;
 
 let update: () => void;
 const Raycaster: React.FC = () => {
