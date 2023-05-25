@@ -255,7 +255,7 @@ const CameraAnimation: React.FC = () => {
     <>
       <CodeText>
         <StepTitle>(Gsap) animations</StepTitle>
-        <p className="my-8">
+        <p className="my-p">
           For simple animations like moving the camera from its current position
           to another we will use gsap. Here is a link to the{" "}
           <a
@@ -282,7 +282,7 @@ const CameraAnimation: React.FC = () => {
   duration: 1,
   ease: "power1.out",
 });`}</CodeBlockInline>
-        <p className="mt-8">
+        <p className="mt-p">
           Just this code will animate your camera from its current position to
           one you selected
         </p>
@@ -295,9 +295,9 @@ const CameraAnimation: React.FC = () => {
           animations I made the same functionality as in the last step but
           without gsap.
         </p>
-        <div className="relative w-fit my-5">
+        <div className="relative w-fit my-p">
           <button
-            className="py-2 w-14 relative z-10"
+            className="w-14 relative z-10"
             onClick={() => {
               setResetCanvasKey(Math.random());
               if (renderer) {

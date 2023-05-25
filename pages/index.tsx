@@ -90,7 +90,7 @@ const Home = () => {
           <article className="max-w-[500px]">
             <h1 className="text-6xl mb-2">The best way too learn three.js</h1>
             <h2>Interactive tutorial to learn three.js</h2>
-            <div className="flex flex-row flex-wrap mt-8">
+            <div className="flex flex-row flex-wrap mt-p">
               {/* Continue tutorial */}
               {accessibleSteps.length > 0 && (
                 <div className="flex flex-row items-center mr-6">

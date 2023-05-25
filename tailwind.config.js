@@ -19,9 +19,10 @@ module.exports = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        gradient:
-          "linear-gradient(45deg, rgba(239,189,0,1) 0%, rgba(243,90,40,1) 100%)",
+      spacing: {
+        p: "2rem",
+        ol: "1.25rem",
+        li: "0.75rem",
       },
     },
     screens: {

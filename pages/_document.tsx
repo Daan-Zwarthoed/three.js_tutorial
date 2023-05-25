@@ -18,10 +18,6 @@ class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Anuphan:wght@200;300;400;500;600;700&display=swap"
             rel="stylesheet"
           ></link>
-          <meta
-            name="google-site-verification"
-            content="LSTs8QeH8NN_53baxbUawo7HnGOOnKY0vcYj8GHZLDA"
-          />
           <link rel="icon" href="/favicon.ico" />
           <meta
             name="viewport"

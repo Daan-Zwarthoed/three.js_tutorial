@@ -1,0 +1,15 @@
+.importsArea {
+  position: absolute;
+  background: rgba(50, 50, 50, 0.5);
+}
+
+.highlightArea {
+  position: absolute;
+  background: rgba(43, 26, 60, 0.5);
+  z-index: 20;
+}
+
+.ace_gutter-layer {
+  /* original width is 48px */
+  width: 48px !important;
+}

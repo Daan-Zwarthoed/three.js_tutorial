@@ -267,7 +267,7 @@ const Addons: React.FC = () => {
     <>
       <CodeText>
         <StepTitle>Addons and controls</StepTitle>
-        <p className="mt-8">
+        <p className="mt-p">
           Three.js by itself contains all the fundementals of a 3D engine. Other
           Three.js components like controls, loaders and post-processing need to
           be imported seperatly from the addons/ directory. Note that you don't
@@ -276,7 +276,7 @@ const Addons: React.FC = () => {
         <p>
           Try dragging the cube and you will see that you can now control it!
         </p>
-        <p className="mt-8">
+        <p className="mt-p">
           Adding controls will in most cases look something like this.
         </p>
         <CodeBlockInline>
@@ -294,12 +294,12 @@ const Addons: React.FC = () => {
             installation guide.
           </a>
         </Note>
-        <h3 className="mt-8">Controls</h3>
+        <h3 className="mt-p">Controls</h3>
         <div className="grid grid-cols-6 w-full my-5 border-secondary border-t-2 border-l-2">
           {ControlsTypes.map((type, index) => (
             <button
               key={type}
-              className={`relative w-full text-center flex flex-row justify-center py-4 border-secondary border-r-2 border-b-2 ${
+              className={`relative w-full text-center flex flex-row justify-center items-center py-4 border-secondary border-r-2 border-b-2 ${
                 index > 5 ? "col-span-3" : "col-span-2"
               }`}
               onClick={() => {

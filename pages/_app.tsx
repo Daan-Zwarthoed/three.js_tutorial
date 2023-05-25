@@ -1,4 +1,6 @@
 import "../styles/globals.css";
+import "../styles/codeEditor.css";
+
 import type { AppProps } from "next/app";
 import { AppContextProvider } from "../contexts/AppContextProvider";
 import { useEffect, useState } from "react";

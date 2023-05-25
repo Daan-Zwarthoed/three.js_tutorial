@@ -8,7 +8,7 @@ const Prerequisites: React.FC = () => {
       <StepTitle>
         What do you need (to know) before starting this three.js adventure?
       </StepTitle>
-      <h3 className="mt-8">What is Three.js?</h3>
+      <h3 className="mt-p">What is Three.js?</h3>
       <p>Okay first things first. What actually is Three.js?</p>
       <p>
         To understand what Three.js is we first need to understand what WebGl
@@ -19,14 +19,14 @@ const Prerequisites: React.FC = () => {
         shadows, materials, textures, 3d math , all things that you'd have to
         write yourself if you were to use WebGL directly.
       </p>
-      <h3 className="mt-8">What will you learn in this tutorial?</h3>
+      <h3 className="mt-p">What will you learn in this tutorial?</h3>
       <p>
         This tutorial sets out to give you a basic understanding of what
         Three.js has to offer and give you the building blocks to make your own
         creations. We will do this by showing you how to create your own scene,
         lights and objects and make the user able to interact with them.
       </p>
-      <h3 className="mt-8">What will you need to complete this tutorial?</h3>
+      <h3 className="mt-p">What will you need to complete this tutorial?</h3>
       <p>
         To complete this tutorial you will only need a basic understanding of
         Javascript. If you need to get started with javascript first you can
@@ -47,7 +47,7 @@ const Prerequisites: React.FC = () => {
           javascript.info.
         </a>
       </p>
-      <p className="mt-2">
+      <p className="mt-3">
         To add Three.js to your own project. We will assume you already have
         your own project structure with a html file linked to a js file. Have
         installed Three.js and are either running a build tool, or using a local

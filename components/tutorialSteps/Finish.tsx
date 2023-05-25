@@ -107,9 +107,9 @@ const Finish: React.FC = () => {
   return (
     <div className="flex flex-col justify-center items-center w-full p-5">
       <StepTitle>YOU MADE IT!!</StepTitle>
-      <p className="mt-8">Congratulations you finished the tutorial!!</p>
+      <p className="mt-p">Congratulations you finished the tutorial!!</p>
       <Link href="/">
-        <button className="bg-primary rounded-md p-3 mt-8">Back to home</button>
+        <button className="bg-primary rounded-md p-3 mt-p">Back to home</button>
       </Link>
       <div ref={confettiParent}>
         {[...new Array(80)].map((number, index) => (

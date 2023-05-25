@@ -81,9 +81,6 @@ const Renderer: React.FC = () => {
   useEffect(() => {
     window.addEventListener("resize", update);
 
-    setTimeout(() => {
-      update();
-    });
     return () => {
       window.removeEventListener("resize", update);
     };
@@ -93,7 +90,7 @@ const Renderer: React.FC = () => {
     <>
       <CodeText>
         <StepTitle>Creating a scene</StepTitle>
-        <h3 className="mt-8">Basic setup</h3>
+        <h3 className="mt-p">Basic setup</h3>
         <p>
           First thing we need to do before the fun stuff is creating a scene and
           adding a few things to it.
@@ -117,7 +114,7 @@ renderer.setClearColor(0x01e3d59, 1);`}
           Let's take a moment to explain what's going on here. We have now set
           up the scene, our camera and the renderer.
         </p>
-        <h3 className="mt-8">Camera's</h3>
+        <h3 className="mt-p">Camera's</h3>
         <p>
           There are different types of cameras in Three.js for most cases you
           will use the Perspective camera.{" "}
@@ -140,13 +137,13 @@ renderer.setClearColor(0x01e3d59, 1);`}
             alt="back button"
           ></Image>
         </div>
-        <h3 className="mt-8">Renderer</h3>
+        <h3 className="mt-p">Renderer</h3>
         <p>
           Next up is the renderer. When setting the renderer size you will also
           almost always want to set it to the width and height of your canvas.
           We also set the background color to blue.
         </p>
-        <h3 className="mt-8">Animation loop</h3>
+        <h3 className="mt-p">Animation loop</h3>
         <p>
           Now for actually rendering our scene we use an animation or render
           loop

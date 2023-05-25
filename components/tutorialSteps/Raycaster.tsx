@@ -164,7 +164,7 @@ const Raycaster: React.FC = () => {
     <>
       <CodeText>
         <StepTitle>Raycasters</StepTitle>
-        <p className="mt-8">
+        <p className="mt-p">
           To make objects react to the users cursor you will need to use a
           raycaster
         </p>
@@ -178,7 +178,7 @@ function onPointerMove(event) {
 }
 
 canvas.addEventListener("mousemove", onPointerMove);`}</CodeBlockInline>
-        <p className="mt-8">
+        <p className="mt-p">
           This code will keep track of the x and y value of the cursor on the
           canvas in normalized device coordinates. Now for using this to change
           the color of the cube:
@@ -199,23 +199,23 @@ if (intersect) {
   INTERSECTED.material.color.set(INTERSECTEDCOLOR);
   INTERSECTED = null;
 }`}</CodeBlockInline>
-        <p className="mt-8">
+        <p className="mt-p">
           This looks very overwhelming at first glance but dont worry. I'll take
           you through it step by step.
         </p>
-        <ol className="my-5">
-          <li className="my-3">
+        <ol className="my-ol">
+          <li className="my-li">
             First we <strong>raycast</strong> with all the objects in the scene.
             We get the first intersection and save its object.
           </li>
-          <li className="my-3">
+          <li className="my-li">
             Next we check if <strong>intersect</strong> exists and if it's a new
             intersection. If this is true we reverse the previous intersection
             if necessary, we save the new intersect in INTERSECTED and we clone
             the color to INTERSECTEDCOLOR. Then we set our new intersection to a
             darkish red.
           </li>
-          <li className="my-3">
+          <li className="my-li">
             If intersect <strong>doesn't</strong> exist we check if our
             INTERSECTED exists and reset it if it does.
           </li>

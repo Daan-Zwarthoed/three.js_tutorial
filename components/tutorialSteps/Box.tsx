@@ -90,23 +90,23 @@ const Box: React.FC = () => {
     <>
       <CodeText>
         <StepTitle>Adding a cube</StepTitle>
-        <p className="mt-8">
+        <p className="mt-p">
           There are alot of things you can add to a scene but lets start simple
           by creating and adding a cube.
         </p>
         <p>To create a cube, we need three things:</p>
-        <ol className="my-5">
-          <li className="my-3">
+        <ol className="my-ol">
+          <li className="my-li">
             First we need a <strong>BoxGeometry</strong>. This is an object that
             contains all the points and sides of the cube.
           </li>
-          <li className="my-3">
+          <li className="my-li">
             We also need a <strong>Material</strong> to color the cube. Three.js
             comes with several materials, but we'll stick to the
             MeshBasicMaterial for now. All materials take an object of
             properties which will be applied to them.
           </li>
-          <li className="my-3">
+          <li className="my-li">
             The third thing we need is a <strong>Mesh</strong>. A mesh is an
             object that takes a geometry, and applies a material to it, which we
             then can insert to our scene, and move around freely.

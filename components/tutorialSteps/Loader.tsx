@@ -125,25 +125,25 @@ const Loader: React.FC = () => {
     <>
       <CodeText>
         <StepTitle>GLTF loader and animations</StepTitle>
-        <h3 className="mt-8">GLTF Loader</h3>
+        <h3 className="mt-p">GLTF Loader</h3>
         <p>
           Too import a 3D design into Three.js there are alot of accepted file
           types. The most common and in 99% of cases the best way to import 3D
           designs is by GLTF. GLTF loads the fastest and is overall the best
           optimized option.
         </p>
-        <p className="mt-8">
+        <p className="mt-p">
           You can import the GLTFLoader in the same way we did the controls.
         </p>
         <CodeBlockInline>
           {`import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';`}
         </CodeBlockInline>
-        <p className="mt-8">
+        <p className="mt-p">
           On line 37 we start loading our gltf file. loader.load takes 4
           arguments.
         </p>
-        <ul className="my-5">
-          <li className="my-3">
+        <ul className="my-ol">
+          <li className="my-li">
             First up is the <strong>URL</strong> you want to import. Just like
             an image you can directly import from you project or import one
             online. Right now we will be importing one from the{" "}
@@ -156,16 +156,16 @@ const Loader: React.FC = () => {
             . They have a great amount of gltf sample modules you can play
             around with.
           </li>
-          <li className="my-3">
+          <li className="my-li">
             Next up is a function called when the file is{" "}
             <strong>loaded</strong>. It has a parameter object of gltf
             containing the animations, cameras, asset, scene and scenes.
           </li>
-          <li className="my-3">
+          <li className="my-li">
             The next function is called while <strong>loading</strong>. Its
             paramater has a loaded and total value.
           </li>
-          <li className="my-3">
+          <li className="my-li">
             The last function is called if the loading has an{" "}
             <strong>error</strong>.
           </li>
@@ -174,7 +174,7 @@ const Loader: React.FC = () => {
           The loaded and total value is VERY inacurrate when using gltf and/or
           React. So displaying this to the user is not advised.
         </Note>
-        <h3 className="mt-8">GLTF Animations</h3>
+        <h3 className="mt-p">GLTF Animations</h3>
         <p>
           As you can see adding a link to the loader will load that file and
           automatically play its animations. We do this by creating an animation

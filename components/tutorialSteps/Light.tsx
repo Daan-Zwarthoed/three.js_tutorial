@@ -321,39 +321,39 @@ const Light: React.FC = () => {
     <>
       <CodeText>
         <StepTitle>Lights</StepTitle>
-        <p className="mt-8">
+        <p className="mt-p">
           Three js offers multiple types of lights. Adding an ambient light and
           a directional light will be enough for most projects:
         </p>
-        <ul className="my-5">
-          <li className="my-3">
+        <ol className="my-ol">
+          <li className="my-li">
             <strong>Ambient lights</strong> are the simpelest of the bunch. This
             will add an even light to everything in the scene.
           </li>
-          <li className="my-3">
+          <li className="my-li">
             A <strong>directional light</strong> works just like the sun in the
             way that it doesnt flair outwards in a cone but comes evenly from
             one direction.
           </li>
-          <li className="my-3">
+          <li className="my-li">
             A <strong>hemisphere light</strong> light is very similair to a
             directional light but it changes from top to bottom from one color
             to another and does not cast shadows
           </li>
-          <li className="my-3">
+          <li className="my-li">
             <strong>Spotlight</strong> like the name suggests works like a
             spotlight or flaslight in the way that it flairs out like a cone
             from the point you choose
           </li>
-          <li className="my-3">
+          <li className="my-li">
             <strong>Point light</strong> is the same but goes in all directions
           </li>
-          <li className="my-3">
+          <li className="my-li">
             <strong>Rectangle light</strong> is the same as a spotlight but
             originates from a square instead of a spotlight.
           </li>
-        </ul>
-        <div className="mb-8">
+        </ol>
+        <div className="mb-p">
           <Note>
             A Rectangle light does not support shadows and is only visible on
             MeshStandardMaterial and MeshPhysicalMaterial
@@ -366,7 +366,7 @@ const Light: React.FC = () => {
           You can try out the different lights and their helpers with the button
           below:
         </p>
-        <div className="grid grid-cols-2 columns-2 w-full mb-8 mt-3 border-secondary border-2">
+        <div className="grid grid-cols-2 columns-2 w-full mb-p mt-3 border-secondary border-2">
           {LightModeTypes.map((type) => (
             // Button
             <button
