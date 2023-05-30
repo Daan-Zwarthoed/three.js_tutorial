@@ -90,10 +90,14 @@ function animateTo(item, to) {
 let infoIsShown = true;
 function toggleInfo(show) {
   if (!info || (show && infoIsShown) || (!show && !infoIsShown)) return;
+
   infoIsShown = show;
+
   if (show) scene.add(info);
+
   info.children.forEach((child) => {
     child.material.transparent = true;
+
     animateTo(child.material, { opacity: show ? 1 : 0 }).eventCallback(
       "onComplete",
       () => {
@@ -214,19 +218,18 @@ const InfoBubble: React.FC = () => {
   const bgActiveButton = createRef<HTMLDivElement>();
 
   let highlightArea = { startRow: 34, endRow: 57 }; // Default when loader
-  if (subStep === "Toggle info") highlightArea = { startRow: 68, endRow: 83 };
-  if (subStep === "Info click") highlightArea = { startRow: 85, endRow: 129 };
-  if (subStep === "Back click") highlightArea = { startRow: 131, endRow: 147 };
+  if (subStep === "Toggle info") highlightArea = { startRow: 68, endRow: 87 };
+  if (subStep === "Info click") highlightArea = { startRow: 89, endRow: 132 };
+  if (subStep === "Back click") highlightArea = { startRow: 134, endRow: 150 };
   if (subStep === "Hide info behind car")
-    highlightArea = { startRow: 149, endRow: 155 };
+    highlightArea = { startRow: 152, endRow: 158 };
   if (subStep === "Info button position")
-    highlightArea = { startRow: 157, endRow: 172 };
+    highlightArea = { startRow: 160, endRow: 175 };
 
   // Background of buttons position
   const setOrAnimateBgPosition = (set: boolean) => {
     const activeButton = document.getElementById(subStep + "Button");
     if (!bgActiveButton.current || !activeButton) return;
-
     gsap[set ? "set" : "to"](bgActiveButton.current.style, {
       height: activeButton.clientHeight + "px",
       width: activeButton.offsetWidth + "px",
@@ -243,12 +246,12 @@ const InfoBubble: React.FC = () => {
   };
 
   useEffect(() => {
-    window.removeEventListener("resize", setBgPosition);
-    window.addEventListener("resize", setBgPosition);
-
     setTimeout(() => {
-      setOrAnimateBgPosition(false);
+      setBgPosition();
     });
+
+    window.addEventListener("resize", setBgPosition);
+    return () => window.removeEventListener("resize", setBgPosition);
   }, [subStep]);
 
   useEffect(() => {
@@ -261,54 +264,47 @@ const InfoBubble: React.FC = () => {
       <CodeText>
         <StepTitle>Now for the finale</StepTitle>
         <p className="my-8">
-          Well done! You made it to the final step!! Its a big one but we will
-          get you through this.
+          Congratulations on reaching the final step! It's a big one, but we'll
+          guide you through it.
         </p>
         {subStep === "Loader" && (
           <>
-            <h3>Loading</h3>
+            <h3>Loading:</h3>
             <p>
-              The GLTF file we are loading is made up of 2 scenes. The first one
-              is the car the second one is the Info button. On load we get the
-              front left wheel named Wheel1 and assign it to wheel1 and assign
-              the info scene to info. We will use these later to make the info
-              button appear like its infront of the wheel.
+              The GLTF file we're loading consists of two scenes: the car and
+              the Info button. Upon loading, we retrieve the front left wheel
+              named "Wheel1" and assign it to the variable `wheel1`, and assign
+              the info scene to the variable `info`. We'll use these later to
+              position the Info button in front of the wheel.
             </p>
           </>
         )}
         {subStep === "Toggle info" && (
           <>
-            <h3>Toggle info</h3>
+            <h3>Toggle info:</h3>
             <p>
-              First up we check that we dont hide the info button if its already
-              hidden or try to show it if its already shown. If we want to show
-              the info button we add it back to the scene and then animate its
-              opacity to slowly show. Another great thing about gsap is its
-              eventCallback feature. We can use this to remove the info button
-              from the scene after hiding it.
+              First, we check that the Info button is not already hidden, or if
+              we're trying to show it when it's already visible. If we want to
+              show the Info button, we add it back to the scene and animate its
+              opacity to gradually reveal it. GSAP's eventCallback feature
+              allows us to remove the Info button from the scene after it's
+              hidden.
             </p>
           </>
         )}
         {subStep === "Info click" && (
           <>
-            <h3>Info click</h3>
+            <h3>Info click:</h3>
             <p>
-              First up we check if we have wheel1 and info loaded correctly, we
-              also check if we are intersecting with info and if infoIsShown is
-              false to not be able to click on info when its animation to being
-              hidden is playing.
-            </p>
-            <p>
-              After that we clone the camera position and quaternion so we can
-              animate back to that when we go out of our detail view
-            </p>
-            <p>
-              Next up we animate the position and quaternion of the camera and
-              hide the info button.
-            </p>
-            <p>
-              Then we get the back button, show it and add an eventlistener to
-              it to for the backClick{" "}
+              We start by checking if `wheel1` and `info` are loaded correctly,
+              and if we're intersecting with the Info button and `infoIsShown`
+              is false (to prevent clicking on the Info button while it's being
+              hidden). Then, we clone the camera's position and quaternion so
+              that we can animate it back to that state when exiting the detail
+              view. Next, we animate the position and quaternion of the camera,
+              hide the Info button, and retrieve the back button. We show the
+              back button and add an event listener for the `backClick`
+              function.
             </p>
           </>
         )}
@@ -316,10 +312,11 @@ const InfoBubble: React.FC = () => {
           <>
             <h3>Back click</h3>
             <p>
-              The back click button is pretty simple. We just animate the camera
-              back to its original position and quaternion, remove the
-              backbutton, add the info button back and give back controls when
-              its done. After that we remove the event listener.
+              The back click button is straightforward. We animate the camera
+              back to its original position and quaternion, remove the back
+              button, add the Info button back to the scene, and restore
+              controls when the animation is finished. Finally, we remove the
+              event listener.
             </p>
           </>
         )}
@@ -327,11 +324,10 @@ const InfoBubble: React.FC = () => {
           <>
             <h3>Hide info behind car</h3>
             <p>
-              This bit of code takes the horizontal and vertical angle of the
-              camera converted to a number between -3 and 3 and hides or shows
-              the info button if it doesn't fit in the given angles. This makes
-              it so you can only see the info button when you can see the acutal
-              wheel.
+              This code determines whether to hide or show the Info button based
+              on the horizontal and vertical angles of the camera, converted to
+              a number between -3 and 3. This ensures that the Info button is
+              only visible when the wheel is not behind the car.
             </p>
           </>
         )}
@@ -339,14 +335,12 @@ const InfoBubble: React.FC = () => {
           <>
             <h3>Info button position</h3>
             <p>
-              Even though it looks like it the info button isn't actually at the
-              same location as the wheel is. It is actually inbetween the the
-              camera and the wheel. But extremely close to the camera. This
-              prevents the info button from clipping into the car.
-            </p>
-            <p>
-              We then also use info.lookAt() to make the info button always face
-              the camera
+              Although it appears that the Info button is at the same location
+              as the wheel, it's actually positioned between the camera and the
+              wheel, extremely close to the camera. This prevents the Info
+              button from clipping into the car. Additionally, we use
+              `info.lookAt()` to ensure that the Info button always faces the
+              camera.
             </p>
           </>
         )}
@@ -366,10 +360,10 @@ const InfoBubble: React.FC = () => {
             ref={bgActiveButton}
             className="absolute z-0 bg-tertary transition-all"
             style={{
-              height: "0px",
-              width: "0px",
-              top: "0px",
-              left: "0px",
+              height: "0",
+              width: "0",
+              top: "0",
+              left: "0",
             }}
           ></div>
         </div>

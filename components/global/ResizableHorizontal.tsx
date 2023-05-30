@@ -14,14 +14,6 @@ const ResizableHorizontal: React.FC<Props> = ({ children, resizeTarget }) => {
   useEffect(() => {
     resizableElement = document.getElementById(`Resizable${resizeTarget}`);
 
-    window.removeEventListener("mousemove", handleResize);
-    window.removeEventListener("mouseup", handleResizeEnd);
-    window.removeEventListener("mouseleave", handleResizeEnd);
-
-    window.addEventListener("mousemove", handleResize);
-    window.addEventListener("mouseup", handleResizeEnd);
-    window.addEventListener("mouseleave", handleResizeEnd);
-
     // Get saved width and apply or apply default
     const resizableWidth = Number(
       window.localStorage.getItem(`Resizable_${resizeTarget}_Width`)
@@ -32,6 +24,16 @@ const ResizableHorizontal: React.FC<Props> = ({ children, resizeTarget }) => {
       resizableElement.style.width = `90px`;
     if (!resizableWidth && resizableElement && resizeTarget === "Canvas")
       resizableElement.style.width = `90px`;
+
+    window.addEventListener("mousemove", handleResize);
+    window.addEventListener("mouseup", handleResizeEnd);
+    window.addEventListener("mouseleave", handleResizeEnd);
+
+    return () => {
+      window.removeEventListener("mousemove", handleResize);
+      window.removeEventListener("mouseup", handleResizeEnd);
+      window.removeEventListener("mouseleave", handleResizeEnd);
+    };
   });
 
   const resize = (newSize: number) => {

@@ -36,17 +36,17 @@ export const rendererSceneFunction = (userScript: string) => {
 const assignments = {
   codeOpened: {
     title:
-      "Open up the code tab by dragging the left slider on the right side of your screen.",
-    hint: "On the right you see 2 handles. Drag the left one!",
+      "Open the code tab by dragging the left slider on the right side of your screen.",
+    hint: "On the right side, you will notice two handles. Drag the left handle to open the code tab.",
     subParagraph:
-      "Well done. Now here is where I will show you the code written with every step of the tutorial and is also where you will be able to write your own code as we go along",
+      "Well done. Now, this is where I will show you the code written with every step of the tutorial. It is also the place where you will be able to write your own code as we go along.",
     checked: false,
   },
   canvasOpened: {
-    title: "Lets also open up the output tab. Drag the other slider!",
-    hint: "On the right you see 2 handles. Drag the right one!",
+    title: "Let's also open the output tab. Drag the other slider!",
+    hint: "On the right side, you will see two handles. Drag the right handle to open the output tab.",
     subParagraph:
-      "Alright, here is the ouput of our code. As you can see right now we are just rendering a blue screen. Lets change that with the next step!",
+      "Alright, here is the output of our code. As you can see, we are currently rendering a blue screen. Let's change that in the next step!",
     checked: false,
   },
 };
@@ -80,10 +80,7 @@ const Renderer: React.FC = () => {
 
   useEffect(() => {
     window.addEventListener("resize", update);
-
-    return () => {
-      window.removeEventListener("resize", update);
-    };
+    return () => window.removeEventListener("resize", update);
   }, [resetKey]);
 
   return (
@@ -92,12 +89,12 @@ const Renderer: React.FC = () => {
         <StepTitle>Creating a scene</StepTitle>
         <h3 className="mt-p">Basic setup</h3>
         <p>
-          First thing we need to do before the fun stuff is creating a scene and
-          adding a few things to it.
+          The first thing we need to do before diving into the fun stuff is to
+          create a scene and add a few elements to it.
         </p>
         <p>
-          We starting by adding a canvas to our html with the ID of canvas.
-          After this we can work on our javascript:
+          To begin, let's add a canvas to our HTML with the ID of "canvas." Once
+          that's done, we can proceed with the JavaScript code.
         </p>
         <CodeBlockInline>
           {`import * as THREE from "three";
@@ -111,23 +108,25 @@ renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 renderer.setClearColor(0x01e3d59, 1);`}
         </CodeBlockInline>
         <p>
-          Let's take a moment to explain what's going on here. We have now set
-          up the scene, our camera and the renderer.
+          Let's take a moment to explain what's happening in the code above. We
+          have set up the scene, camera, and renderer.
         </p>
-        <h3 className="mt-p">Camera's</h3>
+        <h3 className="mt-p">Cameras:</h3>
         <p>
-          There are different types of cameras in Three.js for most cases you
-          will use the Perspective camera.{" "}
-        </p>
-        <p>Its first value is the FOV or field of view in degrees.</p>
-        <p>
-          The second value is the aspect ratio. 99,9% precent of the time you
-          will use the size of the canvas otherwise the image will look squished
-          or stretched.
+          In Three.js, there are different types of cameras available, but in
+          most cases, you will use the PerspectiveCamera.
         </p>
         <p>
-          The other two values are the near and far plane. Anything outside of
-          those planes will not be rendered.
+          The first value of the camera represents the field of view (FOV) in
+          degrees.{" "}
+        </p>
+        <p>
+          The second value is the aspect ratio, which is usually set to the size
+          of the canvas to avoid distortion.
+        </p>
+        <p>
+          The last two values are the near and far planes, determining the
+          rendering range.
         </p>
         <div className="relative my-2 w-[300px] h-[200px]">
           <Image
@@ -137,16 +136,18 @@ renderer.setClearColor(0x01e3d59, 1);`}
             alt="back button"
           ></Image>
         </div>
-        <h3 className="mt-p">Renderer</h3>
+        <h3 className="mt-p">Renderer:</h3>
         <p>
-          Next up is the renderer. When setting the renderer size you will also
-          almost always want to set it to the width and height of your canvas.
-          We also set the background color to blue.
+          Next, we define the renderer. When setting the renderer size, it's
+          generally recommended to match it with the width and height of your
+          canvas. Additionally, we set the background color to blue.
         </p>
         <h3 className="mt-p">Animation loop</h3>
         <p>
-          Now for actually rendering our scene we use an animation or render
-          loop
+          Now, let's move on to rendering our scene using an animation or render
+          loop. The code provided creates a loop that redraws the scene every
+          time the screen is refreshed, typically at a rate of 60 times per
+          second.
         </p>
         <CodeBlockInline>
           {`function animate() {
@@ -156,13 +157,8 @@ renderer.setClearColor(0x01e3d59, 1);`}
 animate();`}
         </CodeBlockInline>
         <p>
-          This code causes an animation loop that draws the scene everytime the
-          screen is refreshed. (typically 60 times per second)
-        </p>
-
-        <p>
-          Okay. Lets combine everything mentioned above. On the right you will
-          see 2 sliders. Try opening up the left of them.
+          Okay, let's put everything we've mentioned above together. On the
+          right side, you'll find two sliders. Try opening the left one.
         </p>
         <Assignment assignments={assignments}></Assignment>
       </CodeText>

@@ -211,8 +211,8 @@ export const cameraAnimationSceneFunction = (userScript: string) => {
 const assignments = {
   loadGLTF: {
     title:
-      "Animate the scale of a cube to become smaller or bigger when you click on it",
-    hint: "You animation target should be intersect.scale",
+      "Animate the scale of a cube to become smaller or larger when you click on it.",
+    hint: "The target for your animation should be `intersect.scale`.",
     checked: false,
   },
 };
@@ -257,7 +257,8 @@ const CameraAnimation: React.FC = () => {
         <StepTitle>(Gsap) animations</StepTitle>
         <p className="my-p">
           For simple animations like moving the camera from its current position
-          to another we will use gsap. Here is a link to the{" "}
+          to another, we will use GSAP. For more information you can go to the
+          gsaps{" "}
           <a
             className="text-primary underline"
             target="_blank"
@@ -265,7 +266,7 @@ const CameraAnimation: React.FC = () => {
           >
             get started
           </a>{" "}
-          page and its{" "}
+          page or{" "}
           <a
             className="text-primary underline"
             target="_blank"
@@ -273,9 +274,13 @@ const CameraAnimation: React.FC = () => {
           >
             installation guide.
           </a>{" "}
-          . Gsap can animate anything that javascript can touch. Including
-          Three.js objects and camera's. This makes animating the camera
+          GSAP can animate anything that JavaScript can interact with, including
+          Three.js objects and cameras. This makes animating the camera
           incredibly easy.
+        </p>
+        <p>
+          Using GSAP, you can animate your camera from its current position to a
+          target position with a smooth and visually pleasing ease. Like this::
         </p>
         <CodeBlockInline>{`gsap.to(camera.position, {
   ...new THREE.Vector2(position.x, position.y),
@@ -283,21 +288,19 @@ const CameraAnimation: React.FC = () => {
   ease: "power1.out",
 });`}</CodeBlockInline>
         <p className="mt-p">
-          Just this code will animate your camera from its current position to
-          one you selected
+          You can see the result of animating the camera to move in front of the
+          clicked cube in the right panel.
         </p>
         <p>
-          On the right you will be able to see what animating the camera to move
-          infront of the clicked cube would look like.
-        </p>
-        <p>
-          To nail the hammer home what a gift gsap is for your Three.js
-          animations I made the same functionality as in the last step but
-          without gsap.
+          To emphasize how beneficial GSAP is for your Three.js animations, I've
+          provided the same functionality without GSAP. However, it has worse
+          performance, a less appealing user experience, doesn't work with
+          colors, requires more code, and is harder to read compared to using
+          GSAP.
         </p>
         <div className="relative w-fit my-p">
           <button
-            className="w-14 relative z-10"
+            className="w-28 relative z-10"
             onClick={() => {
               setResetCanvasKey(Math.random());
               if (renderer) {
@@ -307,10 +310,10 @@ const CameraAnimation: React.FC = () => {
               setShowCode(gsapCode);
             }}
           >
-            New
+            With gsap
           </button>
           <button
-            className="py-2 w-14 relative z-10"
+            className="py-2 w-28 relative z-10"
             onClick={() => {
               setResetCanvasKey(Math.random());
               if (renderer) {
@@ -320,7 +323,7 @@ const CameraAnimation: React.FC = () => {
               setShowCode(noGsapCode);
             }}
           >
-            Old
+            Without gsap
           </button>
           <div
             className="absolute transition-all duration-700 bg-tertary w-1/2 h-full top-0 rounded-md"
@@ -335,10 +338,9 @@ const CameraAnimation: React.FC = () => {
           ></div>
         </div>
         <p>
-          It has worse performance, looks worse for the user, doesn't even work
-          for colors, takes more code and is way harder to read then gsap.
+          In summary, I highly recommend using GSAP for your animations in
+          Three.js.
         </p>
-        <p>Long story short. Just use gsap.</p>
         <Assignment assignments={assignments}></Assignment>{" "}
       </CodeText>
 

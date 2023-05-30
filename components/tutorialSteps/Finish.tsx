@@ -1,7 +1,9 @@
 import Link from "next/link";
 import React, { createRef, useContext, useEffect } from "react";
 import StepTitle from "../tutorialHelpers/StepTitle";
-import gsap, { Power1 } from "gsap";
+import gsap, { Power1, Sine } from "gsap";
+import SlowMo from "gsap/EasePack";
+
 import AppContext from "../../contexts/AppContextProvider";
 
 function random(min: number, max: number) {
@@ -33,15 +35,17 @@ const Finish: React.FC = () => {
     gsap.set(confettiParent.current.children, {
       x: fireConfettiPosition.x,
       y: -fireConfettiPosition.y,
+      left: 0,
+      bottom: 0,
+      scaleX: 1,
     });
     Array.from(confettiParent.current.children).forEach((child) => {
+      gsap.set(child, {
+        backgroundColor: randomColorPicker(),
+      });
       // Acting like confetti animation
       gsap.to(child, {
         scaleX: random(0.1, 0.5),
-        ...defaultRepeat(),
-      });
-      gsap.to(child, {
-        translateX: random(6, 20) + "px",
         ...defaultRepeat(),
       });
       gsap.to(child, {
@@ -54,10 +58,6 @@ const Finish: React.FC = () => {
       });
       gsap.to(child, {
         rotateZ: random(0, 270),
-        ...defaultRepeat(),
-      });
-      gsap.to(child, {
-        rotation: random(0, 270),
         ...defaultRepeat(),
       });
       // Fly somewhere
@@ -77,11 +77,13 @@ const Finish: React.FC = () => {
           // Go down
           gsap
             .to(child, {
-              y: -30,
-              duration: random(5, 10),
+              y: 0,
+              ease: Sine.easeIn,
+              duration: random(5, 11),
             })
             .eventCallback("onComplete", () => {
               // Kill all animation on complete
+              setShowRobot(null);
               const runningTweens = gsap.getTweensOf(child);
               runningTweens.forEach((tween) => {
                 tween.kill();
@@ -89,17 +91,16 @@ const Finish: React.FC = () => {
             });
         });
     });
-    setTimeout(() => {
-      setShowRobot(null);
-    }, 1000);
   };
 
+  // Activate the robot to fly in
   useEffect(() => {
     setTimeout(() => {
       setShowRobot({ confetti: true });
     });
   }, []);
 
+  // Fire the confetti if the fire position is returned from the robot
   useEffect(() => {
     fireConfetti();
   }, [fireConfettiPosition]);
@@ -113,16 +114,7 @@ const Finish: React.FC = () => {
       </Link>
       <div ref={confettiParent}>
         {[...new Array(80)].map((number, index) => (
-          <div
-            className="conffeti absolute w-5 h-8"
-            style={{
-              backgroundColor: randomColorPicker(),
-              left: "0",
-              bottom: "0",
-              transform: "scaleX(1)",
-            }}
-            key={index}
-          ></div>
+          <div className="absolute w-5 h-8" key={index}></div>
         ))}
       </div>
     </div>

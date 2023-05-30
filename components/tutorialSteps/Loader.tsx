@@ -15,9 +15,10 @@ import { OrbitControls } from "three/addons/controls/OrbitControls";
 `;
 const code = `// Basic setup
 const canvas = document.getElementById("canvas");
+
 const loader = new GLTFLoader();
+const clock = new THREE.Clock();
 let mixer = null;
-let clock = new THREE.Clock();
 
 const scene = new THREE.Scene();
 
@@ -93,8 +94,8 @@ export const loaderSceneFunction = (userScript: string) => {
 
 const assignments = {
   addGLTF: {
-    title: "Add the scene gotten from the loaded gltf to your own scene.",
-    hint: "gltf has the property you can add to your scene like any other object or light.",
+    title: "Add the scene obtained from the loaded GLTF to your own scene.",
+    hint: "The 'gltf' object has a 'scene' property that you can add to your scene, just like any other object or light.",
     checked: false,
   },
 };
@@ -127,60 +128,63 @@ const Loader: React.FC = () => {
         <StepTitle>GLTF loader and animations</StepTitle>
         <h3 className="mt-p">GLTF Loader</h3>
         <p>
-          Too import a 3D design into Three.js there are alot of accepted file
-          types. The most common and in 99% of cases the best way to import 3D
-          designs is by GLTF. GLTF loads the fastest and is overall the best
-          optimized option.
+          To import a 3D design into Three.js, there are many accepted file
+          types. However, the most common and recommended way, in 99% of cases,
+          is to use GLTF. GLTF loads the fastest and is overall the
+          best-optimized option.
         </p>
         <p className="mt-p">
-          You can import the GLTFLoader in the same way we did the controls.
+          You can import the GLTFLoader in the same way we imported the
+          controls.
         </p>
         <CodeBlockInline>
           {`import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';`}
         </CodeBlockInline>
         <p className="mt-p">
-          On line 37 we start loading our gltf file. loader.load takes 4
+          On line 38, we begin loading our GLTF file. 'loader.load' takes four
           arguments.
         </p>
         <ul className="my-ol">
           <li className="my-li">
-            First up is the <strong>URL</strong> you want to import. Just like
-            an image you can directly import from you project or import one
-            online. Right now we will be importing one from the{" "}
+            First, you need to provide the <strong>URL</strong> of the file you
+            want to import. Similar to an image, you can import it from your
+            project directly or import it from an online source. In this
+            example, we will import a GLTF file from the{" "}
             <a
               href="https://github.com/KhronosGroup/glTF-Sample-Models"
               className="underline text-primary"
             >
-              KhronosGroup
+              Khronos Group
             </a>
-            . They have a great amount of gltf sample modules you can play
-            around with.
+            , which offers a variety of GLTF sample models to play around with.
           </li>
           <li className="my-li">
-            Next up is a function called when the file is{" "}
-            <strong>loaded</strong>. It has a parameter object of gltf
-            containing the animations, cameras, asset, scene and scenes.
+            The second argument is a function that is called when the file is{" "}
+            <strong>loaded</strong>. It receives a 'gltf' parameter, which
+            contains the animations, cameras, asset information, scene, and
+            scenes.
           </li>
           <li className="my-li">
-            The next function is called while <strong>loading</strong>. Its
-            paramater has a loaded and total value.
+            The next argument is a function that is called while the file is
+            being <strong>loaded</strong>. It has 'loaded' and 'total' values as
+            parameters.
           </li>
           <li className="my-li">
-            The last function is called if the loading has an{" "}
-            <strong>error</strong>.
+            The last argument is a function that is called if there is an{" "}
+            <strong>error</strong> during loading.
           </li>
         </ul>
         <Note>
-          The loaded and total value is VERY inacurrate when using gltf and/or
-          React. So displaying this to the user is not advised.
+          The 'loaded' and 'total' values used while loading are very inaccurate
+          when using GLTF and/or React, so it is not advised to display them to
+          the user.
         </Note>
         <h3 className="mt-p">GLTF Animations</h3>
         <p>
-          As you can see adding a link to the loader will load that file and
-          automatically play its animations. We do this by creating an animation
-          mixer and then starting all the animations in the scene. The
-          animations actually play because we update our mixer with a delta
-          gotten from the clock.
+          After loading the file we automatically play its animations. We
+          achieve this by creating an animation mixer and then starting all the
+          animations in the scene. The animations actually play because we
+          update our mixer with a delta value obtained from the clock.
         </p>
         <p className="mt-5">That will look like this:</p>
         <CodeBlockInline>

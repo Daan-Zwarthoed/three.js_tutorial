@@ -30,7 +30,7 @@ const Scene: React.FC<Props> = ({ threeScript }) => {
 
   return (
     <ResizableHorizontal resizeTarget="Canvas">
-      <h3 className="w-full bg-background top-0 z-30 pl-3 text-quartery hover:text-white">
+      <h3 className="absolute w-full bg-background top-0 z-30 pl-3 text-quartery hover:text-white">
         Result
       </h3>
       <div className="flex flex-col h-full bg-[#1e3d59]">
@@ -58,7 +58,7 @@ const Scene: React.FC<Props> = ({ threeScript }) => {
         <canvas
           key={resetKey}
           id="canvas"
-          className="relative z-10 object-contain mx-auto w-full h-full"
+          className="relative z-10 object-contain mx-auto max-w-full max-h-full w-full h-full"
         ></canvas>
       </div>
     </ResizableHorizontal>

@@ -201,22 +201,22 @@ export const addonsSceneFunction = (userScript: string) => {
 
 const assignments = {
   addOrbitControls: {
-    title: "Add orbit controls to the scene",
-    hint: "You can use the buttons above to select orbit controls",
+    title: "Add orbit controls to the scene.",
+    hint: "You can use the buttons above to select orbit controls.",
     checked: false,
   },
   autoRotate: {
-    title: "Set the controls to autoRotate",
-    hint: "autoRotate is a value of controls you can set to true",
+    title: "Set the orbit controls to autoRotate",
+    hint: "`autoRotate` is a property of controls that you can set to `true`.",
     subParagraph:
-      "Okay well done! But as you might see the cube is not rotating on its own yet. For that you will need to update the controls on every animation loop.",
+      "Okay, well done! However, you may notice that the cube is not rotating on its own yet. To achieve that, you will need to update the controls on every animation loop.",
     checked: false,
   },
   updateControls: {
-    title: "Update the controls on every animation loop",
-    hint: "Update is a function you can call on controls",
+    title: "Update the controls on every animation loop.",
+    hint: "`update` is a function that you can call on controls.",
     subParagraph:
-      "Well done as you can see the cube is rotating on its own now!",
+      "Well done! As you can see, the cube is now rotating on its own.",
     checked: false,
   },
 };
@@ -268,24 +268,24 @@ const Addons: React.FC = () => {
       <CodeText>
         <StepTitle>Addons and controls</StepTitle>
         <p className="mt-p">
-          Three.js by itself contains all the fundementals of a 3D engine. Other
-          Three.js components like controls, loaders and post-processing need to
-          be imported seperatly from the addons/ directory. Note that you don't
-          need to install them seperatly just import them seperatly.
+          Three.js by itself contains all the fundamentals of a 3D engine. Other
+          Three.js components like controls, loaders, and post-processing need
+          to be imported separately from the addons/ directory. Note that you
+          don't need to install them separately, just import them separately.
         </p>
         <p>
-          Try dragging the cube and you will see that you can now control it!
+          Try dragging the cube, and you will see that you can now control it!
         </p>
         <p className="mt-p">
           Adding controls will in most cases look something like this.
         </p>
         <CodeBlockInline>
-          {`import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";`}
+          {`import { OrbitControls } from "three/addons/controls/OrbitControls";`}
         </CodeBlockInline>
         <Note>
-          If you installed Three.js with a CDN you will need to add an importmap
-          to the head element of your html. You can read more about import maps
-          in the{" "}
+          If you installed Three.js with a CDN, you will need to add an
+          importmap to the {"<head>"} element of your HTML. You can find more
+          information about import maps in the{" "}
           <a
             className="text-primary underline"
             target="_blank"
@@ -331,25 +331,25 @@ const Addons: React.FC = () => {
           {controlsMode === "Arcball" &&
             "The arcball controls simulate a virtual sphere that surrounds the 3D scene. It allows users to rotate the camera by clicking and dragging on the surface of the sphere."}
           {controlsMode === "Trackball" &&
-            "The trackball controls simulate a virtual trackball that allows users to rotate the camera around a target point. It offers intuitive navigation similar to how a physical trackball works."}
+            "The trackball controls simulate a virtual trackball that enables users to rotate the camera around a target point. It offers intuitive navigation similar to how a physical trackball works."}
           {controlsMode === "Orbit" &&
-            "The orbit controls provide a simplified way to control the camera by orbiting it around a target point. This control scheme is similar to how a planet orbits around the sun and is also by far the most popular implementation of controls in Three.js."}
+            "On the other hand, the orbit controls provide a simplified way to control the camera by orbiting it around a target point. This control scheme resembles the way a planet orbits around the sun and is the most widely used implementation of controls in Three.js."}
           {controlsMode === "Fly" &&
-            "FlyControls enables a navigation similar to fly modes in DCC (Digital Content Creation) tools like Blender. You can arbitrarily transform the camera in 3D space by using your wasd or arrow keys."}
+            "FlyControls enables navigation similar to fly modes in DCC (Digital Content Creation) tools like Blender. You can freely move the camera in 3D space using the WASD or arrow keys."}
           {controlsMode === "FirstPerson" &&
-            "First person controls is an alternative implementation of fly controls making it feel more like you are person walking around a scene then fly controls."}
+            "First-person controls provide an alternative implementation of fly controls, giving the feeling of walking around a scene as a person rather than flying."}
           {controlsMode === "PointerLock" &&
-            "Pointer lock controls locks the users mouse and uses its movement to calculate where to look. This is perfect for first-person games."}
+            "Pointer lock controls lock the user's mouse and utilize its movement to determine the camera's orientation. This is ideal for first-person games."}
           {controlsMode === "Drag" &&
-            "This is used for drag and drop interactions. It does not include control of the camera but control of objects in the scene."}
+            "Drag controls are used for drag and drop interactions. They allow control over objects in the scene but not the camera itself."}
           {controlsMode === "Transform" &&
-            "This is used to transform 3D objects in a similair way to DCC tools like Blender. Just like drag controls this does not include control of the camera but just the objects in the scene."}
+            "Transform controls are used to manipulate 3D objects in a similar way to DCC tools like Blender. Like drag controls, this does not involve controlling the camera but only the objects in the scene."}
         </p>
         {(controlsMode === "Fly" || controlsMode === "FirstPerson") && (
           <Note>
-            Both first person and fly controls are not made for anything but a
-            fullscreen. This results in the camera panning to the right
-            permanently when hovering over the canvas in this example
+            Both first-person and fly controls are designed specifically for
+            fullscreen usage. As a result, in this example, when hovering over
+            the canvas, the camera will continuously pan to the right.
           </Note>
         )}
         <Assignment assignments={assignments}></Assignment>

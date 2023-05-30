@@ -182,20 +182,20 @@ export const lightSceneFunction = (userScript: string) => {
 
 const assignments = {
   addSpotLight: {
-    title: "Add a spot light to the scene",
-    hint: "You can use the buttons above to select the spot light",
+    title: "Add a spotlight to the scene.",
+    hint: "You can use the buttons above to select the spotlight.",
     checked: false,
   },
   textureLoader: {
     title:
-      "Use the textureLoader to load a doge image gotten from 'image/doge.png' and apply it to a variable called texture",
-    hint: "Use this: THREE.TextureLoader().load('images/doge.png')",
+      "Use the TextureLoader to load a doge image from 'images/doge.png' and assign it to a variable called 'texture'.",
+    hint: "You can use this code: 'THREE.TextureLoader().load('images/doge.png')'.",
     checked: false,
   },
   spotLightMapIsTexture: {
-    title: "Now apply that texture to the spotlights map.",
-    hint: "the spotLight has a map property you can apply your texture to",
-    subParagraph: "Nice well done. You made a doge themed spotlight!",
+    title: "Apply that texture to the spotlight's map.",
+    hint: "The spotlight has a 'map' property where you can assign your texture.",
+    subParagraph: "Nice, well done. You made a doge themed spotlight!",
     checked: false,
   },
 };
@@ -322,49 +322,49 @@ const Light: React.FC = () => {
       <CodeText>
         <StepTitle>Lights</StepTitle>
         <p className="mt-p">
-          Three js offers multiple types of lights. Adding an ambient light and
-          a directional light will be enough for most projects:
+          Three.js offers multiple types of lights. Adding an ambient light and
+          a directional light will be sufficient for most projects:
         </p>
         <ol className="my-ol">
           <li className="my-li">
-            <strong>Ambient lights</strong> are the simpelest of the bunch. This
-            will add an even light to everything in the scene.
+            <strong>Ambient lights</strong> are the simplest of the bunch. They
+            provide even lighting to everything in the scene.
           </li>
           <li className="my-li">
-            A <strong>directional light</strong> works just like the sun in the
-            way that it doesnt flair outwards in a cone but comes evenly from
-            one direction.
+            A <strong>directional light</strong> functions similar to the sun,
+            emitting light evenly from one direction without spreading out in a
+            cone.
           </li>
           <li className="my-li">
-            A <strong>hemisphere light</strong> light is very similair to a
-            directional light but it changes from top to bottom from one color
-            to another and does not cast shadows
+            A <strong>hemisphere light</strong> is similar to an ambient light,
+            but it transitions from one color to another from top to bottom.
           </li>
           <li className="my-li">
-            <strong>Spotlight</strong> like the name suggests works like a
-            spotlight or flaslight in the way that it flairs out like a cone
-            from the point you choose
+            A <strong>spotlight</strong>, as the name suggests, projects light
+            in a cone shape from a chosen point, resembling a spotlight or
+            flashlight.
           </li>
           <li className="my-li">
-            <strong>Point light</strong> is the same but goes in all directions
+            A <strong>point light</strong> emits light in all directions,
+            similar to a light bulb.
           </li>
           <li className="my-li">
-            <strong>Rectangle light</strong> is the same as a spotlight but
-            originates from a square instead of a spotlight.
+            A <strong>rectangle light</strong> functions like a spotlight but
+            originates from a rectangular shape instead of a spotlight shape.
           </li>
         </ol>
         <div className="mb-p">
           <Note>
-            A Rectangle light does not support shadows and is only visible on
-            MeshStandardMaterial and MeshPhysicalMaterial
+            Note that rectangle lights do not support shadows and are only
+            visible on MeshStandardMaterial and MeshPhysicalMaterial.
           </Note>
           <Note>
-            Note that ambient and hemisphere lights don't cast shadows.
+            Please note that ambient and hemisphere lights do not cast shadows.
           </Note>
         </div>
         <p>
-          You can try out the different lights and their helpers with the button
-          below:
+          You can experiment with different lights and their helpers using the
+          button below.
         </p>
         <div className="grid grid-cols-2 columns-2 w-full mb-p mt-3 border-secondary border-2">
           {LightModeTypes.map((type) => (
@@ -397,12 +397,12 @@ const Light: React.FC = () => {
             </button>
           ))}
         </div>
-        <Note>Note that we added shadowMap to our renderer.</Note>
+        <Note>Also, note that we added 'shadowMap' to our renderer</Note>
         <Note>
-          Also note that we did change the material to MeshStandardMaterial.
-          This is because MeshBasicMaterial does not interact with lights or
-          shadows. We also manually activated the objects ability to create
-          and/or receive shadows.
+          Additionally, please be aware that we changed the material to
+          MeshStandardMaterial. This is because MeshBasicMaterial does not
+          interact with lights or shadows. We also manually enabled the object's
+          ability to cast and/or receive shadows.
         </Note>
         <Assignment assignments={assignments}></Assignment>{" "}
       </CodeText>

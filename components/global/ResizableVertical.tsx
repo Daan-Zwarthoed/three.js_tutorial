@@ -14,14 +14,6 @@ const ResizableVertical: React.FC<Props> = ({ children, resizeTarget }) => {
   useEffect(() => {
     resizableElement = document.getElementById(`Resizable${resizeTarget}`);
 
-    window.removeEventListener("mousemove", handleResize);
-    window.removeEventListener("mouseup", handleResizeEnd);
-    window.removeEventListener("mouseleave", handleResizeEnd);
-
-    window.addEventListener("mousemove", handleResize);
-    window.addEventListener("mouseup", handleResizeEnd);
-    window.addEventListener("mouseleave", handleResizeEnd);
-
     // Get saved width and apply or apply default
     const resizableHeight = Number(
       window.localStorage.getItem(`Resizable_${resizeTarget}_Width`)
@@ -30,6 +22,16 @@ const ResizableVertical: React.FC<Props> = ({ children, resizeTarget }) => {
       resizableElement.style.height = `${resizableHeight}px`;
     if (!resizableHeight && resizableElement && resizeTarget === "Console")
       resizableElement.style.height = `160px`;
+
+    window.addEventListener("mousemove", handleResize);
+    window.addEventListener("mouseup", handleResizeEnd);
+    window.addEventListener("mouseleave", handleResizeEnd);
+
+    return () => {
+      window.removeEventListener("mousemove", handleResize);
+      window.removeEventListener("mouseup", handleResizeEnd);
+      window.removeEventListener("mouseleave", handleResizeEnd);
+    };
   });
 
   const resize = (newSize: number) => {

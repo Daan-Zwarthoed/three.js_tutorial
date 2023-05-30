@@ -103,15 +103,17 @@ export const raycasterSceneFunction = (userScript: string) => {
 
 const assignments = {
   scaleCube: {
-    title: "Make it so that if you hover on a cube it becomes 1.1 times larger",
-    hint: "You can make something larger by using scale.set()",
+    title:
+      "Modify the code so that when you hover over a cube, it becomes 1.1 times larger.",
+    hint: "You can increase the size of an object using scale.set().",
     checked: false,
   },
   scaleCubeDown: {
-    title: "Make sure the cube's also go back to their original size!",
-    hint: "Everywhere were INTERSECTEDCOLOR used to be applied is the places you should scale the cube back down.",
+    title:
+      "Make sure the cubes go back to their original size when not being hovered over.",
+    hint: "You should scale the cube back down wherever INTERSECTEDCOLOR is used.",
     subParagraph:
-      "Okay well done. Now you have the basic understanding of raycasters down!",
+      "Well done! Now you have a basic understanding of raycasters.",
     checked: false,
   },
 };
@@ -165,8 +167,11 @@ const Raycaster: React.FC = () => {
       <CodeText>
         <StepTitle>Raycasters</StepTitle>
         <p className="mt-p">
-          To make objects react to the users cursor you will need to use a
-          raycaster
+          To make objects react to the user's cursor, you will need to use a
+          raycaster. A raycaster returns all intersections between objects in
+          the scene and the location of the mouse. To perform raycasting, we
+          first need to obtain the current position of the mouse in normalized
+          device coordinates. We can do this using the following code:
         </p>
         <CodeBlockInline>{`const pointer = new THREE.Vector2();
 
@@ -179,9 +184,8 @@ function onPointerMove(event) {
 
 canvas.addEventListener("mousemove", onPointerMove);`}</CodeBlockInline>
         <p className="mt-p">
-          This code will keep track of the x and y value of the cursor on the
-          canvas in normalized device coordinates. Now for using this to change
-          the color of the cube:
+          Once we have the mouse coordinates, we can use them to change the
+          color of the cube:
         </p>
         <CodeBlockInline>{`raycaster.setFromCamera(pointer, camera);
 const intersects = raycaster.intersectObjects(scene.children, false);
@@ -200,24 +204,27 @@ if (intersect) {
   INTERSECTED = null;
 }`}</CodeBlockInline>
         <p className="mt-p">
-          This looks very overwhelming at first glance but dont worry. I'll take
-          you through it step by step.
+          At first glance, this code may seem overwhelming, but don't worry.
+          I'll walk you through it step by step.
         </p>
         <ol className="my-ol">
           <li className="my-li">
-            First we <strong>raycast</strong> with all the objects in the scene.
-            We get the first intersection and save its object.
+            First, we perform <strong>raycasting</strong> with all the objects
+            in the scene. We retrieve the first intersection and save its
+            corresponding object.
           </li>
           <li className="my-li">
-            Next we check if <strong>intersect</strong> exists and if it's a new
-            intersection. If this is true we reverse the previous intersection
-            if necessary, we save the new intersect in INTERSECTED and we clone
-            the color to INTERSECTEDCOLOR. Then we set our new intersection to a
-            darkish red.
+            Next, we check if there is an <strong>intersection</strong>{" "}
+            (`intersect`) and if it is a new intersection. If this condition is
+            true, we reverse the previous intersection if necessary, save the
+            new intersection in a variable called `INTERSECTED`, and clone the
+            color to `INTERSECTEDCOLOR`. Then, we set the color of the new
+            intersection to a darkish red.
           </li>
           <li className="my-li">
-            If intersect <strong>doesn't</strong> exist we check if our
-            INTERSECTED exists and reset it if it does.
+            If there is no intersection{" "}
+            <strong>(intersect doesn't exist)</strong>, we check if our
+            INTERSECTED variable exists and reset it if it does.
           </li>
         </ol>
         <Assignment assignments={assignments}></Assignment>{" "}

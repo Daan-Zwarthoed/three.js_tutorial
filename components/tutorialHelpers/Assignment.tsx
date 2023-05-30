@@ -43,7 +43,7 @@ const Assignment: React.FC<Props> = ({ assignments }) => {
           )
         ) {
           // Find completed assignment
-          const completedAssignment = assignmentKeys.find(
+          const completedAssignment = assignmentKeys.findLast(
             (key) =>
               assignmentsClone[key].checked !== assignments[key].checked &&
               assignments[key].checked
