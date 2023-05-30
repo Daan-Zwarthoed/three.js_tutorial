@@ -8,12 +8,13 @@ type Props = {
 const ResizableVertical: React.FC<Props> = ({ children, resizeTarget }) => {
   let initialPos: number | null = null;
   let initialSize: number | null = null;
-  let mouseDown = false;
   let resizableElement: HTMLElement | null;
 
   useEffect(() => {
     resizableElement = document.getElementById(`Resizable${resizeTarget}`);
+  });
 
+  useEffect(() => {
     // Get saved width and apply or apply default
     const resizableHeight = Number(
       window.localStorage.getItem(`Resizable_${resizeTarget}_Width`)
@@ -22,46 +23,42 @@ const ResizableVertical: React.FC<Props> = ({ children, resizeTarget }) => {
       resizableElement.style.height = `${resizableHeight}px`;
     if (!resizableHeight && resizableElement && resizeTarget === "Console")
       resizableElement.style.height = `160px`;
-
-    window.addEventListener("mousemove", handleResize);
-    window.addEventListener("mouseup", handleResizeEnd);
-    window.addEventListener("mouseleave", handleResizeEnd);
-
-    return () => {
-      window.removeEventListener("mousemove", handleResize);
-      window.removeEventListener("mouseup", handleResizeEnd);
-      window.removeEventListener("mouseleave", handleResizeEnd);
-    };
-  });
-
-  const resize = (newSize: number) => {
-    if (!resizableElement || !resizableElement.parentElement) return;
-    resizableElement.style.height = `${newSize}px`;
-
-    window.dispatchEvent(new Event("resize"));
-  };
+  }, []);
 
   const handleResizeStart = (
     event: MouseEvent | React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     const html = document.querySelector("html");
     if (html) html.style.userSelect = "none";
-    mouseDown = true;
+
     initialPos = event.clientY;
     initialSize = resizableElement!.clientHeight;
+
+    window.addEventListener("mousemove", handleResize);
+    window.addEventListener("mouseup", handleResizeEnd);
+    window.addEventListener("mouseleave", handleResizeEnd);
   };
 
   const handleResize = (event: MouseEvent) => {
-    if (!mouseDown) return;
-    resize(initialSize! - (event.clientY - initialPos!));
+    if (!resizableElement || !resizableElement.parentElement) return;
+
+    resizableElement.style.height = `${
+      initialSize! - (event.clientY - initialPos!)
+    }px`;
+
+    window.dispatchEvent(new Event("resize"));
   };
 
   const handleResizeEnd = (event: MouseEvent) => {
     const html = document.querySelector("html");
     if (html) html.style.userSelect = "auto";
-    mouseDown = false;
+
     initialPos = event.clientY;
     initialSize = resizableElement!.clientHeight;
+
+    window.removeEventListener("mousemove", handleResize);
+    window.removeEventListener("mouseup", handleResizeEnd);
+    window.removeEventListener("mouseleave", handleResizeEnd);
 
     if (resizableElement!.clientHeight)
       window.localStorage.setItem(

@@ -128,7 +128,7 @@ const Assignment: React.FC<Props> = ({ assignments }) => {
                 </div>
                 {/* Hint button */}
                 <button
-                  className="w-full text-start my-3 bg-deepBlue px-5 flex flex-row items-center"
+                  className="w-full text-start my-3 bg-canvasBackground px-5 flex flex-row items-center"
                   onClick={handleHintClick}
                 >
                   <p className="pointer-events-none">

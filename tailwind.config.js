@@ -4,9 +4,9 @@ const allColors = {
   ...{
     background: "#021622",
     backgroundActive: "#334155",
+    canvasBackground: "#063857",
     accent: "#D25E2F",
     textAccent: "#46A0A0",
-    deepBlue: "#063857",
     offWhite: "#fce2ce",
     inactive: "#808080",
   },

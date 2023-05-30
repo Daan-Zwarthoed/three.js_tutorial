@@ -30,7 +30,7 @@ const Scene: React.FC<Props> = ({ threeScript }) => {
 
   return (
     <ResizableHorizontal resizeTarget="Canvas">
-      <h3 className="absolute w-full bg-background top-0 z-30 pl-3 text-deepBlue hover:text-white">
+      <h3 className="absolute w-full bg-background top-0 z-30 pl-3 text-canvasBackground hover:text-white">
         Result
       </h3>
       <div className="flex flex-col h-full bg-[#1e3d59]">
