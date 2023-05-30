@@ -170,22 +170,22 @@ const Robot: React.FC = () => {
       {confetti && (
         <div
           id="ConfettiCannon"
-          className="relative w-[150px] h-[150px] rounded-xl bg-accent mb-3 rotate-[20deg] origin-bottom-left"
+          className="relative w-[150px] h-[150px] rounded-xl bg-textAccent mb-3 rotate-[20deg] origin-bottom-left"
           style={{ clipPath: "polygon(50% 0, 0% 100%, 100% 50%)" }}
         >
           <div
-            className="absolute w-full h-full bg-primary -rotate-[20deg]"
+            className="absolute w-full h-full bg-accent -rotate-[20deg]"
             style={{ clipPath: "polygon(40% 0, 20% 0, 70% 100%, 90% 100%)" }}
           ></div>
           <div
-            className="asbolute w-full h-full bg-primary -rotate-[20deg]"
+            className="asbolute w-full h-full bg-accent -rotate-[20deg]"
             style={{ clipPath: "polygon(0% 0, -20% 0, 30% 100%, 50% 100%)" }}
           ></div>
         </div>
       )}
       {/* Text box */}
       {!confetti && (
-        <div className="relative w-max max-w-[800px] p-3 text-center min-w-[150px] rounded-xl border-2 border-accent bg-background mb-3">
+        <div className="relative w-max max-w-[800px] p-3 text-center min-w-[150px] rounded-xl border-2 border-textAccent bg-background mb-3">
           {text.compliment && (
             <h2 className={text.nextButton ? "mb-8" : ""}>{text.text}</h2>
           )}
@@ -194,7 +194,7 @@ const Robot: React.FC = () => {
           <div className="absolute -bottom-0.5 -right-0.5 rounded-xl">
             {(!text.compliment || text.nextButton) && (
               <button
-                className={`p-1 border-2 border-solid border-accent ${
+                className={`p-1 border-2 border-solid border-textAccent ${
                   text.nextButton ? "rounded-l-xl" : "rounded-xl"
                 }`}
                 onClick={() => setShowRobot(null)}
@@ -204,9 +204,7 @@ const Robot: React.FC = () => {
             )}
             {text.nextButton && (
               <StepButton
-                classes={
-                  "p-1 rounded-r-xl border-2 border-solid border-primary"
-                }
+                classes={"p-1 rounded-r-xl border-2 border-solid border-accent"}
                 next
               ></StepButton>
             )}
@@ -229,7 +227,7 @@ const Robot: React.FC = () => {
             ref={eyeDisplay}
           >
             <div
-              className="absolute left-[10%] top-[30%] w-[35%] border-4 border-transparent origin-bottom border-t-accent border-solid"
+              className="absolute left-[10%] top-[30%] w-[35%] border-4 border-transparent origin-bottom border-t-textAccent border-solid"
               style={{
                 borderRadius: "100% 100% 0 0",
                 height: "100px",
@@ -237,7 +235,7 @@ const Robot: React.FC = () => {
               }}
             ></div>
             <div
-              className="absolute right-[10%] top-[30%] w-[35%] border-4 border-transparent border-t-accent border-solid"
+              className="absolute right-[10%] top-[30%] w-[35%] border-4 border-transparent border-t-textAccent border-solid"
               style={{
                 borderRadius: "100% 100% 0 0",
                 height: "100px",
@@ -254,7 +252,7 @@ const Robot: React.FC = () => {
         </div>
         {/* Thruster */}
         <div
-          className="relative -top-[1px] z-0 w-32 bg-accent mx-auto flex justify-center origin-top"
+          className="relative -top-[1px] z-0 w-32 bg-textAccent mx-auto flex justify-center origin-top"
           style={{
             height: "80px",
             clipPath:
@@ -270,7 +268,7 @@ const Robot: React.FC = () => {
             }}
           >
             <div
-              className="h-full w-full bg-accent"
+              className="h-full w-full bg-textAccent"
               style={{
                 clipPath:
                   "polygon(72% 0, 70% 10%, 65% 0%, 58% 33%, 54% 7%, 46% 50%, 35% 0%, 31% 0%, 28% 0%, 25% 0)",

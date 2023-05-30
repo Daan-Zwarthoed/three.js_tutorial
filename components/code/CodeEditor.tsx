@@ -173,7 +173,7 @@ const CodeBlock: React.FC<Props> = ({
         <div className="absolute flex justify-end z-20 h-12 w-full py-1.5 bottom-0 px-4 bg-background">
           <button
             onClick={() => handleSave(editor)}
-            className="h-fit border-2 border-primary px-1 py-0.5 rounded-md "
+            className="h-fit border-2 border-accent px-1 py-0.5 rounded-md "
           >
             Save
           </button>

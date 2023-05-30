@@ -109,8 +109,8 @@ const Assignment: React.FC<Props> = ({ assignments }) => {
                 <div className="flex flex-row items-center px-5">
                   {/* Checkbox */}
                   <div
-                    className={`shrink-0 border-2 border-solid border-primary h-4 w-4 mr-3 flex justify-center items-center rounded-sm ${
-                      assignment.checked ? "bg-primary" : ""
+                    className={`shrink-0 border-2 border-solid border-accent h-4 w-4 mr-3 flex justify-center items-center rounded-sm ${
+                      assignment.checked ? "bg-accent" : ""
                     }`}
                   >
                     <FontAwesomeIcon
@@ -128,7 +128,7 @@ const Assignment: React.FC<Props> = ({ assignments }) => {
                 </div>
                 {/* Hint button */}
                 <button
-                  className="w-full text-start my-3 bg-quartery px-5 flex flex-row items-center"
+                  className="w-full text-start my-3 bg-deepBlue px-5 flex flex-row items-center"
                   onClick={handleHintClick}
                 >
                   <p className="pointer-events-none">

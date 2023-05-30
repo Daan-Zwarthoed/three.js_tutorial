@@ -38,7 +38,7 @@ const CodeBlock: React.FC<Props> = ({
 
   return (
     <ResizableHorizontal resizeTarget="Code">
-      <h3 className="w-full bg-background top-0 z-30 pl-3 text-quartery hover:text-white">
+      <h3 className="w-full bg-background top-0 z-30 pl-3 text-deepBlue hover:text-white">
         Input
       </h3>
       <CodeEditor

@@ -287,7 +287,7 @@ const Addons: React.FC = () => {
           importmap to the {"<head>"} element of your HTML. You can find more
           information about import maps in the{" "}
           <a
-            className="text-primary underline"
+            className="text-accent underline"
             target="_blank"
             href="https://threejs.org/docs/#manual/en/introduction/Installation"
           >
@@ -295,11 +295,11 @@ const Addons: React.FC = () => {
           </a>
         </Note>
         <h3 className="mt-p">Controls</h3>
-        <div className="grid grid-cols-6 w-full my-5 border-secondary border-t-2 border-l-2">
+        <div className="grid grid-cols-6 w-full my-5 border-offWhite border-t-2 border-l-2">
           {ControlsTypes.map((type, index) => (
             <button
               key={type}
-              className={`relative w-full text-center flex flex-row justify-center items-center py-4 border-secondary border-r-2 border-b-2 ${
+              className={`relative w-full text-center flex flex-row justify-center items-center py-4 border-offWhite border-r-2 border-b-2 ${
                 index > 5 ? "col-span-3" : "col-span-2"
               }`}
               onClick={() => {
@@ -319,7 +319,7 @@ const Addons: React.FC = () => {
                 color={"white"}
               />
               <div
-                className={`absolute transition-all duration-700 bg-tertary left-0 h-full top-0`}
+                className={`absolute transition-all duration-700 bg-backgroundActive left-0 h-full top-0`}
                 style={{
                   width: controlsMode === type ? "100%" : 0,
                 }}

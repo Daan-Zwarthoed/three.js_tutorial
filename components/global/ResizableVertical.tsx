@@ -79,7 +79,7 @@ const ResizableVertical: React.FC<Props> = ({ children, resizeTarget }) => {
         {children}
       </div>
       <div
-        className="absolute flex justify-center items-center left-0 top-0 z-20 flex w-full h-[10px] cursor-row-resize bg-tertary"
+        className="absolute flex justify-center items-center left-0 top-0 z-20 flex w-full h-[10px] cursor-row-resize bg-backgroundActive"
         onMouseDown={(event) => handleResizeStart(event)}
       >
         <div className="w-20 h-[5px] bg-background rounded-full"></div>

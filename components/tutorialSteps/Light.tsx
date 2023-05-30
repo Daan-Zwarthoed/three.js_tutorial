@@ -366,12 +366,12 @@ const Light: React.FC = () => {
           You can experiment with different lights and their helpers using the
           button below.
         </p>
-        <div className="grid grid-cols-2 columns-2 w-full mb-p mt-3 border-secondary border-2">
+        <div className="grid grid-cols-2 columns-2 w-full mb-p mt-3 border-offWhite border-2">
           {LightModeTypes.map((type) => (
             // Button
             <button
               key={type}
-              className="relative w-full text-center py-4 first:col-span-2 border-secondary border-t-2 first:border-0"
+              className="relative w-full text-center py-4 first:col-span-2 border-offWhite border-t-2 first:border-0"
               onClick={() => handleLightClick(type)}
             >
               <p className="relative z-10">{type}</p>
@@ -383,7 +383,7 @@ const Light: React.FC = () => {
                   </div>
                   {/* Background */}
                   <div
-                    className="absolute transition-all duration-700 bg-tertary left-0 h-full top-0"
+                    className="absolute transition-all duration-700 bg-backgroundActive left-0 h-full top-0"
                     style={{
                       width: lightMode.includes(type)
                         ? lightMode.includes((type + " helper") as Lightmode)

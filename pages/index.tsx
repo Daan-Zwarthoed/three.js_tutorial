@@ -98,7 +98,7 @@ const Home = () => {
                     href={`/tutorial?step=${
                       accessibleSteps[accessibleSteps.length - 1]
                     }`}
-                    className="block bg-primary p-3 rounded-xl my-1 mr-2 w-40 text-center"
+                    className="block bg-accent p-3 rounded-xl my-1 mr-2 w-40 text-center"
                   >
                     Continue tutorial
                   </Link>
@@ -125,7 +125,7 @@ const Home = () => {
                   className={`block p-3 rounded-xl my-1 mr-2 w-40 text-center ${
                     accessibleSteps.length > 0
                       ? "border-2 border-slate-700"
-                      : "bg-primary"
+                      : "bg-accent"
                   }`}
                 >
                   {accessibleSteps.length > 0 ? "Restart" : "Start"} tutorial

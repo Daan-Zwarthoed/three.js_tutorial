@@ -260,7 +260,7 @@ const CameraAnimation: React.FC = () => {
           to another, we will use GSAP. For more information you can go to the
           gsaps{" "}
           <a
-            className="text-primary underline"
+            className="text-accent underline"
             target="_blank"
             href="https://greensock.com/get-started/"
           >
@@ -268,7 +268,7 @@ const CameraAnimation: React.FC = () => {
           </a>{" "}
           page or{" "}
           <a
-            className="text-primary underline"
+            className="text-accent underline"
             target="_blank"
             href="https://greensock.com/docs/v3/Installation"
           >
@@ -326,7 +326,7 @@ const CameraAnimation: React.FC = () => {
             Without gsap
           </button>
           <div
-            className="absolute transition-all duration-700 bg-tertary w-1/2 h-full top-0 rounded-md"
+            className="absolute transition-all duration-700 bg-backgroundActive w-1/2 h-full top-0 rounded-md"
             style={{
               left:
                 userScript === gsapCode

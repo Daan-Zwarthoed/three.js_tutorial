@@ -81,7 +81,7 @@ const ResizableHorizontal: React.FC<Props> = ({ children, resizeTarget }) => {
         {children}
       </div>
       <div
-        className="absolute flex justify-center items-center left-0 top-0 z-20 flex h-full w-[10px] cursor-col-resize bg-tertary"
+        className="absolute flex justify-center items-center left-0 top-0 z-20 flex h-full w-[10px] cursor-col-resize bg-backgroundActive"
         onMouseDown={(event) => handleResizeStart(event)}
       >
         <div className="h-20 w-[5px] bg-background rounded-full"></div>

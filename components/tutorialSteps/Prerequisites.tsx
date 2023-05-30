@@ -33,7 +33,7 @@ const Prerequisites: React.FC = () => {
         understanding of JavaScript. If you need to get started with JavaScript,
         you can refer to websites like{" "}
         <a
-          className="text-primary underline"
+          className="text-accent underline"
           target="_blank"
           href="https://www.w3schools.com/js/DEFAULT.asp"
         >
@@ -41,7 +41,7 @@ const Prerequisites: React.FC = () => {
         </a>{" "}
         or{" "}
         <a
-          className="text-primary underline"
+          className="text-accent underline"
           target="_blank"
           href="https://javascript.info/"
         >
@@ -56,7 +56,7 @@ const Prerequisites: React.FC = () => {
         import maps. If you haven't done this yet, please consult the official
         Three.js{" "}
         <a
-          className="text-primary underline"
+          className="text-accent underline"
           target="_blank"
           href="https://threejs.org/docs/#manual/en/introduction/Installation"
         >

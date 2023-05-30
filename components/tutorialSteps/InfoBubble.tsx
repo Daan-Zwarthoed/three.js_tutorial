@@ -358,7 +358,7 @@ const InfoBubble: React.FC = () => {
           ))}
           <div
             ref={bgActiveButton}
-            className="absolute z-0 bg-tertary transition-all"
+            className="absolute z-0 bg-backgroundActive transition-all"
             style={{
               height: "0",
               width: "0",

@@ -19,7 +19,7 @@ const StepTitle: React.FC<Props> = ({ children }) => {
   }, [Router.query.step]);
 
   return (
-    <div className="border-b-2 border-primary w-fit flex flex-row items-center">
+    <div className="border-b-2 border-accent w-fit flex flex-row items-center">
       {stepIcon && (
         <FontAwesomeIcon
           className="h-5 w-5 mr-3"

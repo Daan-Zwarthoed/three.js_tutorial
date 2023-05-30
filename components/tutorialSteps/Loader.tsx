@@ -152,7 +152,7 @@ const Loader: React.FC = () => {
             example, we will import a GLTF file from the{" "}
             <a
               href="https://github.com/KhronosGroup/glTF-Sample-Models"
-              className="underline text-primary"
+              className="underline text-accent"
             >
               Khronos Group
             </a>

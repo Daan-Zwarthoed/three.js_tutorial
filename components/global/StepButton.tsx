@@ -34,7 +34,7 @@ const StepButton: React.FC<Props> = ({ next, classes }) => {
         classes ||
         `px-1 py-0.5 rounded-md w-fit ml-4 border-2 ${
           accessibleSteps.includes(goalStepId)
-            ? "border-primary"
+            ? "border-accent"
             : "border-inactive bg-inactive text-background font-medium cursor-default"
         }`
       }
