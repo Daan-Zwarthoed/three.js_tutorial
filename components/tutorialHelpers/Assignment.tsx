@@ -43,11 +43,13 @@ const Assignment: React.FC<Props> = ({ assignments }) => {
           )
         ) {
           // Find completed assignment
-          const completedAssignment = assignmentKeys.findLast(
+          const completedAssignments = assignmentKeys.filter(
             (key) =>
               assignmentsClone[key].checked !== assignments[key].checked &&
               assignments[key].checked
           );
+          const completedAssignment =
+            completedAssignments[completedAssignments.length - 1];
 
           // See if completed assignment is also the final one
           const completedFinalAssignment =
