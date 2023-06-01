@@ -58,8 +58,6 @@ scene.add(cube4);
 
 // Animate on click
 function onClick(event) {
-  if (!canvas) return;
-
   const pointer = new THREE.Vector2();
   const canvasLeft = canvas.getBoundingClientRect().left;
   const canvasTop = canvas.getBoundingClientRect().top;
@@ -137,8 +135,6 @@ let cameraPositionGoal;
 let animationDistance;
 
 function onClick(event) {
-  if (!canvas) return;
-
   const pointer = new THREE.Vector2();
   const canvasLeft = canvas.getBoundingClientRect().left;
   const canvasTop = canvas.getBoundingClientRect().top;
