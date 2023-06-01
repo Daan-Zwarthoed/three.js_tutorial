@@ -57,7 +57,7 @@ let wheel1 = null;
 let info = null;
 
 loader.load(
-  "scenes/Car.glb",
+  "scenes/car.glb",
   // called when the resource is loaded
   function (gltf) {
     console.log("loaded");

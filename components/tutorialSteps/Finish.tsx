@@ -64,7 +64,7 @@ const Finish: React.FC = () => {
       gsap
         .to(child, {
           x: random(400, window.innerWidth - 20),
-          y: -random(20, window.innerHeight - 20),
+          y: -random(40, window.innerHeight - 20),
 
           duration: 1,
         })

@@ -53,7 +53,7 @@ const Home = () => {
 
     loader.load(
       // resource URL
-      "scenes/Car.glb",
+      "scenes/car.glb",
       // called when the resource is loaded
       function (gltf) {
         console.log("loaded");

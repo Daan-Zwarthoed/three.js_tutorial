@@ -29,6 +29,27 @@ const CodeBlock: React.FC<Props> = ({
 }) => {
   const { setUserScript, setShowRobot } = useContext(AppContext);
   const [editor, setEditor] = useState<ace.Ace.Editor | null>(null);
+  // Return anchor range
+  const createAnchorRange = (
+    startRow: number,
+    startCol: number,
+    endRow: number,
+    endCol: number
+  ) => {
+    const range = new Range(startRow, startCol, endRow, endCol);
+    if (!editor) return range;
+    const startAnchor = editor.session.doc.createAnchor(
+      range.start.row,
+      range.start.column
+    );
+    range.start = startAnchor as unknown as ace.Ace.Point;
+    const endAnchor = editor.session.doc.createAnchor(
+      range.end.row,
+      range.end.column
+    );
+    range.end = endAnchor as unknown as ace.Ace.Point;
+    return range;
+  };
 
   // Prevents user from editing imports
   const handleExec = (event: {
@@ -54,9 +75,6 @@ const CodeBlock: React.FC<Props> = ({
 
     editor.resize();
 
-    // If code is updated by parent component update value
-    if (editor.session.getValue() !== children) editor.setValue(children, 1);
-
     // Remove past markers
     const prevMarkers = editor.session.getMarkers();
     if (prevMarkers) {
@@ -68,11 +86,14 @@ const CodeBlock: React.FC<Props> = ({
 
     // Highlightarea
     if (highlightArea) {
-      editor.session.addMarker(
-        new Range(highlightArea.startRow - 1, 0, highlightArea.endRow - 1, 1),
-        "highlightArea",
-        "fullLine"
+      const highlightRange = createAnchorRange(
+        highlightArea.startRow - 1,
+        0,
+        highlightArea.endRow - 1,
+        0
       );
+
+      editor.session.addMarker(highlightRange, "highlightArea", "fullLine");
 
       editor.setAnimatedScroll(true);
       editor.gotoLine(highlightArea.startRow, 0, true);
@@ -89,24 +110,20 @@ const CodeBlock: React.FC<Props> = ({
       const importRange = new Range(0, 0, beforeHeight - 1, 0);
       editor.session.addMarker(importRange, "importsArea", "fullLine");
 
-      editRange = new Range(beforeHeight, 0, inputHeight - 1, 0);
-      const startAnchor = editor.session.doc.createAnchor(
-        editRange.start.row,
-        editRange.start.column
-      );
-      editRange.start = startAnchor as unknown as ace.Ace.Point;
-      const endAnchor = editor.session.doc.createAnchor(
-        editRange.end.row,
-        editRange.end.column
-      );
-      editRange.end = endAnchor as unknown as ace.Ace.Point;
+      editRange = createAnchorRange(beforeHeight, 0, inputHeight - 1, 0);
     }
   };
 
-  // Only setup when editor, children or highlightArea is updated
+  // Only setup when editor or children is updated
   useEffect(() => {
     setup();
   }, [editor, children, highlightArea]);
+
+  useEffect(() => {
+    // If code is updated by parent component update value
+    if (editor && editor.session.getValue() !== children)
+      editor.setValue(children, 1);
+  }, [children]);
 
   // Applies progress to assignments and canvas
   const handleSave = (editor: ace.Ace.Editor | null) => {
