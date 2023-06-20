@@ -37,7 +37,7 @@ const Scene: React.FC<Props> = ({ threeScript }) => {
         {getStepCurrent().id === "Info bubble" && (
           <div
             style={{ opacity: 0, display: "none" }}
-            className="absolute z-20 text-center right-0 bg-white/70 px-5"
+            className="absolute z-20 pt-10 text-center right-0 bg-white/70 px-5"
           >
             <div
               id="backButton"

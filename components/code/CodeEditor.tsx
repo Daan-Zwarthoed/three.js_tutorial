@@ -130,10 +130,9 @@ const CodeBlock: React.FC<Props> = ({
     if (!editRange || !editor) return;
 
     setUserScript(
-      editor &&
-        editor.session
-          .getLines(editRange.start.row, editRange.end.row - 1)
-          .join("\n")
+      editor.session
+        .getLines(editRange.start.row, editRange.end.row - 1)
+        .join("\n")
     );
   };
 
