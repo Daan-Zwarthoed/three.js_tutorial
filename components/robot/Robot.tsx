@@ -152,6 +152,7 @@ const Robot: React.FC = () => {
       if (!robotIsHidden) hideRobot();
       return;
     }
+
     animateShowRobot();
   }, [showRobot]);
 

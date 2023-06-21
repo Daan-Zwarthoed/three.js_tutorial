@@ -113,7 +113,7 @@ const Finish: React.FC = () => {
         <button className="bg-accent rounded-md p-3 mt-p">Back to home</button>
       </Link>
       <div ref={confettiParent}>
-        {[...new Array(80)].map((number, index) => (
+        {[...new Array(80)].map((_, index) => (
           <div className="absolute w-5 h-8" key={index}></div>
         ))}
       </div>
