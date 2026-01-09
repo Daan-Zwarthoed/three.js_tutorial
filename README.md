@@ -11,6 +11,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Deployment
 
+IMPORTANT: Ik werk niet meer (te oude react versie)
 https://three-js-tutorial-nine.vercel.app/
 
 ## Learn More
